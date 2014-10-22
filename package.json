@@ -1,0 +1,12 @@
+{
+    "name": "swing",
+    "description": "",
+    "version": "1.0.0",
+    "browser": "dist/swing.min.js",
+    "author": "Gajus Kuizinas <gk@anuary.com>",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/gajus/angular-swing"
+    },
+    "license": "BSD-3-Clause"
+}
