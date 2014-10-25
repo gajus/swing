@@ -1,12 +1,22 @@
 {
-    "name": "swing",
-    "description": "",
-    "version": "1.0.0",
-    "browser": "dist/swing.min.js",
-    "author": "Gajus Kuizinas <gk@anuary.com>",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/gajus/angular-swing"
-    },
-    "license": "BSD-3-Clause"
+  "name": "swing",
+  "description": "",
+  "version": "1.0.0",
+  "main": "dist/swing.js",
+  "author": "Gajus Kuizinas <gk@anuary.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gajus/swing"
+  },
+  "license": "BSD-3-Clause",
+  "devDependencies": {
+    "gulp": "^3.8.9",
+    "gulp-jshint": "^1.8.5",
+    "gulp-browserify": "^0.5.0",
+    "del": "^0.1.3",
+    "rebound": "0.0.10",
+    "sister": "^1.0.0",
+    "vendor-prefix": "^0.1.0",
+    "pan-drag": "^1.1.2"
+  }
 }
