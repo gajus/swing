@@ -17,6 +17,6 @@
     "rebound": "0.0.10",
     "sister": "^1.0.0",
     "vendor-prefix": "^0.1.0",
-    "pan-drag": "^1.1.2"
+    "hammerjs": "^2.0.4"
   }
 }
