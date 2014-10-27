@@ -6,7 +6,7 @@ A swipeable cards interface. The swipe-left/swipe-right for yes/no input. As see
 
 ## Quick Start
 
-```html+js
+```HTML+JS
 <ul>
     <li></li>
     <li></li>
