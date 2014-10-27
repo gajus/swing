@@ -6,13 +6,15 @@ A swipeable cards interface. The swipe-left/swipe-right for yes/no input. As see
 
 ## Quick Start
 
-```HTML+JS
+```html
 <ul>
     <li></li>
     <li></li>
     <li></li>
 </ul>
-<script>
+```
+
+```js
 var stack,
     cards;
 
@@ -40,7 +42,6 @@ stack.on('throwout', function (e) {
 stack.on('throwin', function (e) {
     console.log('Card has snapped back to the stack.');
 });
-</script>
 ```
 
 ## Usage Examples
