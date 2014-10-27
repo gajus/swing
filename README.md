@@ -46,6 +46,16 @@ The code for all of the examples is in the [./examples/](https://github.com/gaju
 
 ## Events
 
+Use an instance of the `Swing.Stack` to attach event listeners, e.g.
+
+```js
+var stack;
+
+stack = stack = new Swing.Stack();
+
+stack.on('throwout', function () {});
+```
+
 | Name | Description |
 | --- | --- |
 | `throwout` | When card has been thrown out of the stack. |
@@ -53,6 +63,23 @@ The code for all of the examples is in the [./examples/](https://github.com/gaju
 | `dragstart` | Hammer [panstart](http://hammerjs.github.io/recognizer-pan/). |
 | `dragmove` | Hammer [panmove](http://hammerjs.github.io/recognizer-pan/). |
 | `dragend` | Hammer [panend](http://hammerjs.github.io/recognizer-pan/). |
+
+### Event Object
+
+Event listener is invoked with a single `eventObject` parameter.
+
+```js
+var stack;
+
+stack = stack = new Swing.Stack();
+
+stack.on('throwout', function (eventObject) {});
+```
+
+| Name | Value |
+| --- | --- |
+| `target` | The element being dragged. |
+| `direction` | The direction in which the element is being dragged: `Card.DIRECTION_LEFT` or `Card.DIRECTION_RIGHT`. |
 
 ## Dependencies
 

@@ -51,7 +51,7 @@ function Card (Stack, targetElement) {
         dragEndX = mousedownTranslate[0] + e.deltaX;
         dragEndY = mousedownTranslate[1] + e.deltaY;
         
-        throwDirection = dragEndX > 0 ? 1 : -1;
+        throwDirection = dragEndX < 0 ? Card.DIRECTION_LEFT : Card.DIRECTION_RIGHT;
 
         if (Stack.config.throwOut(dragEndX, card.targetElementWidth)) {
             springThrowOut.setCurrentValue(0).setAtRest().setVelocity(100).setEndValue(1);
@@ -88,6 +88,9 @@ function Card (Stack, targetElement) {
         }
     });
 }
+
+Card.DIRECTION_LEFT = -1;
+Card.DIRECTION_RIGHT = 1;
 
 /**
  * If element is not the last among the siblings, append the
