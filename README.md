@@ -44,6 +44,15 @@ The code for all of the examples is in the [./examples/](https://github.com/gaju
 
 [Raise an issue](https://github.com/gajus/swing/issues) if you are missing an example.
 
+## Events
+
+| Name | Description |
+| `throwout` | When card has been thrown out of the stack. |
+| `throwin` | When card has been thrown in to the stack. This includes the spring back into place effect. |
+| `dragstart` |  |
+| `dragmove` |  |
+| `dragend` |  |
+
 ## Dependencies
 
 If you are using the `./dist/` version, you do not need to download the dependencies.
