@@ -115,6 +115,7 @@ function Card (stack, targetElement) {
         config.maxThrowOutDistance = config.maxThrowOutDistance ? config.maxThrowOutDistance : 500;
 
         config.rotationAngle = config.rotationAngle ? config.rotationAngle : Card.rotationAngle;
+        config.maxRotationAngle = config.maxRotationAngle ? config.maxRotationAngle : 20;
 
         return config;
     };
@@ -182,7 +183,7 @@ function Card (stack, targetElement) {
      * @return {Number} Rotation angle expressed in degrees.
      */
     Card.rotationAngle = function (x, y) {
-        var maximumRotation = 20,
+        var maximumRotation = config.maxRotationAngle,
             horizontalOffset = Math.min(Math.max(x/card.targetElementWidth, -1), 1),
             verticalOffset = (y > 0 ? 1 : -1) * Math.min(Math.abs(y)/100, 1),
             rotation = horizontalOffset * verticalOffset * maximumRotation;

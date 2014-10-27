@@ -87,9 +87,10 @@ A collection of observations about the extended use case of the swipeable cards 
 | --- | --- |
 | `isThrowOut` | Invoked in the event of `dragend`. Determine if element is being thrown out of the stack. Element is considered to be throw out if it has been moved at least 10px outside of the stack box. |
 | `throwOutDistance` | Invoked when card is added to the stack. The card is thrown to this offset from the stack. The value is a random number between `minThrowOutDistance` and `maxThrowOutDistance`. |
-| `minThrowOutDistance` | In effect when `getThrowOutDistance` is not overwritten. Default: 400. |
-| `maxThrowOutDistance` | In effect when `getThrowOutDistance` is not overwritten. Default: 500. |
-||
+| `minThrowOutDistance` | In effect when `throwOutDistance` is not overwritten. Default: 400. |
+| `maxThrowOutDistance` | In effect when `throwOutDistance` is not overwritten. Default: 500. |
+| `rotationAngle` | Invoked in the event of `dragmove`. Determine the rotation of the element. Rotation is equal to the proportion of horizontal and vertical offset times the `maximumRotation` constant. |
+| `maxRotationAngle` | In effect when `rotationAngle` is not overwritten. Default: 20. |
 
 All of the configuration parameters are optional.
 
