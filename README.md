@@ -50,9 +50,9 @@ The code for all of the examples is in the [./examples/](https://github.com/gaju
 | --- | --- |
 | `throwout` | When card has been thrown out of the stack. |
 | `throwin` | When card has been thrown in to the stack. This includes the spring back into place effect. |
-| `dragstart` |  |
-| `dragmove` |  |
-| `dragend` |  |
+| `dragstart` | Hammer [panstart](http://hammerjs.github.io/recognizer-pan/). |
+| `dragmove` | Hammer [panmove](http://hammerjs.github.io/recognizer-pan/). |
+| `dragend` | Hammer [panend](http://hammerjs.github.io/recognizer-pan/). |
 
 ## Dependencies
 
