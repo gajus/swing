@@ -12,7 +12,28 @@ function Stack (config) {
     this.config.throwOutDistance = this.config.throwOutDistance ? this.config.throwOutDistance : this.throwOutDistance;
 
     this.springSystem = new rebound.SpringSystem();
+
+    this.eventEmitter = new Sister();
 }
+
+/**
+ * Get instance of the event emitter.
+ * 
+ * @return {Sister}
+ */
+Stack.prototype.getEventEmitter = function () {
+    return this.eventEmitter;
+};
+
+/**
+ * Proxy to the instance of the event emitter.
+ * 
+ * @param {String} eventName
+ * @param {String} listener
+ */
+Stack.prototype.on = function (eventName, listener) {
+    this.getEventEmitter().on(eventName, listener);
+};
 
 /**
  * Method used to determine whether element should be thrown out of the stack.

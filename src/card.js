@@ -1,16 +1,14 @@
-var Sister = require('sister'),
-    Hammer = require('hammerjs'),
+var Hammer = require('hammerjs'),
     rebound = require('rebound'),
     vendorPrefix = require('vendor-prefix');
 
 /**
  * @param {Stack} Stack
  * @param {HTMLElement} targetElement
- * @return {Sister}
  */
 function Card (Stack, targetElement) {
     var card = this,
-        emitter = Sister(),
+        eventEmitter = Stack.getEventEmitter(),
         springSnapBack,
         springThrowOut,
         dragEndX,
@@ -36,7 +34,7 @@ function Card (Stack, targetElement) {
 
         mousedownTranslate = card.getTranslate(targetElement);
 
-        emitter.trigger('startdrag', {
+        eventEmitter.trigger('dragstart', {
             target: targetElement
         });
     });
@@ -44,7 +42,7 @@ function Card (Stack, targetElement) {
     mc.on('panmove', function (e) {
         card.translate(targetElement, mousedownTranslate[0] + e.deltaX, mousedownTranslate[1] + e.deltaY);
 
-        emitter.trigger('dragmove', {
+        eventEmitter.trigger('dragmove', {
             target: targetElement
         });
     });
@@ -58,19 +56,19 @@ function Card (Stack, targetElement) {
         if (Stack.config.throwOut(dragEndX, card.targetElementWidth)) {
             springThrowOut.setCurrentValue(0).setAtRest().setVelocity(100).setEndValue(1);
 
-            emitter.trigger('throwout', {
+            eventEmitter.trigger('throwout', {
                 target: targetElement,
                 throwDirection: throwDirection
             });
         } else {
             springSnapBack.setCurrentValue(0).setAtRest().setEndValue(1);
 
-            emitter.trigger('snapback', {
+            eventEmitter.trigger('snapback', {
                 target: targetElement
             });
         }
 
-        emitter.trigger('dragend', {
+        eventEmitter.trigger('dragend', {
             target: targetElement
         });
     });
@@ -89,8 +87,6 @@ function Card (Stack, targetElement) {
             card.onSpringThrowOutUpdate(targetElement, dragEndX, dragEndY, spring.getCurrentValue(), throwOutDistance);
         }
     });
-
-    return emitter;
 }
 
 /**

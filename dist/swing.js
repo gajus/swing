@@ -3628,19 +3628,17 @@ module.exports = get;
 module.exports.dash = dashedPrefix;
 
 },{}],6:[function(require,module,exports){
-var Sister = require('sister'),
-    Hammer = require('hammerjs'),
+var Hammer = require('hammerjs'),
     rebound = require('rebound'),
     vendorPrefix = require('vendor-prefix');
 
 /**
  * @param {Stack} Stack
  * @param {HTMLElement} targetElement
- * @return {Sister}
  */
 function Card (Stack, targetElement) {
     var card = this,
-        emitter = Sister(),
+        eventEmitter = Stack.getEventEmitter(),
         springSnapBack,
         springThrowOut,
         dragEndX,
@@ -3666,7 +3664,7 @@ function Card (Stack, targetElement) {
 
         mousedownTranslate = card.getTranslate(targetElement);
 
-        emitter.trigger('startdrag', {
+        eventEmitter.trigger('dragstart', {
             target: targetElement
         });
     });
@@ -3674,7 +3672,7 @@ function Card (Stack, targetElement) {
     mc.on('panmove', function (e) {
         card.translate(targetElement, mousedownTranslate[0] + e.deltaX, mousedownTranslate[1] + e.deltaY);
 
-        emitter.trigger('dragmove', {
+        eventEmitter.trigger('dragmove', {
             target: targetElement
         });
     });
@@ -3688,19 +3686,19 @@ function Card (Stack, targetElement) {
         if (Stack.config.throwOut(dragEndX, card.targetElementWidth)) {
             springThrowOut.setCurrentValue(0).setAtRest().setVelocity(100).setEndValue(1);
 
-            emitter.trigger('throwout', {
+            eventEmitter.trigger('throwout', {
                 target: targetElement,
                 throwDirection: throwDirection
             });
         } else {
             springSnapBack.setCurrentValue(0).setAtRest().setEndValue(1);
 
-            emitter.trigger('snapback', {
+            eventEmitter.trigger('snapback', {
                 target: targetElement
             });
         }
 
-        emitter.trigger('dragend', {
+        eventEmitter.trigger('dragend', {
             target: targetElement
         });
     });
@@ -3719,8 +3717,6 @@ function Card (Stack, targetElement) {
             card.onSpringThrowOutUpdate(targetElement, dragEndX, dragEndY, spring.getCurrentValue(), throwOutDistance);
         }
     });
-
-    return emitter;
 }
 
 /**
@@ -3830,7 +3826,7 @@ Card.prototype.onSpringThrowOutUpdate = function (element, x, y, value, throwOut
 };
 
 module.exports = Card;
-},{"hammerjs":2,"rebound":3,"sister":4,"vendor-prefix":5}],7:[function(require,module,exports){
+},{"hammerjs":2,"rebound":3,"vendor-prefix":5}],7:[function(require,module,exports){
 (function (global){
 var Stack = require('./stack.js');
 
@@ -3857,7 +3853,28 @@ function Stack (config) {
     this.config.throwOutDistance = this.config.throwOutDistance ? this.config.throwOutDistance : this.throwOutDistance;
 
     this.springSystem = new rebound.SpringSystem();
+
+    this.eventEmitter = new Sister();
 }
+
+/**
+ * Get instance of the event emitter.
+ * 
+ * @return {Sister}
+ */
+Stack.prototype.getEventEmitter = function () {
+    return this.eventEmitter;
+};
+
+/**
+ * Proxy to the instance of the event emitter.
+ * 
+ * @param {String} eventName
+ * @param {String} listener
+ */
+Stack.prototype.on = function (eventName, listener) {
+    this.getEventEmitter().on(eventName, listener);
+};
 
 /**
  * Method used to determine whether element should be thrown out of the stack.

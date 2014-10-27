@@ -4,6 +4,40 @@ A card swiping interface. The swipe-left/swipe-right for yes/no input. As seen i
 
 ![Card stack example.](./.readme/card-stack.gif)
 
+## Quick Start
+
+```js
+var stack,
+    cards = [].slice.call(document.querySelectorAll('.stack li'));
+
+var stack;
+
+stack = new Swing.Stack();
+
+cards.forEach(function (targetElement) {
+    stack.createCard(targetElement);
+});
+
+stack.on('throwout', function (e) {
+    console.log(e.target.innerText, 'Card has been thrown out of the stack.');
+    console.log(e.target.innerText, 'Throw direction: ' + (e.throwDirection == 1 ? 'right' : 'left'));
+});
+
+stack.on('snapback', function (e) {
+    console.log(e.target.innerText, 'Card has snapped back to the stack.');
+
+    e.target.classList.add('in-deck');
+});
+```
+
+## Usage Examples
+
+* [Card stack](http://gajus.com/sandbox/swing/examples/card-stack/).
+
+The code for all of the examples is in the [./examples/](https://github.com/gajus/swing/tree/master/examples/) folder.
+
+[Raise an issue](https://github.com/gajus/swing/issues) if you are missing an example.
+
 ## Dependencies
 
 If you are using the `./dist/` version, you do not need to download the dependencies.
