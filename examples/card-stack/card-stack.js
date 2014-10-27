@@ -16,8 +16,8 @@ document.addEventListener('DOMContentLoaded', function () {
         e.target.classList.remove('in-deck');
     });
 
-    stack.on('snapback', function (e) {
-        console.log(e.target.innerText || e.target.textContent, 'Card has snapped back to the stack.');
+    stack.on('throwin', function (e) {
+        console.log(e.target.innerText || e.target.textContent, 'Card has been thrown into to the stack.');
 
         e.target.classList.add('in-deck');
     });

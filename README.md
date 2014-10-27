@@ -6,12 +6,18 @@ A swipeable cards interface. The swipe-left/swipe-right for yes/no input. As see
 
 ## Quick Start
 
-```js
+```html+js
+<ul>
+    <li></li>
+    <li></li>
+    <li></li>
+</ul>
+<script>
 var stack,
     cards;
 
 // Prepare the cards in the stack for iteration.
-cards = [].slice.call(document.querySelectorAll('.stack li'))
+cards = [].slice.call(document.querySelectorAll('ul li'))
 
 // An instance of the Stack is used to attach event listeners.
 stack = new Swing.Stack();
@@ -30,10 +36,11 @@ stack.on('throwout', function (e) {
     console.log('Throw direction: ' + (e.throwDirection == 1 ? 'right' : 'left'));
 });
 
-// Add event listener for when a card is thrown in the stack.
-stack.on('snapback', function (e) {
+// Add event listener for when a card is thrown in the stack, including the spring back into place effect.
+stack.on('throwin', function (e) {
     console.log('Card has snapped back to the stack.');
 });
+</script>
 ```
 
 ## Usage Examples
@@ -76,6 +83,7 @@ A collection of observations about the extended use case of the swipeable cards 
 | `throwOutDistance` | Invoked when card is added to the stack. The card is thrown to this offset from the stack. The value is a random number between `minThrowOutDistance` and `maxThrowOutDistance`. |
 | `minThrowOutDistance` | In effect when `getThrowOutDistance` is not overwritten. Default: 400. |
 | `maxThrowOutDistance` | In effect when `getThrowOutDistance` is not overwritten. Default: 500. |
+||
 
 All of the configuration parameters are optional.
 
@@ -94,7 +102,7 @@ stack.on('throwout', function () {});
 | Name | Description |
 | --- | --- |
 | `throwout` | When card has been thrown out of the stack. |
-| `throwin` | When card has been thrown in to the stack. This includes the spring back into place effect. |
+| `throwin` | When card has been thrown into the stack, including the spring back into place effect. |
 | `dragstart` | Hammer [panstart](http://hammerjs.github.io/recognizer-pan/). |
 | `dragmove` | Hammer [panmove](http://hammerjs.github.io/recognizer-pan/). |
 | `dragend` | Hammer [panend](http://hammerjs.github.io/recognizer-pan/). |

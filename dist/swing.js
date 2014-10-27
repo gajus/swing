@@ -3630,24 +3630,41 @@ module.exports.dash = dashedPrefix;
 },{}],6:[function(require,module,exports){
 var Hammer = require('hammerjs'),
     rebound = require('rebound'),
-    vendorPrefix = require('vendor-prefix');
+    vendorPrefix = require('vendor-prefix'),
+    util = {};
+
+/**
+ * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random
+ */
+util.randomInt = function (min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+};
 
 /**
  * @param {Stack} Stack
  * @param {HTMLElement} targetElement
  */
 function Card (Stack, targetElement) {
-    var card = this,
-        eventEmitter = Stack.getEventEmitter(),
-        springSnapBack,
+    var card = {},
+        config = Stack.config(),
+        eventEmitter = Stack.eventEmitter();
+
+    card.targetElementWidth = targetElement.offsetWidth;
+    card.targetElementHeight = targetElement.offsetHeight;
+
+    Card.bind();
+}
+
+Card.bind = function () {
+    var springSnapBack,
         springThrowOut,
         dragEndX,
         dragEndY,
         throwDirection,
-        mousedownTranslate,
-        throwOutDistance;
+        throwOutDistance,
+        mousedownTranslate;
 
-    throwOutDistance = Stack.config.throwOutDistance();
+    throwOutDistance = config.throwOutDistance();
 
     mc = new Hammer.Manager(targetElement, {
         recognizers: [
@@ -3658,13 +3675,10 @@ function Card (Stack, targetElement) {
     springSnapBack = Stack.springSystem.createSpring(250, 10);
     springThrowOut = Stack.springSystem.createSpring(500, 20);
 
-    card.targetElementWidth = targetElement.offsetWidth;
-    card.targetElementHeight = targetElement.offsetHeight;
-
     targetElement.addEventListener('mousedown', function (e) {
         card.appendToParent(e.target);
 
-        mousedownTranslate = card.getTranslate(targetElement);
+        mousedownTranslate = Card.getTranslate(targetElement);
 
         eventEmitter.trigger('dragstart', {
             target: targetElement
@@ -3685,7 +3699,7 @@ function Card (Stack, targetElement) {
         
         throwDirection = dragEndX < 0 ? Card.DIRECTION_LEFT : Card.DIRECTION_RIGHT;
 
-        if (Stack.config.isThrowOut(dragEndX, card.targetElementWidth)) {
+        if (config.isThrowOut(dragEndX, card.targetElementWidth)) {
             springThrowOut.setCurrentValue(0).setAtRest().setVelocity(100).setEndValue(1);
 
             eventEmitter.trigger('throwout', {
@@ -3695,7 +3709,7 @@ function Card (Stack, targetElement) {
         } else {
             springSnapBack.setCurrentValue(0).setAtRest().setEndValue(1);
 
-            eventEmitter.trigger('snapback', {
+            eventEmitter.trigger('throwin', {
                 target: targetElement
             });
         }
@@ -3716,10 +3730,22 @@ function Card (Stack, targetElement) {
             card.onSpringThrowOutUpdate(targetElement, dragEndX, dragEndY, spring.getCurrentValue(), throwOutDistance * throwDirection);
         }
     });
-}
+};
 
-Card.DIRECTION_LEFT = -1;
-Card.DIRECTION_RIGHT = 1;
+/**
+ *
+ */
+Card.config = function (config) {
+    config = this._config = config || {};
+
+    config.isThrowOut = config.isThrowOut ? config.isThrowOut : Card.isThrowOut;
+
+    config.throwOutDistance = config.throwOutDistance ? config.throwOutDistance : Card.throwOutDistance;
+    config.minThrowOutDistance = config.minThrowOutDistance ? config.minThrowOutDistance : 400;
+    config.maxThrowOutDistance = config.maxThrowOutDistance ? config.maxThrowOutDistance : 500;
+
+    config.rotationAngle = config.rotationAngle ? config.rotationAngle : Card.rotationAngle;
+};
 
 /**
  * If element is not the last among the siblings, append the
@@ -3727,7 +3753,7 @@ Card.DIRECTION_RIGHT = 1;
  * 
  * @param {HTMLElement} element The target element.
  */
-Card.prototype.appendToParent = function (element) {
+Card.appendToParent = function (element) {
     var parent = element.parentNode,
         siblings = parent.querySelectorAll('li'),
         targetIndex = [].slice.apply(siblings).indexOf(element);
@@ -3744,7 +3770,7 @@ Card.prototype.appendToParent = function (element) {
  * @param {HTMLElement} element The target element.
  * @return {Array}
  */
-Card.prototype.getTranslate = function (element) {
+Card.getTranslate = function (element) {
     var translate = [0, 0],
         match;
 
@@ -3765,6 +3791,17 @@ Card.prototype.getTranslate = function (element) {
 };
 
 /**
+ * Invoked when card is added to the stack.
+ * The card is thrown to this offset from the stack.
+ * The value is a random number between minThrowOutDistance and maxThrowOutDistance.
+ * 
+ * @return {Number}
+ */
+Card.throwOutDistance = function () {
+    return util.randomInt(config.minThrowOutDistance, config.maxThrowOutDistance);
+};
+
+/**
  * Rotation is equal to the proportion of horizontal and vertical offset
  * times the maximumRotation constant.
  * 
@@ -3772,9 +3809,9 @@ Card.prototype.getTranslate = function (element) {
  * @param {Number} y Vertical offset from the startDrag.
  * @return {Number} Rotation angle expressed in degrees.
  */
-Card.prototype.rotationAngle = function (x, y) {
+Card.rotationAngle = function (x, y) {
     var maximumRotation = 20,
-        horizontalOffset = Math.min(Math.max(x/this.targetElementWidth, -1), 1),
+        horizontalOffset = Math.min(Math.max(x/card.targetElementWidth, -1), 1),
         verticalOffset = (y > 0 ? 1 : -1) * Math.min(Math.abs(y)/100, 1),
         rotation = horizontalOffset * verticalOffset * maximumRotation;
 
@@ -3789,10 +3826,23 @@ Card.prototype.rotationAngle = function (x, y) {
  * @param {Number} y Vertical offset from the startDrag.
  * @return {null}
  */
-Card.prototype.translate = function (element, x, y) {
-    var r = this.rotationAngle(x, y);
+Card.translate = function (element, x, y) {
+    var r = config.rotationAngle(x, y);
 
     element.style[vendorPrefix('transform')] = 'translate(' + x + 'px, ' + y + 'px) rotate(' + r + 'deg)';
+};
+
+/**
+ * Determine if element is being thrown out of the stack.
+ * Element is considered to be throw out if it has been moved at least 10px
+ * outside of the stack box.
+ * 
+ * @param {Number} offset Distance from the dragStart.
+ * @param {Number} elementWidth Width of the element being dragged.
+ * @return {Boolean}
+ */
+Card.isThrowOut = function (offset, elementWidth) {
+    return Math.max(Math.abs(offset) - elementWidth, 0) > 10;
 };
 
 /**
@@ -3804,11 +3854,11 @@ Card.prototype.translate = function (element, x, y) {
  * @param {Number} value A value from 0 to 1 indicating the progress of the transition.
  * @return {null}
  */
-Card.prototype.onSpringSnapBackUpdate = function (element, x, y, value) {
+Card.onSpringSnapBackUpdate = function (element, x, y, value) {
     x = rebound.MathUtil.mapValueInRange(value, 0, 1, x, 0);
     y = rebound.MathUtil.mapValueInRange(value, 0, 1, y, 0);
 
-    this.translate(element, x, y);
+    Card.translate(element, x, y);
 };
 
 /**
@@ -3821,11 +3871,14 @@ Card.prototype.onSpringSnapBackUpdate = function (element, x, y, value) {
  * @param {Number} throwOutDistance
  * @return {null}
  */
-Card.prototype.onSpringThrowOutUpdate = function (element, x, y, value, throwOutDistance) {
+Card.onSpringThrowOutUpdate = function (element, x, y, value, throwOutDistance) {
     x = rebound.MathUtil.mapValueInRange(value, 0, 1, x, throwOutDistance);
     
-    this.translate(element, x, y);
+    Card.translate(element, x, y);
 };
+
+Card.DIRECTION_LEFT = -1;
+Card.DIRECTION_RIGHT = 1;
 
 module.exports = Card;
 },{"hammerjs":2,"rebound":3,"vendor-prefix":5}],7:[function(require,module,exports){
@@ -3845,32 +3898,44 @@ var Sister = require('sister'),
     rebound = require('rebound'),
     Card = require('./card.js');
 
+/**
+ * @param {Object} config
+ */
 function Stack (config) {
     if (!(this instanceof Stack)) {
         return new Stack(config);
     }
 
-    this.config = config || {};
-    this.config.throwOut = this.config.throwOut ? this.config.throwOut : this.throwOut;
-
-    this.config.minThrowOutDistance = this.config.minThrowOutDistance ? this.config.minThrowOutDistance : 400;
-    this.config.maxThrowOutDistance = this.config.maxThrowOutDistance ? this.config.maxThrowOutDistance : 500;
-
-    this.config.isThrowOut = this.config.isThrowOut ? this.config.isThrowOut : this.isThrowOut;
-    this.config.throwOutDistance = this.config.throwOutDistance ? this.config.throwOutDistance : this.throwOutDistance;
-
-    this.springSystem = new rebound.SpringSystem();
-
-    this.eventEmitter = new Sister();
+    this._config = config;
+    this._springSystem = new rebound.SpringSystem();
+    this._eventEmitter = new Sister();
 }
 
 /**
- * Get instance of the event emitter.
+ * Get the configuration object.
+ * 
+ * @return {Object}
+ */
+Stack.prototype.config = function () {
+    return this._config;
+};
+
+/**
+ * Get a singleton instance of the SpringSystem physics engine.
  * 
  * @return {Sister}
  */
-Stack.prototype.getEventEmitter = function () {
-    return this.eventEmitter;
+Stack.prototype.springSystem = function () {
+    return this._springSystem;
+};
+
+/**
+ * Get a singleton instance of the Sister event emitter.
+ * 
+ * @return {Sister}
+ */
+Stack.prototype.eventEmitter = function () {
+    return this._eventEmitter;
 };
 
 /**
@@ -3880,31 +3945,7 @@ Stack.prototype.getEventEmitter = function () {
  * @param {String} listener
  */
 Stack.prototype.on = function (eventName, listener) {
-    this.getEventEmitter().on(eventName, listener);
-};
-
-/**
- * Determine if element is being thrown out of the stack.
- * Element is considered to be throw out if it has been moved at least 10px
- * outside of the stack box.
- * 
- * @param {Number} offset Distance from the dragStart.
- * @param {Number} elementWidth Width of the element being dragged.
- * @return {Boolean}
- */
-Stack.prototype.isThrowOut = function (offset, elementWidth) {
-    return Math.max(Math.abs(offset) - elementWidth, 0) > 10;
-};
-
-/**
- * Invoked when card is added to the stack.
- * The card is thrown to this offset from the stack.
- * The value is a random number between minThrowOutDistance and maxThrowOutDistance.
- * 
- * @return {Number}
- */
-Stack.prototype.throwOutDistance = function () {
-    return getRandomInt(this.minThrowOutDistance, this.maxThrowOutDistance);
+    this._eventEmitter.on(eventName, listener);
 };
 
 /**
@@ -3913,13 +3954,6 @@ Stack.prototype.throwOutDistance = function () {
 Stack.prototype.createCard = function (targetElement) {
     return new Card(this, targetElement);
 };
-
-/**
- * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random
- */
-function getRandomInt (min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-}
 
 module.exports = Stack;
 },{"./card.js":6,"rebound":3,"sister":4}]},{},[7])
