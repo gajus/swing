@@ -1,3 +1,8 @@
+/**
+* @version 1.0.0
+* @link https://github.com/gajus/swing for the canonical source repository
+* @license https://github.com/gajus/swing/blob/master/LICENSE BSD 3-Clause
+*/
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 // shim for using process in browser
 
@@ -3641,10 +3646,10 @@ util.randomInt = function (min, max) {
 };
 
 /**
- * @param {Stack} Stack
+ * @param {Stack} stack
  * @param {HTMLElement} targetElement
  */
-function Card (Stack, targetElement) {
+function Card (stack, targetElement) {
     var card = {},
         config;
 
@@ -3652,8 +3657,8 @@ function Card (Stack, targetElement) {
      * Binds mouse cursor events to the targetElement.
      */
     Card.bind = function () {
-        var eventEmitter = Stack.eventEmitter(),
-            springSystem = Stack.springSystem(),
+        var eventEmitter = stack.eventEmitter(),
+            springSystem = stack.springSystem(),
             springSnapBack,
             springThrowOut,
             dragEndX,
@@ -3731,7 +3736,7 @@ function Card (Stack, targetElement) {
     };
 
     /**
-     * Interprets Stack.config() object.
+     * Interprets stack.config() object.
      * 
      * @param {Object} config
      */
@@ -3882,7 +3887,7 @@ function Card (Stack, targetElement) {
     card.targetElementWidth = targetElement.offsetWidth;
     card.targetElementHeight = targetElement.offsetHeight;
 
-    config = Card.config(Stack.config());
+    config = Card.config(stack.config());
 
     Card.bind();
 }

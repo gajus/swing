@@ -11,10 +11,10 @@ util.randomInt = function (min, max) {
 };
 
 /**
- * @param {Stack} Stack
+ * @param {Stack} stack
  * @param {HTMLElement} targetElement
  */
-function Card (Stack, targetElement) {
+function Card (stack, targetElement) {
     var card = {},
         config;
 
@@ -22,8 +22,8 @@ function Card (Stack, targetElement) {
      * Binds mouse cursor events to the targetElement.
      */
     Card.bind = function () {
-        var eventEmitter = Stack.eventEmitter(),
-            springSystem = Stack.springSystem(),
+        var eventEmitter = stack.eventEmitter(),
+            springSystem = stack.springSystem(),
             springSnapBack,
             springThrowOut,
             dragEndX,
@@ -101,7 +101,7 @@ function Card (Stack, targetElement) {
     };
 
     /**
-     * Interprets Stack.config() object.
+     * Interprets stack.config() object.
      * 
      * @param {Object} config
      */
@@ -252,7 +252,7 @@ function Card (Stack, targetElement) {
     card.targetElementWidth = targetElement.offsetWidth;
     card.targetElementHeight = targetElement.offsetHeight;
 
-    config = Card.config(Stack.config());
+    config = Card.config(stack.config());
 
     Card.bind();
 }
