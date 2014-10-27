@@ -1,8 +1,8 @@
 /**
-* @version 1.0.0
-* @link https://github.com/gajus/swing for the canonical source repository
-* @license https://github.com/gajus/swing/blob/master/LICENSE BSD 3-Clause
-*/
+ * @version 1.0.0
+ * @link https://github.com/gajus/swing for the canonical source repository
+ * @license https://github.com/gajus/swing/blob/master/LICENSE BSD 3-Clause
+ */
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 // shim for using process in browser
 
@@ -3559,29 +3559,55 @@ if (typeof define == TYPE_FUNCTION && define.amd) {
 
 }).call(this,require("1YiZ5S"))
 },{"1YiZ5S":1}],4:[function(require,module,exports){
-function S () {
-    if (!(this instanceof S)) {
-        return new S();
+(function (global){
+/**
+* @link https://github.com/gajus/sister for the canonical source repository
+* @license https://github.com/gajus/sister/blob/master/LICENSE BSD 3-Clause
+*/
+function Sister () {
+    if (!(this instanceof Sister)) {
+        return new Sister();
     }
     this._events = {};
 }
-S.prototype.on = function (name, listener) {
+
+/**
+ * @name listener
+ * @function
+ * @param {Object} data Event data.
+ */
+
+/**
+ * @param {String} name Event name.
+ * @param {listener} listener
+ */
+Sister.prototype.on = function (name, listener) {
     this._events[name] = this._events[name] || [];
-    this._events[name].push(listener);
+    this._events[name].unshift(listener);
     return this;
 };
-S.prototype.trigger = function (name, data) {
-    var i,
-        j;
-    if (this._events[name]) {
-        i = 0;
-        j = this._events[name].length;
-        while (i < j) {
-            this._events[name][i++](data);
+
+/**
+ * @param {String} name Event name.
+ * @param {Object} data Event data.
+ */
+Sister.prototype.trigger = function (name, data) {
+    var listeners = this._events[name],
+        i;
+
+    if (listeners) {
+        i = listeners.length;
+        while (i--) {
+            listeners[i](data);
         }
     }
 };
-module.exports = S;
+
+global.gajus = global.gajus || {};
+global.gajus.Sister = Sister;
+
+module.exports = Sister;
+}).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],5:[function(require,module,exports){
 'use strict';
 
@@ -3901,7 +3927,8 @@ module.exports = Card;
 (function (global){
 var Stack = require('./stack.js');
 
-global.Swing = {
+global.gajus = global.gajus || {};
+global.gajus.Swing = {
     Stack: Stack
 };
 

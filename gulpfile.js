@@ -1,4 +1,5 @@
 var pkg = require('./package.json'),
+    karma = require('karma').server,
     gulp = require('gulp'),
     jshint = require('gulp-jshint'),
     header = require('gulp-header'),
@@ -33,11 +34,11 @@ gulp.task('version', ['bundle'], function () {
 
     gulp
         .src('./dist/swing.js')
-        .pipe(header('/**\n* @version <%= version %>\n* @link https://github.com/gajus/swing for the canonical source repository\n* @license https://github.com/gajus/swing/blob/master/LICENSE BSD 3-Clause\n*/\n', {version: pkg.version}))
+        .pipe(header('/**\n * @version <%= version %>\n * @link https://github.com/gajus/swing for the canonical source repository\n * @license https://github.com/gajus/swing/blob/master/LICENSE BSD 3-Clause\n */\n', {version: pkg.version}))
         .pipe(gulp.dest('./dist/'))
         .pipe(uglify())
         .pipe(rename('swing.min.js'))
-        .pipe(header('/**\n* @version <%= version %>\n* @link https://github.com/gajus/swing for the canonical source repository\n* @license https://github.com/gajus/swing/blob/master/LICENSE BSD 3-Clause\n*/\n', {version: pkg.version}))
+        .pipe(header('/**\n * @version <%= version %>\n * @link https://github.com/gajus/swing for the canonical source repository\n * @license https://github.com/gajus/swing/blob/master/LICENSE BSD 3-Clause\n */\n', {version: pkg.version}))
         .pipe(gulp.dest('./dist/'));
 
     bower.name = pkg.name;
@@ -52,6 +53,13 @@ gulp.task('version', ['bundle'], function () {
 
 gulp.task('watch', function () {
     gulp.watch(['./src/*', './package.json'], ['default']);
+});
+
+gulp.task('test', ['default'], function (cb) {
+    karma.start({
+        configFile: __dirname + '/karma.conf.js',
+        singleRun: true
+    }, cb);
 });
 
 gulp.task('default', ['version']);

@@ -1,6 +1,7 @@
 var Stack = require('./stack.js');
 
-global.Swing = {
+global.gajus = global.gajus || {};
+global.gajus.Swing = {
     Stack: Stack
 };
 
