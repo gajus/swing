@@ -17,6 +17,8 @@ function Card (Stack, targetElement) {
         mousedownTranslate,
         throwOutDistance;
 
+    throwOutDistance = Stack.config.throwOutDistance();
+
     mc = new Hammer.Manager(targetElement, {
         recognizers: [
             [Hammer.Pan, {threshold: 2}]
@@ -53,7 +55,7 @@ function Card (Stack, targetElement) {
         
         throwDirection = dragEndX < 0 ? Card.DIRECTION_LEFT : Card.DIRECTION_RIGHT;
 
-        if (Stack.config.throwOut(dragEndX, card.targetElementWidth)) {
+        if (Stack.config.isThrowOut(dragEndX, card.targetElementWidth)) {
             springThrowOut.setCurrentValue(0).setAtRest().setVelocity(100).setEndValue(1);
 
             eventEmitter.trigger('throwout', {
@@ -80,11 +82,8 @@ function Card (Stack, targetElement) {
     });
 
     springThrowOut.addListener({
-        onSpringActivate: function () {
-            throwOutDistance = Stack.config.throwOutDistance() * throwDirection;
-        },
         onSpringUpdate: function (spring) {
-            card.onSpringThrowOutUpdate(targetElement, dragEndX, dragEndY, spring.getCurrentValue(), throwOutDistance);
+            card.onSpringThrowOutUpdate(targetElement, dragEndX, dragEndY, spring.getCurrentValue(), throwOutDistance * throwDirection);
         }
     });
 }

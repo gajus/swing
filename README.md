@@ -1,6 +1,6 @@
 # Swing
 
-A card swiping interface. The swipe-left/swipe-right for yes/no input. As seen in apps like [Jelly](http://jelly.co/) and [Tinder](http://www.gotinder.com/), and [many others](http://www.saydaily.com/2014/09/tinder-swipe-and-media).
+A swipeable cards interface. The swipe-left/swipe-right for yes/no input. As seen in apps like [Jelly](http://jelly.co/) and [Tinder](http://www.gotinder.com/), and [many others](http://www.saydaily.com/2014/09/tinder-swipe-and-media).
 
 ![Card stack example.](./.readme/card-stack.gif)
 
@@ -44,9 +44,44 @@ The code for all of the examples is in the [./examples/](https://github.com/gaju
 
 [Raise an issue](https://github.com/gajus/swing/issues) if you are missing an example.
 
+## Use Case
+
+A collection of observations about the extended use case of the swipeable cards interface, that I found useful when considering the implementation.
+
+### Single-Handed Navigation
+
+> It's all in the thumb, says mobile expert Luke Wroblewski. Mobile devices are frequently used on-the-go, which drastically increases the probability that you'll attempt to navigate apps using just one hand, with the key digit being the mighty thumb.
+> Instead of browsing endless lists for the hidden perfect piece of data — be it the right music for the moment, what to do tonight, or your next potential hookup — card-swiping turns decision making into a highly engaging Choose-Your-Own-Adventure game.
+
+– https://medium.com/@janel_az/small-data-why-tinder-like-apps-are-the-way-of-the-future-1a4d5703b4b
+
+### Digestible Unit of Information
+
+> [..] the "card" on a mobile device becomes more and more important as a digestible unit of information on a small screen for users who are on the go and mostly glancing through their apps before settling into the ones that truly engage them.
+
+– http://techcrunch.com/2013/09/22/mobile-apps-card-interfaces-and-our-opposable-thumbs/
+
+### Data
+
+> But card based UI has benefits beyond user joy. And while I could go on about how it helps developers organize content architecture, or how it helps copywriters and designers write and create for simple, incremental screens, there’s an even more compelling reason to take a closer look at this one. Because Card Based UX can yield a powerful by-product:  Data.  More than a scroll and perhaps even more than discrete taps themselves, cards create repetitive, deliberate, discrete decision moments over and over. And as the user swipes, you can learn.
+> The time they swipe, the speed they swipe, what they swiped, the geolocation where they swiped, and even how similar the results of that swipe are vs. a swipe earlier that session are all possibilities that are yielding smarter apps for you and me every day.
+
+– http://www.itsmakeable.com/unconventional-wisdom/good-user-experience-design-ux-can-do-what-now/
+
+## Configuration
+
+| Name | Description |
+| --- | --- |
+| `isThrowOut` | Invoked in the event of `dragend`. Determine if element is being thrown out of the stack. Element is considered to be throw out if it has been moved at least 10px outside of the stack box. |
+| `throwOutDistance` | Invoked when card is added to the stack. The card is thrown to this offset from the stack. The value is a random number between `minThrowOutDistance` and `maxThrowOutDistance`. |
+| `minThrowOutDistance` | In effect when `getThrowOutDistance` is not overwritten. Default: 400. |
+| `maxThrowOutDistance` | In effect when `getThrowOutDistance` is not overwritten. Default: 500. |
+
+All of the configuration parameters are optional.
+
 ## Events
 
-Use an instance of the `Swing.Stack` to attach event listeners, e.g.
+Use an instance of the `Swing.Stack` to attach event listeners:
 
 ```js
 var stack;
@@ -66,7 +101,7 @@ stack.on('throwout', function () {});
 
 ### Event Object
 
-Event listener is invoked with a single `eventObject` parameter.
+Event listener is invoked with a single `eventObject` parameter:
 
 ```js
 var stack;

@@ -3647,6 +3647,8 @@ function Card (Stack, targetElement) {
         mousedownTranslate,
         throwOutDistance;
 
+    throwOutDistance = Stack.config.throwOutDistance();
+
     mc = new Hammer.Manager(targetElement, {
         recognizers: [
             [Hammer.Pan, {threshold: 2}]
@@ -3683,7 +3685,7 @@ function Card (Stack, targetElement) {
         
         throwDirection = dragEndX < 0 ? Card.DIRECTION_LEFT : Card.DIRECTION_RIGHT;
 
-        if (Stack.config.throwOut(dragEndX, card.targetElementWidth)) {
+        if (Stack.config.isThrowOut(dragEndX, card.targetElementWidth)) {
             springThrowOut.setCurrentValue(0).setAtRest().setVelocity(100).setEndValue(1);
 
             eventEmitter.trigger('throwout', {
@@ -3710,11 +3712,8 @@ function Card (Stack, targetElement) {
     });
 
     springThrowOut.addListener({
-        onSpringActivate: function () {
-            throwOutDistance = Stack.config.throwOutDistance() * throwDirection;
-        },
         onSpringUpdate: function (spring) {
-            card.onSpringThrowOutUpdate(targetElement, dragEndX, dragEndY, spring.getCurrentValue(), throwOutDistance);
+            card.onSpringThrowOutUpdate(targetElement, dragEndX, dragEndY, spring.getCurrentValue(), throwOutDistance * throwDirection);
         }
     });
 }
@@ -3853,6 +3852,11 @@ function Stack (config) {
 
     this.config = config || {};
     this.config.throwOut = this.config.throwOut ? this.config.throwOut : this.throwOut;
+
+    this.config.minThrowOutDistance = this.config.minThrowOutDistance ? this.config.minThrowOutDistance : 400;
+    this.config.maxThrowOutDistance = this.config.maxThrowOutDistance ? this.config.maxThrowOutDistance : 500;
+
+    this.config.isThrowOut = this.config.isThrowOut ? this.config.isThrowOut : this.isThrowOut;
     this.config.throwOutDistance = this.config.throwOutDistance ? this.config.throwOutDistance : this.throwOutDistance;
 
     this.springSystem = new rebound.SpringSystem();
@@ -3880,23 +3884,27 @@ Stack.prototype.on = function (eventName, listener) {
 };
 
 /**
- * Method used to determine whether element should be thrown out of the stack.
- * Default behavior is to throw out element if it has been moved at least 10px
- * outside of the box of the dragStart location.
+ * Determine if element is being thrown out of the stack.
+ * Element is considered to be throw out if it has been moved at least 10px
+ * outside of the stack box.
  * 
  * @param {Number} offset Distance from the dragStart.
  * @param {Number} elementWidth Width of the element being dragged.
  * @return {Boolean}
  */
-Stack.prototype.throwOut = function (offset, elementWidth) {
+Stack.prototype.isThrowOut = function (offset, elementWidth) {
     return Math.max(Math.abs(offset) - elementWidth, 0) > 10;
 };
 
 /**
+ * Invoked when card is added to the stack.
+ * The card is thrown to this offset from the stack.
+ * The value is a random number between minThrowOutDistance and maxThrowOutDistance.
+ * 
  * @return {Number}
  */
 Stack.prototype.throwOutDistance = function () {
-    return getRandomInt(400, 500);
+    return getRandomInt(this.minThrowOutDistance, this.maxThrowOutDistance);
 };
 
 /**
