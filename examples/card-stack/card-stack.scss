@@ -6,18 +6,9 @@ li {
 }
 
 body {
-    background: #ED5D52; font: normal 16px/24px 'Helvetica Neue', Helvetica, Arial, freesans, sans-serif;
+    background: #FCD424; font: normal 16px/24px 'Helvetica Neue', Helvetica, Arial, freesans, sans-serif;
 }
 
-#source,
-#viewport li {
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-}
 
 #viewport {
     width: 500px; height: 500px; background: #C7433E; border: 10px solid #ED5D52; margin: 100px auto 0; position: relative;
@@ -27,7 +18,7 @@ body {
     }
 
     li {
-        width: 200px; height: 300px; list-style: none; background: #fff; border-radius: 5px; position: absolute; top: 0; left: 0; box-shadow: 0 0 2px rgba(0,0,0,.2), 1px 1px 1px rgba(0,0,0,.2); line-height: 300px; text-align: center; font-size: 100px; border: 10px solid #ECECEC; box-sizing: border-box; cursor: pointer;
+        width: 200px; height: 300px; list-style: none; background: #fff; border-radius: 5px; position: absolute; top: 0; left: 0; box-shadow: 0 0 2px rgba(0,0,0,.2), 1px 1px 1px rgba(0,0,0,.2); line-height: 300px; text-align: center; font-size: 100px; border: 10px solid #ECECEC; box-sizing: border-box; cursor: default;
 
         &.clubs,
         &.spades {

@@ -3,16 +3,8 @@ html, body, ul, li {
   padding: 0; }
 
 body {
-  background: #ED5D52;
+  background: #FCD424;
   font: normal 16px/24px 'Helvetica Neue', Helvetica, Arial, freesans, sans-serif; }
-
-#source, #viewport li {
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none; }
 
 #viewport {
   width: 500px;
@@ -45,7 +37,7 @@ body {
     font-size: 100px;
     border: 10px solid #ECECEC;
     box-sizing: border-box;
-    cursor: pointer; }
+    cursor: default; }
     #viewport li.clubs, #viewport li.spades {
       color: #373737; }
     #viewport li.diamonds, #viewport li.hearts {
