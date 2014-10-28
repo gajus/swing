@@ -1,7 +1,7 @@
 {
   "name": "swing",
   "description": "A swipeable cards interface. The swipe-left/swipe-right for yes/no input. As seen in apps like Jelly and Tinder.",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "dist/swing.js",
   "author": "Gajus Kuizinas <gk@anuary.com>",
   "repository": {
