@@ -3761,6 +3761,12 @@ Card = function (stack, targetElement) {
         }
     });
 
+    /**
+     * Throws card into the stack from an arbitrary position.
+     *
+     * @param {Number} fromX
+     * @param {Number} fromY
+     */
     card.throwIn = function (fromX, fromY) {
         throwFromX = fromX;
         throwFromY = fromY;
@@ -3774,6 +3780,12 @@ Card = function (stack, targetElement) {
         });
     };
 
+    /**
+     * Throws card out of the statk in the direction away from the original offset.
+     *
+     * @param {Number} fromX
+     * @param {Number} fromY
+     */
     card.throwOut = function (fromX, fromY) {
         throwFromX = fromX;
         throwFromY = fromY;

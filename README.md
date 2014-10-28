@@ -95,6 +95,24 @@ A collection of observations about the extended use case of the swipeable cards 
 
 All of the configuration parameters are optional.
 
+## Methods
+
+
+
+```js
+var stack,
+    card
+
+stack = stack = new Swing.Stack();
+card = stack.createCard(HTMLElement);
+```
+
+| Name | Description |
+| --- | --- |
+| `stack.on(eventName, listener)` | Attach [event listener](#events) to the card stack. |
+| `card.throwIn(fromX, fromY)` | Throws card into the stack from an arbitrary position. |
+| `card.throwOut(fromX, fromY)` | Throws card out of the stack in the direction away from the original offset. |
+
 ## Events
 
 Use an instance of the `Swing.Stack` to attach event listeners:
