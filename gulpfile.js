@@ -8,7 +8,8 @@ var pkg = require('./package.json'),
     browserify = require('gulp-browserify'),
     fs = require('fs'),
     del = require('del'),
-    exec = require('child_process').exec;
+    exec = require('child_process').exec,
+    jsonfile = require('jsonfile');
 
 gulp.task('lint', function () {
     return gulp
@@ -31,7 +32,7 @@ gulp.task('bundle', ['clean'], function () {
 });
 
 gulp.task('version', ['bundle'], function () {
-    var bower = require('./bower.json');
+    var bower = jsonfile.readFileSync('./bower.json');
 
     gulp
         .src('./dist/swing.js')

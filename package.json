@@ -1,6 +1,11 @@
 {
   "name": "swing",
   "description": "A swipeable cards interface. The swipe-left/swipe-right for yes/no input. As seen in apps like Jelly and Tinder.",
+  "keywords": [
+    "swipe",
+    "cards",
+    "swipeable"
+  ],
   "version": "1.0.1",
   "main": "dist/swing.js",
   "author": "Gajus Kuizinas <gk@anuary.com>",
@@ -19,6 +24,7 @@
     "gulp-rename": "^1.2.0",
     "gulp-uglify": "^1.0.1",
     "hammerjs": "^2.0.4",
+    "jsonfile": "^2.0.0",
     "karma": "^0.12.24",
     "karma-jasmine": "^0.1.5",
     "karma-phantomjs-launcher": "^0.1.4",

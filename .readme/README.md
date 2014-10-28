@@ -63,7 +63,7 @@ var stack,
 cards = [].slice.call(document.querySelectorAll('ul li'))
 
 // An instance of the Stack is used to attach event listeners.
-stack = new Swing.Stack();
+stack = Swing.Stack();
 
 cards.forEach(function (targetElement) {
     // Add card element to the Stack.
@@ -106,7 +106,7 @@ config = {
     }
 };
 
-stack = stack = new Swing.Stack(config);
+stack = stack = Swing.Stack(config);
 ```
 
 | Name | Description | Default |
@@ -128,7 +128,7 @@ All of the configuration parameters are optional. Refer to the source code of th
 var stack,
     card;
 
-stack = stack = new Swing.Stack();
+stack = stack = Swing.Stack();
 card = stack.createCard(HTMLElement);
 ```
 
@@ -157,7 +157,7 @@ Use an instance of the `Swing.Stack` to attach event listeners:
 ```js
 var stack;
 
-stack = stack = new Swing.Stack();
+stack = stack = Swing.Stack();
 
 stack.on('throwout', function () {});
 ```
@@ -177,7 +177,7 @@ Event listener is invoked with a single `eventObject` parameter:
 ```js
 var stack;
 
-stack = stack = new Swing.Stack();
+stack = stack = Swing.Stack();
 
 stack.on('throwout', function (eventObject) {});
 ```
@@ -187,6 +187,33 @@ stack.on('throwout', function (eventObject) {});
 | `target` | The element being dragged. |
 | `direction` | The direction in which the element is being dragged: `Card.DIRECTION_LEFT` or `Card.DIRECTION_RIGHT`. |
 | `throwOutConfidence` | A value between 0 and 1 indicating the completeness of the throw out condition. |
+
+## Download
+
+Using [Bower](http://bower.io/):
+
+```sh
+bower install swing
+```
+
+Using [NPM](https://www.npmjs.org/):
+
+```sh
+npm install swing
+```
+
+The old-fashioned way, download either of the following files:
+
+* https://raw.githubusercontent.com/gajus/swing/master/dist/swing.js
+* https://raw.githubusercontent.com/gajus/swing/master/dist/swing.min.js
+
+## Browser Bundle
+
+When using the `./dist/` version the Swing resides under `gajus` namespace:
+
+```js
+var stack = gajus.Swing.Stack();
+```
 
 ## Dependencies
 
