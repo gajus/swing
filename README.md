@@ -52,6 +52,7 @@ stack.on('throwin', function (e) {
 ## Usage Examples
 
 * [Card stack](http://gajus.com/sandbox/swing/examples/card-stack/).
+* [Programmatically control](http://gajus.com/sandbox/swing/examples/card-state/) the state of the card.
 
 The code for all of the examples is in the [./examples/](https://github.com/gajus/swing/tree/master/examples/) folder.
 
@@ -87,10 +88,10 @@ A collection of observations about the extended use case of the swipeable cards 
 | --- | --- |
 | `isThrowOut` | Invoked in the event of `dragend`. Determine if element is being thrown out of the stack. Element is considered to be throw out if it has been moved at least 10px outside of the stack box. |
 | `throwOutDistance` | Invoked when card is added to the stack. The card is thrown to this offset from the stack. The value is a random number between `minThrowOutDistance` and `maxThrowOutDistance`. |
-| `minThrowOutDistance` | In effect when `throwOutDistance` is not overwritten. Default: 400. |
+| `minThrowOutDistance` | In effect when `throwOutDistance` is not overwritten. Default: 450. |
 | `maxThrowOutDistance` | In effect when `throwOutDistance` is not overwritten. Default: 500. |
-| `rotationAngle` | Invoked in the event of `dragmove`. Determine the rotation of the element. Rotation is equal to the proportion of horizontal and vertical offset times the `maximumRotation` constant. |
-| `maxRotationAngle` | In effect when `rotationAngle` is not overwritten. Default: 20. |
+| `rotation` | Invoked in the event of `dragmove`. Determine the rotation of the element. Rotation is equal to the proportion of horizontal and vertical offset times the `maximumRotation` constant. |
+| `maxRotation` | In effect when `rotation` is not overwritten. Default: 20. |
 
 All of the configuration parameters are optional.
 

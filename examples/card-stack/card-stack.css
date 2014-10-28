@@ -35,27 +35,51 @@ body {
     height: 300px;
     list-style: none;
     background: #fff;
-    margin: 0 0 20px 0;
-    border-radius: 10px;
-    border-bottom: 1px solid #777;
+    border-radius: 5px;
     position: absolute;
     top: 0;
-    box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
+    left: 0;
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.2), 1px 1px 1px rgba(0, 0, 0, 0.2);
     line-height: 300px;
     text-align: center;
     font-size: 100px;
     border: 10px solid #ECECEC;
-    box-sizing: border-box; }
+    box-sizing: border-box;
+    cursor: pointer; }
     #viewport li.clubs, #viewport li.spades {
       color: #373737; }
     #viewport li.diamonds, #viewport li.hearts {
       color: #ED5D52; }
-    #viewport li.in-deck:nth-child(2) {
+    #viewport li.in-deck:nth-child(3) {
       top: 2px;
       transform: translate(2px, 2px) rotate(0.4deg); }
-    #viewport li.in-deck:nth-child(1) {
+    #viewport li.in-deck:nth-child(2) {
       top: 4px;
       transform: translate(-4px, -2px) rotate(-1deg); }
+  #viewport #control {
+    position: absolute;
+    bottom: 30px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 0; }
+    #viewport #control button {
+      background: #FFFFFF;
+      color: #373737;
+      font-weight: bold;
+      border: none;
+      font: normal 18px/24px 'Helvetica Neue', Helvetica, Arial, freesans, sans-serif;
+      margin: 0 5px;
+      padding: 10px 15px;
+      cursor: pointer;
+      box-shadow: 0 2px 0 #63211F;
+      outline: none;
+      position: relative; }
+      #viewport #control button:active {
+        background: #63211F;
+        color: #FFFFFF;
+        bottom: -2px;
+        box-shadow: none; }
 
 #source {
   width: 500px;
