@@ -92,7 +92,7 @@ stack.on('throwin', function (e) {
 | `maxThrowOutDistance` | In effect when `throwOutDistance` is not overwritten. | 500. |
 | `rotation` | Invoked in the event of `dragmove`. Determine the rotation of the element. | Rotation is equal to the proportion of horizontal and vertical offset times the `maximumRotation` constant. |
 | `maxRotation` | In effect when `rotation` is not overwritten. | 20. |
-| `transform` | Uses CSS transform to translate element position and rotation. |
+| `transform` | Invoked in the event of `dragmove` and every time the physics solver is triggered. | Uses CSS transform to translate element position and rotation. |
 
 All of the configuration parameters are optional.
 
