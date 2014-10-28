@@ -1,5 +1,4 @@
-var pkg = require('./package.json'),
-    karma = require('karma').server,
+var karma = require('karma').server,
     gulp = require('gulp'),
     jshint = require('gulp-jshint'),
     header = require('gulp-header'),
@@ -32,7 +31,8 @@ gulp.task('bundle', ['clean'], function () {
 });
 
 gulp.task('version', ['bundle'], function () {
-    var bower = jsonfile.readFileSync('./bower.json');
+    var pkg = jsonfile.readFileSync('./package.json'),
+        bower = jsonfile.readFileSync('./bower.json');
 
     gulp
         .src('./dist/swing.js')
