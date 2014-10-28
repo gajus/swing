@@ -15,6 +15,7 @@ A swipeable cards interface. The swipe-left/swipe-right for yes/no input. As see
 
 * [Card stack](http://gajus.com/sandbox/swing/examples/card-stack/).
 * [Programmatically control](http://gajus.com/sandbox/swing/examples/card-state/) the state of the card.
+* [Indicate the state of the drop](http://gajus.com/sandbox/swing/examples/throw-confidence/) using `throwConfidence` and `direction` [event object](#event-object) properties.
 
 The code for all of the examples is in the [./examples/](https://github.com/gajus/swing/tree/master/examples/) folder.
 

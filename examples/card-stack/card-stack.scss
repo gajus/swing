@@ -9,6 +9,19 @@ body {
     background: #FCD424; font: normal 16px/24px 'Helvetica Neue', Helvetica, Arial, freesans, sans-serif;
 }
 
+button,
+input,
+code {
+    display: inline-block; outline: none; font: inherit; border: none; background: #FDE991; padding: 0;
+}
+
+button {
+    color: #C7433E; cursor: pointer;
+}
+
+input {
+    width: 50px;
+}
 
 #viewport {
     width: 500px; height: 500px; background: #C7433E; border: 10px solid #ED5D52; margin: 100px auto 0; position: relative;

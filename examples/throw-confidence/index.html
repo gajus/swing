@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="./../card-stack/card-stack.css">
+    <link rel="stylesheet" href="./throw-confidence.css">
+
+    <script src="./../../dist/swing.js"></script>
+    <script src="./throw-confidence.js"></script>
+</head>
+<body>
+    <div id="viewport">
+        <ul class="stack">
+            <li class="spades">
+                ♠
+                <div class="yes"></div>
+                <div class="no"></div>
+            </li>
+        </ul>
+    </div>
+    <div id="source">
+        <p>Drag the playing cards out of the stack.</p>
+        <p><code>throwOutConfidence</code> (<code id="throw-out-confidence-bind">0</code>) A value between 0 and 1 indicating the completeness of the throw out condition.</p>
+        <p><code>direction</code> (<code id="direction-bind">0</code>) The direction in which the element is being dragged.</p>
+        <p>Open the <a href="https://developer.chrome.com/devtools/docs/console">Console</a> to view the associated events.<p>
+        <p>Demonstration of <a href="https://github.com/gajus/swing">https://github.com/gajus/swing</a> implementation.</p>
+    </div>
+</body>
+</html>
