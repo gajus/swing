@@ -22,6 +22,7 @@
     "karma": "^0.12.24",
     "karma-jasmine": "^0.1.5",
     "karma-phantomjs-launcher": "^0.1.4",
+    "karma-sauce-launcher": "^0.2.10",
     "rebound": "0.0.10",
     "sister": "^2.0.0",
     "vendor-prefix": "^0.1.0"
