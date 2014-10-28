@@ -1,6 +1,7 @@
 var Hammer = require('hammerjs'),
     rebound = require('rebound'),
     vendorPrefix = require('vendor-prefix'),
+    Card,
     util = {};
 
 /**
@@ -14,249 +15,236 @@ util.randomInt = function (min, max) {
  * @param {Stack} stack
  * @param {HTMLElement} targetElement
  */
-function Card (stack, targetElement) {
+Card = function (stack, targetElement) {
     var card = {},
-        config;
+        config = Card.config(stack.config()),
+        targetElementWidth = targetElement.offsetWidth,
+        targetElementHeight = targetElement.offsetHeight,
+        eventEmitter = stack.eventEmitter(),
+        springSystem = stack.springSystem(),
+        springSnapBack = springSystem.createSpring(250, 10),
+        springThrowOut = springSystem.createSpring(500, 20),
+        throwFromX,
+        throwFromY,
+        throwDirection,
+        throwOutDistance,
+        mousedownTranslate;
 
-    /**
-     * Binds mouse cursor events to the targetElement.
-     */
-    Card.bind = function () {
-        var eventEmitter = stack.eventEmitter(),
-            springSystem = stack.springSystem(),
-            springSnapBack,
-            springThrowOut,
-            dragEndX,
-            dragEndY,
-            throwDirection,
-            throwOutDistance,
-            mousedownTranslate;
+    throwOutDistance = config.throwOutDistance(config.minThrowOutDistance, config.maxThrowOutDistance);
 
-        throwOutDistance = config.throwOutDistance();
+    mc = new Hammer.Manager(targetElement, {
+        recognizers: [
+            [Hammer.Pan, {threshold: 2}]
+        ]
+    });
 
-        mc = new Hammer.Manager(targetElement, {
-            recognizers: [
-                [Hammer.Pan, {threshold: 2}]
-            ]
+    targetElement.addEventListener('mousedown', function (e) {
+        Card.appendToParent(e.target);
+
+        mousedownTranslate = Card.getTranslate(targetElement);
+
+        eventEmitter.trigger('dragstart', {
+            target: targetElement
         });
+    });
 
-        springSnapBack = springSystem.createSpring(250, 10);
-        springThrowOut = springSystem.createSpring(500, 20);
+    mc.on('panmove', function (e) {
+        var x = mousedownTranslate[0] + e.deltaX,
+            y = mousedownTranslate[1] + e.deltaY,
+            r = config.rotation(x, y, targetElementWidth, targetElementHeight, config.maxRotation);
 
-        targetElement.addEventListener('mousedown', function (e) {
-            Card.appendToParent(e.target);
+        Card.transform(targetElement, x, y, r);
 
-            mousedownTranslate = Card.getTranslate(targetElement);
-
-            eventEmitter.trigger('dragstart', {
-                target: targetElement
-            });
+        eventEmitter.trigger('dragmove', {
+            target: targetElement
         });
+    });
 
-        mc.on('panmove', function (e) {
-            Card.translate(targetElement, mousedownTranslate[0] + e.deltaX, mousedownTranslate[1] + e.deltaY);
+    mc.on('panend', function(e) {
+        var dragEndX,
+            dragEndY;
 
-            eventEmitter.trigger('dragmove', {
-                target: targetElement
-            });
+        dragEndX = mousedownTranslate[0] + e.deltaX;
+        dragEndY = mousedownTranslate[1] + e.deltaY;
+
+        if (config.isThrowOut(dragEndX, targetElementWidth)) {
+            card.throwOut(dragEndX, dragEndY);
+        } else {
+            card.throwIn(dragEndX, dragEndY);
+        }
+
+        eventEmitter.trigger('dragend', {
+            target: targetElement
         });
+    });
 
-        mc.on('panend', function(e) {
-            dragEndX = mousedownTranslate[0] + e.deltaX;
-            dragEndY = mousedownTranslate[1] + e.deltaY;
-            
-            throwDirection = dragEndX < 0 ? Card.DIRECTION_LEFT : Card.DIRECTION_RIGHT;
+    springSnapBack.addListener({
+        onSpringUpdate: function (spring) {
+            var value = spring.getCurrentValue(),
+                x = rebound.MathUtil.mapValueInRange(value, 0, 1, throwFromX, 0),
+                y = rebound.MathUtil.mapValueInRange(value, 0, 1, throwFromY, 0),
+                r = config.rotation(x, y, targetElementWidth, targetElementHeight, config.maxRotation);
 
-            if (config.isThrowOut(dragEndX, card.targetElementWidth)) {
-                springThrowOut.setCurrentValue(0).setAtRest().setVelocity(100).setEndValue(1);
+            Card.transform(targetElement, x, y, r);
+        }
+    });
 
-                eventEmitter.trigger('throwout', {
-                    target: targetElement,
-                    throwDirection: throwDirection
-                });
-            } else {
-                springSnapBack.setCurrentValue(0).setAtRest().setEndValue(1);
+    springThrowOut.addListener({
+        onSpringUpdate: function (spring) {
+            var value = spring.getCurrentValue(),
+                x = rebound.MathUtil.mapValueInRange(value, 0, 1, throwFromX, throwOutDistance * throwDirection),
+                y = throwFromY,
+                r = config.rotation(x, y, targetElementWidth, targetElementHeight, config.maxRotation);
 
-                eventEmitter.trigger('throwin', {
-                    target: targetElement
-                });
-            }
+            Card.transform(targetElement, x, y, r);
+        }
+    });
 
-            eventEmitter.trigger('dragend', {
-                target: targetElement
-            });
-        });
+    card.throwIn = function (fromX, fromY) {
+        throwFromX = fromX;
+        throwFromY = fromY;
+        throwDirection = throwFromX < 0 ? Card.DIRECTION_LEFT : Card.DIRECTION_RIGHT;
 
-        springSnapBack.addListener({
-            onSpringUpdate: function (spring) {
-                Card.onSpringSnapBackUpdate(targetElement, dragEndX, dragEndY, spring.getCurrentValue());
-            }
-        });
+        springSnapBack.setCurrentValue(0).setAtRest().setEndValue(1);
 
-        springThrowOut.addListener({
-            onSpringUpdate: function (spring) {
-                Card.onSpringThrowOutUpdate(targetElement, dragEndX, dragEndY, spring.getCurrentValue(), throwOutDistance * throwDirection);
-            }
+        eventEmitter.trigger('throwin', {
+            target: targetElement,
+            throwDirection: throwDirection
         });
     };
 
-    /**
-     * Interprets stack.config() object.
-     * 
-     * @param {Object} config
-     */
-    Card.config = function (config) {
-        config = config || {};
+    card.throwOut = function (fromX, fromY) {
+        throwFromX = fromX;
+        throwFromY = fromY;
+        throwDirection = throwFromX < 0 ? Card.DIRECTION_LEFT : Card.DIRECTION_RIGHT;
 
-        config.isThrowOut = config.isThrowOut ? config.isThrowOut : Card.isThrowOut;
+        springThrowOut.setCurrentValue(0).setAtRest().setVelocity(100).setEndValue(1);
 
-        config.throwOutDistance = config.throwOutDistance ? config.throwOutDistance : Card.throwOutDistance;
-        config.minThrowOutDistance = config.minThrowOutDistance ? config.minThrowOutDistance : 400;
-        config.maxThrowOutDistance = config.maxThrowOutDistance ? config.maxThrowOutDistance : 500;
-
-        config.rotationAngle = config.rotationAngle ? config.rotationAngle : Card.rotationAngle;
-        config.maxRotationAngle = config.maxRotationAngle ? config.maxRotationAngle : 20;
-
-        return config;
+        eventEmitter.trigger('throwout', {
+            target: targetElement,
+            throwDirection: throwDirection
+        });
     };
 
-    /**
-     * If element is not the last among the siblings, append the
-     * element to the parentNode.
-     * 
-     * @param {HTMLElement} element The target element.
-     */
-    Card.appendToParent = function (element) {
-        var parent = element.parentNode,
-            siblings = parent.querySelectorAll('li'),
-            targetIndex = [].slice.apply(siblings).indexOf(element);
+    return card;
+};
 
-        if (targetIndex + 1 != siblings.length) {
-            parent.removeChild(element);
-            parent.appendChild(element);
-        }
-    };
+/**
+ * Interprets stack.config() object.
+ * 
+ * @param {Object} config
+ */
+Card.config = function (config) {
+    config = config || {};
 
-    /**
-     * Get the [x, y] values for the computed CSS transform translate state.
-     * 
-     * @param {HTMLElement} element The target element.
-     * @return {Array}
-     */
-    Card.getTranslate = function (element) {
-        var translate = [0, 0],
-            match;
+    config.isThrowOut = config.isThrowOut ? config.isThrowOut : Card.isThrowOut;
 
-        if (!element.style.transform) {
-            return translate;
-        }
+    config.throwOutDistance = config.throwOutDistance ? config.throwOutDistance : Card.throwOutDistance;
+    config.minThrowOutDistance = config.minThrowOutDistance ? config.minThrowOutDistance : 400;
+    config.maxThrowOutDistance = config.maxThrowOutDistance ? config.maxThrowOutDistance : 500;
 
-        match = element.style.transform.match(/translate\((.+)px, (.+)px\)/);
+    config.rotation = config.rotation ? config.rotation : Card.rotation;
+    config.maxRotation = config.maxRotation ? config.maxRotation : 20;
 
-        if (!match) {
-            return translate;
-        }
+    return config;
+};
 
-        translate[0] = parseFloat(match[1]);
-        translate[1] = parseFloat(match[2]);
+/**
+ * Use CSS transform to translate element position.
+ * 
+ * @param {Number} x Horizontal offset from the startDrag.
+ * @param {Number} y Vertical offset from the startDrag.
+ * @return {null}
+ */
+Card.transform = function (element, x, y, r) {
+    element.style[vendorPrefix('transform')] = 'translate(' + x + 'px, ' + y + 'px) rotate(' + r + 'deg)';
+};
 
+/**
+ * If element is not the last among the siblings, append the
+ * element to the parentNode.
+ * 
+ * @param {HTMLElement} element The target element.
+ */
+Card.appendToParent = function (element) {
+    var parent = element.parentNode,
+        siblings = parent.querySelectorAll('li'),
+        targetIndex = [].slice.apply(siblings).indexOf(element);
+
+    if (targetIndex + 1 != siblings.length) {
+        parent.removeChild(element);
+        parent.appendChild(element);
+    }
+};
+
+/**
+ * Get the [x, y] values for the computed CSS transform translate state.
+ * 
+ * @param {HTMLElement} element The target element.
+ * @return {Array}
+ */
+Card.getTranslate = function (element) {
+    var translate = [0, 0],
+        match;
+
+    if (!element.style.transform) {
         return translate;
-    };
+    }
 
-    /**
-     * Invoked when card is added to the stack.
-     * The card is thrown to this offset from the stack.
-     * The value is a random number between minThrowOutDistance and maxThrowOutDistance.
-     * 
-     * @return {Number}
-     */
-    Card.throwOutDistance = function () {
-        return util.randomInt(config.minThrowOutDistance, config.maxThrowOutDistance);
-    };
+    match = element.style.transform.match(/translate\((.+)px, (.+)px\)/);
 
-    /**
-     * Rotation is equal to the proportion of horizontal and vertical offset
-     * times the maximumRotation constant.
-     * 
-     * @param {Number} x Horizontal offset from the startDrag.
-     * @param {Number} y Vertical offset from the startDrag.
-     * @return {Number} Rotation angle expressed in degrees.
-     */
-    Card.rotationAngle = function (x, y) {
-        var maximumRotation = config.maxRotationAngle,
-            horizontalOffset = Math.min(Math.max(x/card.targetElementWidth, -1), 1),
-            verticalOffset = (y > 0 ? 1 : -1) * Math.min(Math.abs(y)/100, 1),
-            rotation = horizontalOffset * verticalOffset * maximumRotation;
+    if (!match) {
+        return translate;
+    }
 
-        return rotation;
-    };
+    translate[0] = parseFloat(match[1]);
+    translate[1] = parseFloat(match[2]);
 
-    /**
-     * Use CSS transform to translate element position.
-     * 
-     * @param {HTMLElement} element The target element.
-     * @param {Number} x Horizontal offset from the startDrag.
-     * @param {Number} y Vertical offset from the startDrag.
-     * @return {null}
-     */
-    Card.translate = function (element, x, y) {
-        var r = config.rotationAngle(x, y);
+    return translate;
+};
 
-        element.style[vendorPrefix('transform')] = 'translate(' + x + 'px, ' + y + 'px) rotate(' + r + 'deg)';
-    };
+/**
+ * Determine if element is being thrown out of the stack.
+ * Element is considered to be throw out if it has been moved at least 10px
+ * outside of the stack box.
+ * 
+ * @param {Number} offset Distance from the dragStart.
+ * @param {Number} elementWidth Width of the element being dragged.
+ * @return {Boolean}
+ */
+Card.isThrowOut = function (offset, elementWidth) {
+    return Math.max(Math.abs(offset) - elementWidth, 0) > 10;
+};
 
-    /**
-     * Determine if element is being thrown out of the stack.
-     * Element is considered to be throw out if it has been moved at least 10px
-     * outside of the stack box.
-     * 
-     * @param {Number} offset Distance from the dragStart.
-     * @param {Number} elementWidth Width of the element being dragged.
-     * @return {Boolean}
-     */
-    Card.isThrowOut = function (offset, elementWidth) {
-        return Math.max(Math.abs(offset) - elementWidth, 0) > 10;
-    };
+/**
+ * Invoked when card is added to the stack.
+ * The card is thrown to this offset from the stack.
+ * The value is a random number between minThrowOutDistance and maxThrowOutDistance.
+ * 
+ * @return {Number}
+ */
+Card.throwOutDistance = function (minThrowOutDistance, maxThrowOutDistance) {
+    return util.randomInt(minThrowOutDistance, maxThrowOutDistance);
+};
 
-    /**
-     * This method is invoked every time the Rebound physics solver updates the Spring's value.
-     * 
-     * @param {HTMLElement} element The target element.
-     * @param {Number} x Horizontal offset from the startDrag.
-     * @param {Number} y Vertical offset from the startDrag.
-     * @param {Number} value A value from 0 to 1 indicating the progress of the transition.
-     * @return {null}
-     */
-    Card.onSpringSnapBackUpdate = function (element, x, y, value) {
-        x = rebound.MathUtil.mapValueInRange(value, 0, 1, x, 0);
-        y = rebound.MathUtil.mapValueInRange(value, 0, 1, y, 0);
+/**
+ * Rotation is equal to the proportion of horizontal and vertical offset
+ * times the maximumRotation constant.
+ * 
+ * @param {Number} x Horizontal offset from the startDrag.
+ * @param {Number} y Vertical offset from the startDrag.
+ * @param {Number} elementWidth
+ * @param {Number} elementHeight
+ * @param {Number} maxRotation
+ * @return {Number} Rotation angle expressed in degrees.
+ */
+Card.rotation = function (x, y, elementWidth, elementHeight, maxRotation) {
+    var horizontalOffset = Math.min(Math.max(x/elementWidth, -1), 1),
+        verticalOffset = (y > 0 ? 1 : -1) * Math.min(Math.abs(y)/100, 1),
+        rotation = horizontalOffset * verticalOffset * maxRotation;
 
-        Card.translate(element, x, y);
-    };
-
-    /**
-     * This method is invoked every time the Rebound physics solver updates the Spring's value.
-     * 
-     * @param {HTMLElement} element The target element.
-     * @param {Number} x Horizontal offset from the startDrag.
-     * @param {Number} y Vertical offset from the startDrag.
-     * @param {Number} value A value from 0 to 1 indicating the progress of the transition.
-     * @param {Number} throwOutDistance
-     * @return {null}
-     */
-    Card.onSpringThrowOutUpdate = function (element, x, y, value, throwOutDistance) {
-        x = rebound.MathUtil.mapValueInRange(value, 0, 1, x, throwOutDistance);
-        
-        Card.translate(element, x, y);
-    };
-
-    card.targetElementWidth = targetElement.offsetWidth;
-    card.targetElementHeight = targetElement.offsetHeight;
-
-    config = Card.config(stack.config());
-
-    Card.bind();
-}
+    return rotation;
+};
 
 Card.DIRECTION_LEFT = -1;
 Card.DIRECTION_RIGHT = 1;
