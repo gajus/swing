@@ -23,7 +23,7 @@ A swipeable cards interface. The swipe-left/swipe-right for yes/no input. As see
 - [Events](#events)
     - [Event Object](#event-object)
 - [Download](#download)
-- [Browser Bundle](#browser-bundle)
+    - [Browser Bundle](#browser-bundle)
 - [Dependencies](#dependencies)
 
 
@@ -224,7 +224,7 @@ The old-fashioned way, download either of the following files:
 * https://raw.githubusercontent.com/gajus/swing/master/dist/swing.js
 * https://raw.githubusercontent.com/gajus/swing/master/dist/swing.min.js
 
-## Browser Bundle
+### Browser Bundle
 
 When using the `./dist/` version the Swing resides under `gajus` namespace:
 

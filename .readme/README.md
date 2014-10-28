@@ -207,7 +207,7 @@ The old-fashioned way, download either of the following files:
 * https://raw.githubusercontent.com/gajus/swing/master/dist/swing.js
 * https://raw.githubusercontent.com/gajus/swing/master/dist/swing.min.js
 
-## Browser Bundle
+### Browser Bundle
 
 When using the `./dist/` version the Swing resides under `gajus` namespace:
 
