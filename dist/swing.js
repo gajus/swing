@@ -3689,7 +3689,8 @@ Card = function (stack, targetElement) {
         throwFromY,
         throwDirection,
         throwOutDistance,
-        mousedownTranslate;
+        lastTranslateX = 0,
+        lastTranslateY = 0;
 
     throwOutDistance = config.throwOutDistance(config.minThrowOutDistance, config.maxThrowOutDistance);
 
@@ -3702,16 +3703,14 @@ Card = function (stack, targetElement) {
     targetElement.addEventListener('mousedown', function (e) {
         Card.appendToParent(e.target);
 
-        mousedownTranslate = Card.getTranslate(targetElement);
-
         eventEmitter.trigger('dragstart', {
             target: targetElement
         });
     });
 
     mc.on('panmove', function (e) {
-        var x = mousedownTranslate[0] + e.deltaX,
-            y = mousedownTranslate[1] + e.deltaY,
+        var x = lastTranslateX + e.deltaX,
+            y = lastTranslateY + e.deltaY,
             r = config.rotation(x, y, targetElementWidth, targetElementHeight, config.maxRotation);
 
         Card.transform(targetElement, x, y, r);
@@ -3725,8 +3724,8 @@ Card = function (stack, targetElement) {
         var dragEndX,
             dragEndY;
 
-        dragEndX = mousedownTranslate[0] + e.deltaX;
-        dragEndY = mousedownTranslate[1] + e.deltaY;
+        dragEndX = lastTranslateX + e.deltaX;
+        dragEndY = lastTranslateY + e.deltaY;
 
         if (config.isThrowOut(dragEndX, targetElementWidth)) {
             card.throwOut(dragEndX, dragEndY);
@@ -3746,6 +3745,9 @@ Card = function (stack, targetElement) {
                 y = rebound.MathUtil.mapValueInRange(value, 0, 1, throwFromY, 0),
                 r = config.rotation(x, y, targetElementWidth, targetElementHeight, config.maxRotation);
 
+            lastTranslateX = x;
+            lastTranslateY = y;
+
             Card.transform(targetElement, x, y, r);
         }
     });
@@ -3756,6 +3758,9 @@ Card = function (stack, targetElement) {
                 x = rebound.MathUtil.mapValueInRange(value, 0, 1, throwFromX, throwOutDistance * throwDirection),
                 y = throwFromY,
                 r = config.rotation(x, y, targetElementWidth, targetElementHeight, config.maxRotation);
+
+            lastTranslateX = x;
+            lastTranslateY = y;
 
             Card.transform(targetElement, x, y, r);
         }
@@ -3851,32 +3856,6 @@ Card.appendToParent = function (element) {
 };
 
 /**
- * Get the [x, y] values for the computed CSS transform translate state.
- * 
- * @param {HTMLElement} element The target element.
- * @return {Array}
- */
-Card.getTranslate = function (element) {
-    var translate = [0, 0],
-        match;
-
-    if (!element.style.transform) {
-        return translate;
-    }
-
-    match = element.style.transform.match(/translate\((.+)px, (.+)px\)/);
-
-    if (!match) {
-        return translate;
-    }
-
-    translate[0] = parseFloat(match[1]);
-    translate[1] = parseFloat(match[2]);
-
-    return translate;
-};
-
-/**
  * Invoked in the event of dragend.
  * Determines if element is being thrown out of the stack.
  * Element is considered to be throw out if it has been moved away from
@@ -3926,18 +3905,21 @@ Card.DIRECTION_RIGHT = 1;
 module.exports = Card;
 },{"hammerjs":2,"rebound":3,"vendor-prefix":5}],7:[function(require,module,exports){
 (function (global){
-var Stack = require('./stack.js');
+var Stack = require('./stack.js'),
+    Card = require('./card.js');
 
 global.gajus = global.gajus || {};
 global.gajus.Swing = {
-    Stack: Stack
+    Stack: Stack,
+    Card: Card
 };
 
 module.exports.Swing = {
-    Stack: Stack
+    Stack: Stack,
+    Card: Card
 };
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./stack.js":8}],8:[function(require,module,exports){
+},{"./card.js":6,"./stack.js":8}],8:[function(require,module,exports){
 var Sister = require('sister'),
     rebound = require('rebound'),
     Card = require('./card.js');

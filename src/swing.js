@@ -1,10 +1,13 @@
-var Stack = require('./stack.js');
+var Stack = require('./stack.js'),
+    Card = require('./card.js');
 
 global.gajus = global.gajus || {};
 global.gajus.Swing = {
-    Stack: Stack
+    Stack: Stack,
+    Card: Card
 };
 
 module.exports.Swing = {
-    Stack: Stack
+    Stack: Stack,
+    Card: Card
 };
