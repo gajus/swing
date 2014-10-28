@@ -101,7 +101,7 @@ Card = function (stack, targetElement) {
     });
 
     /**
-     * Throws card into the stack from an arbitrary position.
+     * Throws a card into the stack from an arbitrary position.
      *
      * @param {Number} fromX
      * @param {Number} fromY
@@ -120,7 +120,7 @@ Card = function (stack, targetElement) {
     };
 
     /**
-     * Throws card out of the statk in the direction away from the original offset.
+     * Throws a card out of the stack in the direction away from the original offset.
      *
      * @param {Number} fromX
      * @param {Number} fromY

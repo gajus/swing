@@ -97,8 +97,6 @@ All of the configuration parameters are optional.
 
 ## Methods
 
-
-
 ```js
 var stack,
     card
@@ -109,9 +107,20 @@ card = stack.createCard(HTMLElement);
 
 | Name | Description |
 | --- | --- |
-| `stack.on(eventName, listener)` | Attach [event listener](#events) to the card stack. |
-| `card.throwIn(fromX, fromY)` | Throws card into the stack from an arbitrary position. |
-| `card.throwOut(fromX, fromY)` | Throws card out of the stack in the direction away from the original offset. |
+| `stack.on(eventName, listener)` | Attaches an [event listener](#events). |
+| `card.throwIn(x, y)` | Throws a card into the stack from an arbitrary position. `x, y` is the position at the start of the throw. |
+| `card.throwOut(x, y)` | Throws a card out of the stack in the direction away from the original offset. `x, y` is the position at the start of the throw. |
+
+### Throwing Card Out of the Stack
+
+Use the `card.throwOut(x, y)` method to throw the card out of the stack. Offset the position to whatever direction you want to throw the card, e.g.
+
+```js
+card.throwOut(Card.DIRECTION_LEFT, 0);
+card.throwOut(Card.DIRECTION_RIGHT, 0);
+```
+
+To make the animation more diverse, use random value for the `y` parameter.
 
 ## Events
 
