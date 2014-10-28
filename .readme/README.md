@@ -9,22 +9,7 @@ A swipeable cards interface. The swipe-left/swipe-right for yes/no input. As see
 
 ![Card stack example.](./.readme/card-stack.gif?1)
 
-## Contents
-
-- [Usage Examples](#usage-examples)
-- [Use Case](#use-case)
-    - [Single-Handed Navigation](#singlehanded-navigation)
-    - [Digestible Unit of Information](#digestible-unit-of-information)
-    - [Data](#data)
-- [Quick Start](#quick-start)
-- [Configuration](#configuration)
-- [Methods](#methods)
-    - [Throwing Card Out of the Stack](#throwing-card-out-of-the-stack)
-- [Events](#events)
-    - [Event Object](#event-object)
-- [Dependencies](#dependencies)
-
-
+[toc 3]
 
 ## Usage Examples
 
