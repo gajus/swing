@@ -84,6 +84,24 @@ stack.on('throwin', function (e) {
 
 ## Configuration
 
+```js
+var stack,
+    config;
+
+config = {
+    /**
+     * @param {Number} offset Distance from the dragStart.
+     * @param {Number} elementWidth Width of the element being dragged.
+     * @return {Boolean}
+     */
+    isThrowOut: function (offset, elementWidth) {
+        return Math.max(Math.abs(offset) - elementWidth, 0) > 0;
+    }
+};
+
+stack = stack = new Swing.Stack(config);
+```
+
 | Name | Description | Default |
 | --- | --- | --- |
 | `isThrowOut` | Invoked in the event of `dragend`. Determines if element is being thrown out of the stack. | Element is considered to be throw out if it has been moved away from the center of the original position more than its width. |
@@ -94,13 +112,13 @@ stack.on('throwin', function (e) {
 | `maxRotation` | In effect when `rotation` is not overwritten. | 20. |
 | `transform` | Invoked in the event of `dragmove` and every time the physics solver is triggered. | Uses CSS transform to translate element position and rotation. |
 
-All of the configuration parameters are optional.
+All of the configuration parameters are optional. Refer to the source code of the [card](https://github.com/gajus/swing/blob/master/src/card.js) module to learn the parameters associated with every callback.
 
 ## Methods
 
 ```js
 var stack,
-    card
+    card;
 
 stack = stack = new Swing.Stack();
 card = stack.createCard(HTMLElement);
