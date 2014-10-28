@@ -85,7 +85,7 @@ stack.on('throwin', function (e) {
 ## Configuration
 
 | Name | Description | Default |
-| --- | --- |
+| --- | --- | --- |
 | `isThrowOut` | Invoked in the event of `dragend`. Determines if element is being thrown out of the stack. | Element is considered to be throw out if it has been moved away from the center of the original position more than its width. |
 | `throwOutDistance` | Invoked when card is added to the stack. The card is thrown to this offset from the stack. | The value is a random number between `minThrowOutDistance` and `maxThrowOutDistance`. |
 | `minThrowOutDistance` | In effect when `throwOutDistance` is not overwritten. | 450. |
