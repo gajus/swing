@@ -3724,7 +3724,7 @@ Card = function (stack, targetElement) {
 
     mc.on('panend', function(e) {
         var x = lastTranslate.x + e.deltaX,
-            y = lastTranslate.x + e.deltaX;
+            y = lastTranslate.y + e.deltaY;
 
         if (config.isThrowOut(x, targetElementWidth)) {
             card.throwOut(x, y);
