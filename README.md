@@ -7,7 +7,7 @@
 
 A swipeable cards interface. The swipe-left/swipe-right for yes/no input. As seen in apps like [Jelly](http://jelly.co/) and [Tinder](http://www.gotinder.com/), and [many others](http://www.saydaily.com/2014/09/tinder-swipe-and-media).
 
-![Card stack example.](./.readme/card-stack.gif)
+![Card stack example.](./.readme/card-stack.gif?1)
 
 ## Usage Examples
 
