@@ -7,7 +7,7 @@
 
 A swipeable cards interface. The swipe-left/swipe-right for yes/no input. As seen in apps like [Jelly](http://jelly.co/) and [Tinder](http://www.gotinder.com/), and [many others](http://www.saydaily.com/2014/09/tinder-swipe-and-media).
 
-![Card stack example.](./.readme/card-stack.gif?1)
+![Card stack example.](./.readme/card-stack.gif)
 
 [toc 3]
 
@@ -92,12 +92,16 @@ var stack,
 
 config = {
     /**
+     * Invoked in the event of dragmove.
+     * Returns a value between 0 and 1 indicating the completeness of the throw out condition.
+     * Ration of the absolute distance from the original card position and element width.
+     * 
      * @param {Number} offset Distance from the dragStart.
      * @param {Number} elementWidth Width of the element being dragged.
-     * @return {Boolean}
+     * @return {Number}
      */
-    isThrowOut: function (offset, elementWidth) {
-        return Math.max(Math.abs(offset) - elementWidth, 0) > 0;
+    throwOutConfidence: function (offset, elementWidth) {
+        return Math.min(Math.abs(offset) / elementWidth, 1);
     }
 };
 
