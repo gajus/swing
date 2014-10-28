@@ -39,8 +39,10 @@ Card = function (stack, targetElement) {
         ]
     });
 
-    targetElement.addEventListener('mousedown', function (e) {
-        Card.appendToParent(e.target);
+    Card.appendToParent(targetElement);
+
+    targetElement.addEventListener('mousedown', function () {
+        Card.appendToParent(targetElement);
 
         eventEmitter.trigger('dragstart', {
             target: targetElement
@@ -147,9 +149,10 @@ Card = function (stack, targetElement) {
 };
 
 /**
- * Interprets stack.config() object.
+ * Interprets stack.config() object. Sets default configuration.
  * 
  * @param {Object} config
+ * @return {Object}
  */
 Card.config = function (config) {
     config = config || {};
@@ -179,7 +182,11 @@ Card.transform = function (element, x, y, r) {
 
 /**
  * If element is not the last among the siblings, append the
- * element to the parentNode.
+ * element to the parentNode. The reason for using this as opposed to zIndex
+ * is to allow CSS selector :nth-child, etc.
+ *
+ * Invoked in the event of mousedown.
+ * Invoked when card is added to the stack.
  * 
  * @param {HTMLElement} element The target element.
  */
