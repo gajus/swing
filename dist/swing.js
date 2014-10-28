@@ -3685,12 +3685,11 @@ Card = function (stack, targetElement) {
         springSystem = stack.springSystem(),
         springSnapBack = springSystem.createSpring(250, 10),
         springThrowOut = springSystem.createSpring(500, 20),
-        throwFromX,
-        throwFromY,
-        throwDirection,
+        lastThrow = {},
+        lastTranslate = {x: 0, y: 0},
         throwOutDistance,
-        lastTranslateX = 0,
-        lastTranslateY = 0;
+        onSpringUpdate,
+        throwCard;
 
     throwOutDistance = config.throwOutDistance(config.minThrowOutDistance, config.maxThrowOutDistance);
 
@@ -3711,8 +3710,8 @@ Card = function (stack, targetElement) {
     });
 
     mc.on('panmove', function (e) {
-        var x = lastTranslateX + e.deltaX,
-            y = lastTranslateY + e.deltaY,
+        var x = lastTranslate.x + e.deltaX,
+            y = lastTranslate.y + e.deltaY,
             r = config.rotation(x, y, targetElementWidth, targetElementHeight, config.maxRotation);
 
         Card.transform(targetElement, x, y, r);
@@ -3726,8 +3725,8 @@ Card = function (stack, targetElement) {
         var dragEndX,
             dragEndY;
 
-        dragEndX = lastTranslateX + e.deltaX;
-        dragEndY = lastTranslateY + e.deltaY;
+        dragEndX = lastTranslate.x + e.deltaX;
+        dragEndY = lastTranslate.y + e.deltaY;
 
         if (config.isThrowOut(dragEndX, targetElementWidth)) {
             card.throwOut(dragEndX, dragEndY);
@@ -3743,30 +3742,37 @@ Card = function (stack, targetElement) {
     springSnapBack.addListener({
         onSpringUpdate: function (spring) {
             var value = spring.getCurrentValue(),
-                x = rebound.MathUtil.mapValueInRange(value, 0, 1, throwFromX, 0),
-                y = rebound.MathUtil.mapValueInRange(value, 0, 1, throwFromY, 0),
-                r = config.rotation(x, y, targetElementWidth, targetElementHeight, config.maxRotation);
+                x = rebound.MathUtil.mapValueInRange(value, 0, 1, lastThrow.fromX, 0),
+                y = rebound.MathUtil.mapValueInRange(value, 0, 1, lastThrow.fromY, 0);
 
-            lastTranslateX = x;
-            lastTranslateY = y;
-
-            Card.transform(targetElement, x, y, r);
+            onSpringUpdate(x, y);
         }
     });
 
     springThrowOut.addListener({
         onSpringUpdate: function (spring) {
             var value = spring.getCurrentValue(),
-                x = rebound.MathUtil.mapValueInRange(value, 0, 1, throwFromX, throwOutDistance * throwDirection),
-                y = throwFromY,
-                r = config.rotation(x, y, targetElementWidth, targetElementHeight, config.maxRotation);
+                x = rebound.MathUtil.mapValueInRange(value, 0, 1, lastThrow.fromX, throwOutDistance * lastThrow.direction),
+                y = lastThrow.fromY;
 
-            lastTranslateX = x;
-            lastTranslateY = y;
-
-            Card.transform(targetElement, x, y, r);
+            onSpringUpdate(x, y);            
         }
     });
+
+    /**
+     * Invoked every time the physics solver updates the Spring's value.
+     *
+     * @param {Number} x
+     * @param {Number} y
+     */
+    onSpringUpdate = function (x, y) {
+        var r = config.rotation(x, y, targetElementWidth, targetElementHeight, config.maxRotation);
+
+        lastTranslate.x = x;
+        lastTranslate.y = y;
+
+        Card.transform(targetElement, x, y, r);
+    };
 
     /**
      * Throws a card into the stack from an arbitrary position.
@@ -3775,16 +3781,7 @@ Card = function (stack, targetElement) {
      * @param {Number} fromY
      */
     card.throwIn = function (fromX, fromY) {
-        throwFromX = fromX;
-        throwFromY = fromY;
-        throwDirection = throwFromX < 0 ? Card.DIRECTION_LEFT : Card.DIRECTION_RIGHT;
-
-        springSnapBack.setCurrentValue(0).setAtRest().setEndValue(1);
-
-        eventEmitter.trigger('throwin', {
-            target: targetElement,
-            throwDirection: throwDirection
-        });
+        throwCard(Card.THROW_IN, fromX, fromY);
     };
 
     /**
@@ -3794,15 +3791,30 @@ Card = function (stack, targetElement) {
      * @param {Number} fromY
      */
     card.throwOut = function (fromX, fromY) {
-        throwFromX = fromX;
-        throwFromY = fromY;
-        throwDirection = throwFromX < 0 ? Card.DIRECTION_LEFT : Card.DIRECTION_RIGHT;
+        throwCard(Card.THROW_OUT, fromX, fromY);
+    };
 
-        springThrowOut.setCurrentValue(0).setAtRest().setVelocity(100).setEndValue(1);
+    /**
+     * @param {Card.THROW_IN|Card.THROW_OUT} where
+     * @param {Number} fromX
+     * @param {Number} fromY
+     */
+    throwCard = function (where, fromX, fromY) {
+        lastThrow.fromX = fromX;
+        lastThrow.fromY = fromY;
+        lastThrow.direction = lastThrow.fromX < 0 ? Card.DIRECTION_LEFT : Card.DIRECTION_RIGHT;
 
-        eventEmitter.trigger('throwout', {
+        if (where == Card.THROW_IN) {
+            springSnapBack.setCurrentValue(0).setAtRest().setEndValue(1);
+        } else if (where == Card.THROW_OUT) {
+            springThrowOut.setCurrentValue(0).setAtRest().setVelocity(100).setEndValue(1);
+        } else {
+            throw new Error('Invalid throw event.');
+        }
+
+        eventEmitter.trigger('throw' + where, {
             target: targetElement,
-            throwDirection: throwDirection
+            throwDirection: lastThrow.direction
         });
     };
 
@@ -3908,6 +3920,9 @@ Card.rotation = function (x, y, elementWidth, elementHeight, maxRotation) {
 
 Card.DIRECTION_LEFT = -1;
 Card.DIRECTION_RIGHT = 1;
+
+Card.THROW_IN = 'in';
+Card.THROW_OUT = 'out';
 
 module.exports = Card;
 },{"hammerjs":2,"rebound":3,"vendor-prefix":5}],7:[function(require,module,exports){
