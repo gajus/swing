@@ -31,16 +31,17 @@ gulp.task('bundle', ['clean'], function () {
 });
 
 gulp.task('version', ['bundle'], function () {
-    var pkg = jsonfile.readFileSync('./package.json'),
+    var name = 'swing',
+        pkg = jsonfile.readFileSync('./package.json'),
         bower = jsonfile.readFileSync('./bower.json');
 
     gulp
-        .src('./dist/swing.js')
-        .pipe(header('/**\n * @version <%= version %>\n * @link https://github.com/gajus/swing for the canonical source repository\n * @license https://github.com/gajus/swing/blob/master/LICENSE BSD 3-Clause\n */\n', {version: pkg.version}))
+        .src('./dist/' + name + '.js')
+        .pipe(header('/**\n * @version <%= version %>\n * @link https://github.com/gajus/' + name + ' for the canonical source repository\n * @license https://github.com/gajus/' + name + '/blob/master/LICENSE BSD 3-Clause\n */\n', {version: pkg.version}))
         .pipe(gulp.dest('./dist/'))
         .pipe(uglify())
-        .pipe(rename('swing.min.js'))
-        .pipe(header('/**\n * @version <%= version %>\n * @link https://github.com/gajus/swing for the canonical source repository\n * @license https://github.com/gajus/swing/blob/master/LICENSE BSD 3-Clause\n */\n', {version: pkg.version}))
+        .pipe(rename(name + '.min.js'))
+        .pipe(header('/**\n * @version <%= version %>\n * @link https://github.com/gajus/' + name + ' for the canonical source repository\n * @license https://github.com/gajus/' + name + '/blob/master/LICENSE BSD 3-Clause\n */\n', {version: pkg.version}))
         .pipe(gulp.dest('./dist/'));
 
     bower.name = pkg.name;
@@ -50,7 +51,7 @@ gulp.task('version', ['bundle'], function () {
     bower.license = pkg.license;
     bower.authors = [pkg.author];
 
-    fs.writeFile('./bower.json', JSON.stringify(bower, null, 4));
+    jsonfile.writeFileSync('./bower.json', bower);
 });
 
 gulp.task('readme', function () {
