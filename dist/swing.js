@@ -3793,6 +3793,16 @@ Card = function (stack, targetElement) {
     };
 
     /**
+     * Unbinds all Hammer.Manager events.
+     * Removes the listeners from the physics simulation.
+     */
+    card.destroy = function () {
+        mc.destroy();
+        springSnapBack.destroy();
+        springThrowOut.destroy();
+    };
+
+    /**
      * @param {Card.THROW_IN|Card.THROW_OUT} where
      * @param {Number} fromX
      * @param {Number} fromY
