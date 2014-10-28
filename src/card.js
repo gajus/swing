@@ -57,7 +57,8 @@ Card = function (stack, targetElement) {
 
         eventEmitter.trigger('dragmove', {
             target: targetElement,
-            throwOutConfidence: Card.throwOutConfidence(x, targetElementWidth)
+            throwOutConfidence: Card.throwOutConfidence(x, targetElementWidth),
+            throwDirection: x < 0 ? Card.DIRECTION_LEFT : Card.DIRECTION_RIGHT
         });
     });
 
