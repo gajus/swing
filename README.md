@@ -64,7 +64,7 @@ A collection of observations about the extended use case of the swipeable cards 
 
 ### Single-Handed Navigation
 
-> It's all in the thumb, says mobile expert Luke Wroblewski. Mobile devices are frequently used on-the-go, which drastically increases the probability that you'll attempt to navigate apps using just one hand, with the key digit being the mighty thumb.
+> Mobile devices are frequently used on-the-go, which drastically increases the probability that you'll attempt to navigate apps using just one hand, with the key digit being the mighty thumb.
 > Instead of browsing endless lists for the hidden perfect piece of data — be it the right music for the moment, what to do tonight, or your next potential hookup — card-swiping turns decision making into a highly engaging Choose-Your-Own-Adventure game.
 
 – https://medium.com/@janel_az/small-data-why-tinder-like-apps-are-the-way-of-the-future-1a4d5703b4b
@@ -77,7 +77,7 @@ A collection of observations about the extended use case of the swipeable cards 
 
 ### Data
 
-> But card based UI has benefits beyond user joy. And while I could go on about how it helps developers organize content architecture, or how it helps copywriters and designers write and create for simple, incremental screens, there’s an even more compelling reason to take a closer look at this one. Because Card Based UX can yield a powerful by-product:  Data.  More than a scroll and perhaps even more than discrete taps themselves, cards create repetitive, deliberate, discrete decision moments over and over. And as the user swipes, you can learn.
+> More than a scroll and perhaps even more than discrete taps themselves, cards create repetitive, deliberate, discrete decision moments over and over. And as the user swipes, you can learn.
 > The time they swipe, the speed they swipe, what they swiped, the geolocation where they swiped, and even how similar the results of that swipe are vs. a swipe earlier that session are all possibilities that are yielding smarter apps for you and me every day.
 
 – http://www.itsmakeable.com/unconventional-wisdom/good-user-experience-design-ux-can-do-what-now/
@@ -167,7 +167,3 @@ The list of the dependencies and description of their role is for your reference
 
 * [Rebound](http://facebook.github.io/rebound-js/docs/rebound.html) to drive physical animations. Notice how if you drag too little and let go, the cards spring back into place.
 * [Hammer](http://hammerjs.github.io/) to handle drag interactions.
-
-## Todo
-
-* Animate the card stack underneath the current card.
