@@ -9,46 +9,6 @@ A swipeable cards interface. The swipe-left/swipe-right for yes/no input. As see
 
 ![Card stack example.](./.readme/card-stack.gif)
 
-## Quick Start
-
-```html
-<ul>
-    <li></li>
-    <li></li>
-    <li></li>
-</ul>
-```
-
-```js
-var stack,
-    cards;
-
-// Prepare the cards in the stack for iteration.
-cards = [].slice.call(document.querySelectorAll('ul li'))
-
-// An instance of the Stack is used to attach event listeners.
-stack = new Swing.Stack();
-
-cards.forEach(function (targetElement) {
-    // Add card element to the Stack.
-    stack.createCard(targetElement);
-});
-
-// Add event listener for when a card is thrown out of the stack.
-stack.on('throwout', function (e) {
-    // e.target Reference to the element that has been thrown out of the stack.
-    // e.throwDirection Direction in which the element has been thrown (1 right, -1 left).
-
-    console.log('Card has been thrown out of the stack.');
-    console.log('Throw direction: ' + (e.throwDirection == 1 ? 'right' : 'left'));
-});
-
-// Add event listener for when a card is thrown in the stack, including the spring back into place effect.
-stack.on('throwin', function (e) {
-    console.log('Card has snapped back to the stack.');
-});
-```
-
 ## Usage Examples
 
 * [Card stack](http://gajus.com/sandbox/swing/examples/card-stack/).
@@ -82,16 +42,56 @@ A collection of observations about the extended use case of the swipeable cards 
 
 – http://www.itsmakeable.com/unconventional-wisdom/good-user-experience-design-ux-can-do-what-now/
 
+## Quick Start
+
+```html
+<ul>
+    <li></li>
+    <li></li>
+    <li></li>
+</ul>
+```
+
+```js
+var stack,
+    cards;
+
+// Prepare the cards in the stack for iteration.
+cards = [].slice.call(document.querySelectorAll('ul li'))
+
+// An instance of the Stack is used to attach event listeners.
+stack = new Swing.Stack();
+
+cards.forEach(function (targetElement) {
+    // Add card element to the Stack.
+    stack.createCard(targetElement);
+});
+
+// Add event listener for when a card is thrown out of the stack.
+stack.on('throwout', function (e) {
+    // e.target Reference to the element that has been thrown out of the stack.
+    // e.throwDirection Direction in which the element has been thrown (Card.DIRECTION_LEFT, Card.DIRECTION_RIGHT).
+
+    console.log('Card has been thrown out of the stack.');
+    console.log('Throw direction: ' + (e.throwDirection == Card.DIRECTION_LEFT ? 'left' : 'right'));
+});
+
+// Add event listener for when a card is thrown in the stack, including the spring back into place effect.
+stack.on('throwin', function (e) {
+    console.log('Card has snapped back to the stack.');
+});
+```
+
 ## Configuration
 
-| Name | Description |
+| Name | Description | Default |
 | --- | --- |
-| `isThrowOut` | Invoked in the event of `dragend`. Determine if element is being thrown out of the stack. Element is considered to be throw out if it has been moved at least 10px outside of the stack box. |
-| `throwOutDistance` | Invoked when card is added to the stack. The card is thrown to this offset from the stack. The value is a random number between `minThrowOutDistance` and `maxThrowOutDistance`. |
-| `minThrowOutDistance` | In effect when `throwOutDistance` is not overwritten. Default: 450. |
-| `maxThrowOutDistance` | In effect when `throwOutDistance` is not overwritten. Default: 500. |
-| `rotation` | Invoked in the event of `dragmove`. Determine the rotation of the element. Rotation is equal to the proportion of horizontal and vertical offset times the `maximumRotation` constant. |
-| `maxRotation` | In effect when `rotation` is not overwritten. Default: 20. |
+| `isThrowOut` | Invoked in the event of `dragend`. Determines if element is being thrown out of the stack. | Element is considered to be throw out if it has been moved away from the center of the original position more than its width. |
+| `throwOutDistance` | Invoked when card is added to the stack. The card is thrown to this offset from the stack. | The value is a random number between `minThrowOutDistance` and `maxThrowOutDistance`. |
+| `minThrowOutDistance` | In effect when `throwOutDistance` is not overwritten. | 450. |
+| `maxThrowOutDistance` | In effect when `throwOutDistance` is not overwritten. | 500. |
+| `rotation` | Invoked in the event of `dragmove`. Determine the rotation of the element. | Rotation is equal to the proportion of horizontal and vertical offset times the `maximumRotation` constant. |
+| `maxRotation` | In effect when `rotation` is not overwritten. | 20. |
 
 All of the configuration parameters are optional.
 

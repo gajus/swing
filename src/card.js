@@ -216,16 +216,17 @@ Card.getTranslate = function (element) {
 };
 
 /**
- * Determine if element is being thrown out of the stack.
- * Element is considered to be throw out if it has been moved at least 10px
- * outside of the stack box.
+ * Invoked in the event of dragend.
+ * Determines if element is being thrown out of the stack.
+ * Element is considered to be throw out if it has been moved away from
+ * the center of the original position more than its width.
  * 
  * @param {Number} offset Distance from the dragStart.
  * @param {Number} elementWidth Width of the element being dragged.
  * @return {Boolean}
  */
 Card.isThrowOut = function (offset, elementWidth) {
-    return Math.max(Math.abs(offset) - elementWidth, 0) > 10;
+    return Math.max(Math.abs(offset) - elementWidth, 0) > 0;
 };
 
 /**
