@@ -28,7 +28,7 @@ Card = function (stack, targetElement) {
         lastTranslate = {x: 0, y: 0},
         throwOutDistance,
         onSpringUpdate,
-        throwCard;
+        throwWhere;
 
     throwOutDistance = config.throwOutDistance(config.minThrowOutDistance, config.maxThrowOutDistance);
 
@@ -120,7 +120,7 @@ Card = function (stack, targetElement) {
      * @param {Number} fromY
      */
     card.throwIn = function (fromX, fromY) {
-        throwCard(Card.THROW_IN, fromX, fromY);
+        throwWhere(Card.THROW_IN, fromX, fromY);
     };
 
     /**
@@ -130,7 +130,7 @@ Card = function (stack, targetElement) {
      * @param {Number} fromY
      */
     card.throwOut = function (fromX, fromY) {
-        throwCard(Card.THROW_OUT, fromX, fromY);
+        throwWhere(Card.THROW_OUT, fromX, fromY);
     };
 
     /**
@@ -138,7 +138,7 @@ Card = function (stack, targetElement) {
      * @param {Number} fromX
      * @param {Number} fromY
      */
-    throwCard = function (where, fromX, fromY) {
+    throwWhere = function (where, fromX, fromY) {
         lastThrow.fromX = fromX;
         lastThrow.fromY = fromY;
         lastThrow.direction = lastThrow.fromX < 0 ? Card.DIRECTION_LEFT : Card.DIRECTION_RIGHT;
@@ -178,11 +178,14 @@ Card.config = function (config) {
     config.rotation = config.rotation ? config.rotation : Card.rotation;
     config.maxRotation = config.maxRotation ? config.maxRotation : 20;
 
+    config.transform = config.transform ? config.transform : Card.transform;
+
     return config;
 };
 
 /**
- * Use CSS transform to translate element position.
+ * Invoked in the event of `dragmove` and every time the physics solver is triggered.
+ * Uses CSS transform to translate element position and rotation.
  * 
  * @param {Number} x Horizontal offset from the startDrag.
  * @param {Number} y Vertical offset from the startDrag.
