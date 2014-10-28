@@ -56,21 +56,19 @@ Card = function (stack, targetElement) {
         Card.transform(targetElement, x, y, r);
 
         eventEmitter.trigger('dragmove', {
-            target: targetElement
+            target: targetElement,
+            throwOutConfidence: Card.throwOutConfidence(x, targetElementWidth)
         });
     });
 
     mc.on('panend', function(e) {
-        var dragEndX,
-            dragEndY;
+        var x = lastTranslate.x + e.deltaX,
+            y = lastTranslate.x + e.deltaX;
 
-        dragEndX = lastTranslate.x + e.deltaX;
-        dragEndY = lastTranslate.y + e.deltaY;
-
-        if (config.isThrowOut(dragEndX, targetElementWidth)) {
-            card.throwOut(dragEndX, dragEndY);
+        if (config.isThrowOut(x, targetElementWidth)) {
+            card.throwOut(x, y);
         } else {
-            card.throwIn(dragEndX, dragEndY);
+            card.throwIn(x, y);
         }
 
         eventEmitter.trigger('dragend', {
@@ -170,6 +168,8 @@ Card.config = function (config) {
     config = config || {};
 
     config.isThrowOut = config.isThrowOut ? config.isThrowOut : Card.isThrowOut;
+    
+    config.throwOutConfidence = config.throwOutConfidence ? config.throwOutConfidence : Card.throwOutConfidence;
 
     config.throwOutDistance = config.throwOutDistance ? config.throwOutDistance : Card.throwOutDistance;
     config.minThrowOutDistance = config.minThrowOutDistance ? config.minThrowOutDistance : 400;
@@ -217,17 +217,29 @@ Card.appendToParent = function (element) {
 };
 
 /**
+ * Invoked in the event of dragmove.
+ * Returns a value between 0 and 1 indicating the completeness of the throw out condition.
+ * Ration of the absolute distance from the original card position and element width.
+ * 
+ * @param {Number} offset Distance from the dragStart.
+ * @param {Number} elementWidth Width of the element being dragged.
+ * @return {Number}
+ */
+Card.throwOutConfidence = function (offset, elementWidth) {
+    return Math.min(Math.abs(offset) / elementWidth, 1);
+};
+
+/**
  * Invoked in the event of dragend.
  * Determines if element is being thrown out of the stack.
- * Element is considered to be throw out if it has been moved away from
- * the center of the original position more than its width.
+ * Element is considered to be thrown out when throwOutConfidence is equal to 1.
  * 
  * @param {Number} offset Distance from the dragStart.
  * @param {Number} elementWidth Width of the element being dragged.
  * @return {Boolean}
  */
 Card.isThrowOut = function (offset, elementWidth) {
-    return Math.max(Math.abs(offset) - elementWidth, 0) > 0;
+    return Card.throwOutConfidence(offset, elementWidth) == 1;
 };
 
 /**
