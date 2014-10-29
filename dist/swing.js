@@ -3953,8 +3953,8 @@ Card.THROW_OUT = 'out';
 module.exports = Card;
 },{"hammerjs":2,"rebound":3,"vendor-prefix":5}],7:[function(require,module,exports){
 (function (global){
-var Stack = require('./stack.js'),
-    Card = require('./card.js');
+var Stack = require('./stack'),
+    Card = require('./card');
 
 global.gajus = global.gajus || {};
 global.gajus.Swing = {
@@ -3967,7 +3967,7 @@ module.exports.Swing = {
     Card: Card
 };
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./card.js":6,"./stack.js":8}],8:[function(require,module,exports){
+},{"./card":6,"./stack":8}],8:[function(require,module,exports){
 var Sister = require('sister'),
     rebound = require('rebound'),
     Card = require('./card.js');

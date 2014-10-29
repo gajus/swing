@@ -1,5 +1,5 @@
-var Stack = require('./stack.js'),
-    Card = require('./card.js');
+var Stack = require('./stack'),
+    Card = require('./card');
 
 global.gajus = global.gajus || {};
 global.gajus.Swing = {
