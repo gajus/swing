@@ -1,15 +1,15 @@
 {
-    "main": "dist/swing.min.js",
-    "name": "swing",
-    "description": "A swipeable cards interface. The swipe-left/swipe-right for yes/no input. As seen in apps like Jelly and Tinder.",
-    "version": "1.0.1",
-    "license": "BSD-3-Clause",
-    "authors": [
-        "Gajus Kuizinas <gk@anuary.com>"
-    ],
-    "keywords": [
-        "swipe",
-        "cards",
-        "swipeable"
-    ]
+  "main": "dist/swing.min.js",
+  "name": "swing",
+  "description": "A swipeable cards interface. The swipe-left/swipe-right for yes/no input. As seen in apps like Jelly and Tinder.",
+  "version": "1.0.2",
+  "license": "BSD-3-Clause",
+  "authors": [
+    "Gajus Kuizinas <gk@anuary.com>"
+  ],
+  "keywords": [
+    "swipe",
+    "cards",
+    "swipeable"
+  ]
 }
