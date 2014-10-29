@@ -3,11 +3,10 @@
 [![Build Status](https://travis-ci.org/gajus/swing.png?branch=master&decache1)](https://travis-ci.org/gajus/swing)
 [![NPM version](https://badge.fury.io/js/swing.svg)](http://badge.fury.io/js/swing)
 [![Bower version](https://badge.fury.io/bo/swing.svg)](http://badge.fury.io/bo/swing)
-[![Tweet Button](./.readme/tweet-button.png)](https://twitter.com/intent/retweet?tweet_id=527505589732405248)
 
 A swipeable cards interface. The swipe-left/swipe-right for yes/no input. As seen in apps like [Jelly](http://jelly.co/) and [Tinder](http://www.gotinder.com/), and [many others](http://www.saydaily.com/2014/09/tinder-swipe-and-media).
 
-Give it a [swing](http://gajus.com/sandbox/swing/examples/card-stack/)!
+Give it a [swing](http://gajus.com/sandbox/swing/examples/card-stack/)! and [tweet it](https://twitter.com/intent/retweet?tweet_id=527505589732405248) if you like it. : )
 
 ![Card stack example.](./.readme/card-stack.gif)
 
