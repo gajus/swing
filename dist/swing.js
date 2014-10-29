@@ -3659,11 +3659,69 @@ module.exports = get;
 module.exports.dash = dashedPrefix;
 
 },{}],6:[function(require,module,exports){
-var Hammer = require('hammerjs'),
+(function (global){
+var Sister = require('sister'),
     rebound = require('rebound'),
+    Stack,
+    Hammer = require('hammerjs'),
     vendorPrefix = require('vendor-prefix'),
     Card,
     util = {};
+
+/**
+ * @param {Object} config
+ */
+Stack = function (config) {
+    var stack = {},
+        springSystem = new rebound.SpringSystem(),
+        eventEmitter = new Sister();
+
+    /**
+     * Get the configuration object.
+     * 
+     * @return {Object}
+     */
+    stack.config = function () {
+        return config;
+    };
+
+    /**
+     * Get a singleton instance of the SpringSystem physics engine.
+     * 
+     * @return {Sister}
+     */
+    stack.springSystem = function () {
+        return springSystem;
+    };
+
+    /**
+     * Get a singleton instance of the Sister event emitter.
+     * 
+     * @return {Sister}
+     */
+    stack.eventEmitter = function () {
+        return eventEmitter;
+    };
+
+    /**
+     * Proxy to the instance of the event emitter.
+     * 
+     * @param {String} eventName
+     * @param {String} listener
+     */
+    stack.on = function (eventName, listener) {
+        stack.eventEmitter().on(eventName, listener);
+    };
+
+    /**
+     * @return {Card}
+     */
+    stack.createCard = function (targetElement) {
+        return new Card(this, targetElement);
+    };
+
+    return stack;
+};
 
 /**
  * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random
@@ -3950,82 +4008,13 @@ Card.DIRECTION_RIGHT = 1;
 Card.THROW_IN = 'in';
 Card.THROW_OUT = 'out';
 
-module.exports = Card;
-},{"hammerjs":2,"rebound":3,"vendor-prefix":5}],7:[function(require,module,exports){
-(function (global){
-var Stack = require('./stack'),
-    Card = require('./card');
-
 global.gajus = global.gajus || {};
 global.gajus.Swing = {
-    Stack: Stack,
-    Card: Card
+    Stack: Stack
 };
 
 module.exports.Swing = {
-    Stack: Stack,
-    Card: Card
+    Stack: Stack
 };
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./card":6,"./stack":8}],8:[function(require,module,exports){
-var Sister = require('sister'),
-    rebound = require('rebound'),
-    Card = require('./card.js');
-
-/**
- * @param {Object} config
- */
-function Stack (config) {
-    var stack = {},
-        springSystem = new rebound.SpringSystem(),
-        eventEmitter = new Sister();
-
-    /**
-     * Get the configuration object.
-     * 
-     * @return {Object}
-     */
-    stack.config = function () {
-        return config;
-    };
-
-    /**
-     * Get a singleton instance of the SpringSystem physics engine.
-     * 
-     * @return {Sister}
-     */
-    stack.springSystem = function () {
-        return springSystem;
-    };
-
-    /**
-     * Get a singleton instance of the Sister event emitter.
-     * 
-     * @return {Sister}
-     */
-    stack.eventEmitter = function () {
-        return eventEmitter;
-    };
-
-    /**
-     * Proxy to the instance of the event emitter.
-     * 
-     * @param {String} eventName
-     * @param {String} listener
-     */
-    stack.on = function (eventName, listener) {
-        stack.eventEmitter().on(eventName, listener);
-    };
-
-    /**
-     * @return {Card}
-     */
-    stack.createCard = function (targetElement) {
-        return new Card(this, targetElement);
-    };
-
-    return stack;
-}
-
-module.exports = Stack;
-},{"./card.js":6,"rebound":3,"sister":4}]},{},[7])
+},{"hammerjs":2,"rebound":3,"sister":4,"vendor-prefix":5}]},{},[6])
