@@ -6,8 +6,8 @@
     "cards",
     "swipeable"
   ],
-  "version": "1.0.4",
-  "main": "dist/swing.js",
+  "version": "1.0.5",
+  "main": "src/swing.js",
   "author": "Gajus Kuizinas <gk@anuary.com>",
   "repository": {
     "type": "git",
@@ -32,7 +32,7 @@
   "dependencies": {
     "hammerjs": "^2.0.4",
     "rebound": "0.0.10",
-    "sister": "^2.0.0",
+    "sister": "^2.0.3",
     "vendor-prefix": "^0.1.0"
   },
   "scrips": {
