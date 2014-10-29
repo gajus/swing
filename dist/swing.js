@@ -3980,6 +3980,7 @@ var Stack = require('./stack.js'),
     Card = require('./card.js');
 
 global.gajus = global.gajus || {};
+
 global.gajus.Swing = {
     Stack: Stack,
     Card: Card
@@ -4021,15 +4022,6 @@ Stack = function (config) {
     stack.springSystem = function () {
         return springSystem;
     };
-
-    /**
-     * Get a singleton instance of the Sister event emitter.
-     * 
-     * @return {Sister}
-     */
-    //stack.eventEmitter = function () {
-    //    return eventEmitter;
-    //};
 
     /**
      * Proxy to the instance of the event emitter.

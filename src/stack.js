@@ -30,15 +30,6 @@ Stack = function (config) {
     };
 
     /**
-     * Get a singleton instance of the Sister event emitter.
-     * 
-     * @return {Sister}
-     */
-    //stack.eventEmitter = function () {
-    //    return eventEmitter;
-    //};
-
-    /**
      * Proxy to the instance of the event emitter.
      * 
      * @param {String} eventName
