@@ -1,5 +1,5 @@
 /**
- * @version 1.0.6
+ * @version 1.0.7
  * @link https://github.com/gajus/swing for the canonical source repository
  * @license https://github.com/gajus/swing/blob/master/LICENSE BSD 3-Clause
  */
@@ -3962,7 +3962,7 @@ global.gajus.Swing = {
     Card: Card
 };
 
-module.exports.Swing = {
+module.exports = {
     Stack: Stack,
     Card: Card
 };

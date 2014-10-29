@@ -7,7 +7,7 @@ global.gajus.Swing = {
     Card: Card
 };
 
-module.exports.Swing = {
+module.exports = {
     Stack: Stack,
     Card: Card
 };
