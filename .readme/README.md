@@ -135,6 +135,7 @@ card = stack.createCard(HTMLElement);
 | Name | Description |
 | --- | --- |
 | `stack.on(eventName, listener)` | Attaches an [event listener](#events). |
+| `card.on(eventName, listener)` | Attaches an [event listener](#events). |
 | `card.throwIn(x, y)` | Throws a card into the stack from an arbitrary position. `x, y` is the position at the start of the throw. |
 | `card.throwOut(x, y)` | Throws a card out of the stack in the direction away from the original offset. `x, y` is the position at the start of the throw. |
 | `card.destroy()` | Unbinds all Hammer.Manager events. Removes the listeners from the physics simulation. |
@@ -152,13 +153,17 @@ To make the animation more diverse, use random value for the `y` parameter.
 
 ## Events
 
-Use an instance of the `Swing.Stack` to attach event listeners:
+Event listener can be attached to an instance of `Swing.Stack` or `Swing.Card` using the `on` method:
 
 ```js
-var stack;
+var stack,
+    card;
 
 stack = stack = Swing.Stack();
 
+card = stack.createCard(HTMLElement);
+
+card.on('throwout', function () {});
 stack.on('throwout', function () {});
 ```
 

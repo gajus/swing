@@ -1,4 +1,5 @@
 var Card,
+    Sister = require('sister'),
     Hammer = require('hammerjs'),
     rebound = require('rebound'),
     vendorPrefix = require('vendor-prefix'),
@@ -20,7 +21,7 @@ Card = function (stack, targetElement) {
         config = Card.config(stack.config()),
         targetElementWidth = targetElement.offsetWidth,
         targetElementHeight = targetElement.offsetHeight,
-        eventEmitter = stack.eventEmitter(),
+        eventEmitter = Sister(),
         springSystem = stack.springSystem(),
         springSnapBack = springSystem.createSpring(250, 10),
         springThrowOut = springSystem.createSpring(500, 20),
@@ -111,6 +112,11 @@ Card = function (stack, targetElement) {
 
         Card.transform(targetElement, x, y, r);
     };
+
+    /**
+     * Alias
+     */
+    card.on = eventEmitter.on;
 
     /**
      * Throws a card into the stack from an arbitrary position.

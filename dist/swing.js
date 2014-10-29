@@ -3565,43 +3565,43 @@ if (typeof define == TYPE_FUNCTION && define.amd) {
 * @license https://github.com/gajus/sister/blob/master/LICENSE BSD 3-Clause
 */
 function Sister () {
-    if (!(this instanceof Sister)) {
-        return new Sister();
-    }
-    this._events = {};
-}
+    var sister = {},
+        events = {};
 
-/**
- * @name listener
- * @function
- * @param {Object} data Event data.
- */
+    /**
+     * @name listener
+     * @function
+     * @param {Object} data Event data.
+     */
 
-/**
- * @param {String} name Event name.
- * @param {listener} listener
- */
-Sister.prototype.on = function (name, listener) {
-    this._events[name] = this._events[name] || [];
-    this._events[name].unshift(listener);
-    return this;
-};
+    /**
+     * @param {String} name Event name.
+     * @param {listener} listener
+     */
+    sister.on = function (name, listener) {
+        events[name] = events[name] || [];
+        events[name].unshift(listener);
+        return this;
+    };
 
-/**
- * @param {String} name Event name.
- * @param {Object} data Event data.
- */
-Sister.prototype.trigger = function (name, data) {
-    var listeners = this._events[name],
-        i;
+    /**
+     * @param {String} name Event name.
+     * @param {Object} data Event data.
+     */
+    sister.trigger = function (name, data) {
+        var listeners = events[name],
+            i;
 
-    if (listeners) {
-        i = listeners.length;
-        while (i--) {
-            listeners[i](data);
+        if (listeners) {
+            i = listeners.length;
+            while (i--) {
+                listeners[i](data);
+            }
         }
-    }
-};
+    };
+
+    return sister;
+}
 
 global.gajus = global.gajus || {};
 global.gajus.Sister = Sister;
@@ -3660,6 +3660,7 @@ module.exports.dash = dashedPrefix;
 
 },{}],6:[function(require,module,exports){
 var Card,
+    Sister = require('sister'),
     Hammer = require('hammerjs'),
     rebound = require('rebound'),
     vendorPrefix = require('vendor-prefix'),
@@ -3681,7 +3682,7 @@ Card = function (stack, targetElement) {
         config = Card.config(stack.config()),
         targetElementWidth = targetElement.offsetWidth,
         targetElementHeight = targetElement.offsetHeight,
-        eventEmitter = stack.eventEmitter(),
+        eventEmitter = Sister(),
         springSystem = stack.springSystem(),
         springSnapBack = springSystem.createSpring(250, 10),
         springThrowOut = springSystem.createSpring(500, 20),
@@ -3772,6 +3773,11 @@ Card = function (stack, targetElement) {
 
         Card.transform(targetElement, x, y, r);
     };
+
+    /**
+     * Alias
+     */
+    card.on = eventEmitter.on;
 
     /**
      * Throws a card into the stack from an arbitrary position.
@@ -3951,7 +3957,7 @@ Card.THROW_IN = 'in';
 Card.THROW_OUT = 'out';
 
 module.exports = Card;
-},{"hammerjs":2,"rebound":3,"vendor-prefix":5}],7:[function(require,module,exports){
+},{"hammerjs":2,"rebound":3,"sister":4,"vendor-prefix":5}],7:[function(require,module,exports){
 (function (global){
 var Stack = require('./stack.js'),
     Card = require('./card.js');
@@ -3979,7 +3985,7 @@ var Stack,
 Stack = function (config) {
     var stack = {},
         springSystem = new rebound.SpringSystem(),
-        eventEmitter = new Sister();
+        eventEmitter = Sister();
 
     /**
      * Get the configuration object.
@@ -4004,9 +4010,9 @@ Stack = function (config) {
      * 
      * @return {Sister}
      */
-    stack.eventEmitter = function () {
-        return eventEmitter;
-    };
+    //stack.eventEmitter = function () {
+    //    return eventEmitter;
+    //};
 
     /**
      * Proxy to the instance of the event emitter.
@@ -4015,14 +4021,23 @@ Stack = function (config) {
      * @param {String} listener
      */
     stack.on = function (eventName, listener) {
-        stack.eventEmitter().on(eventName, listener);
+        eventEmitter.on(eventName, listener);
     };
 
     /**
      * @return {Card}
      */
     stack.createCard = function (targetElement) {
-        return new Card(this, targetElement);
+        var card = new Card(this, targetElement);
+
+        // Proxy Card events to the Stack.
+        card.on('throwout', eventEmitter.trigger.bind(null, 'throwout'));
+        card.on('throwin', eventEmitter.trigger.bind(null, 'throwin'));
+        card.on('dragstart', eventEmitter.trigger.bind(null, 'dragstart'));
+        card.on('dragmove', eventEmitter.trigger.bind(null, 'dragmove'));
+        card.on('dragend', eventEmitter.trigger.bind(null, 'dragend'));
+
+        return card;
     };
 
     return stack;

@@ -16,9 +16,9 @@ describe('Stack', function () {
             expect(stack.springSystem().constructor.name).toEqual('SpringSystem');
         });
     });
-    describe('.eventEmitter()', function () {
-        it('returns an instance of the Sister event emitter', function () {
-            expect(stack.eventEmitter().constructor.name).toEqual('Sister');
-        });
-    });
+    //describe('.eventEmitter()', function () {
+    //    it('returns an instance of the Sister event emitter', function () {
+    //        expect(stack.eventEmitter().constructor.name).toEqual('Sister');
+    //    });
+    //});
 });

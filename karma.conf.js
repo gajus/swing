@@ -4,7 +4,7 @@ module.exports = function(config) {
         frameworks: ['jasmine'],
         files: [
             'dist/*',
-            'test/*.js'
+            'tests/*.js'
         ],
         exclude: [
             'dist/swing.min.js'
