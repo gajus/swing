@@ -1,7 +1,7 @@
-var Hammer = require('hammerjs'),
+var Card,
+    Hammer = require('hammerjs'),
     rebound = require('rebound'),
     vendorPrefix = require('vendor-prefix'),
-    Card,
     util = {};
 
 /**
