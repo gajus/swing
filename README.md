@@ -1,6 +1,6 @@
 # Swing
 
-[![Build Status](https://travis-ci.org/gajus/swing.png?branch=master&decache1)](https://travis-ci.org/gajus/swing)
+[![Build Status](https://travis-ci.org/gajus/swing.png?branch=master&decache2)](https://travis-ci.org/gajus/swing)
 [![NPM version](https://badge.fury.io/js/swing.svg)](http://badge.fury.io/js/swing)
 [![Bower version](https://badge.fury.io/bo/swing.svg)](http://badge.fury.io/bo/swing)
 
