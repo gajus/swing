@@ -136,5 +136,35 @@ describe('Stack', function () {
                 expect(spy.callCount).to.equal(3);
             });
         });
+        describe('rotation', function () {
+            it('is invoked in the event of dragmove', function () {
+                var spy = sinon.spy(),
+                    env = setupEnv({rotation: spy});
+
+                env.card.on('rotation', spy);
+
+                env.card._trigger('_mousedown');
+                env.card._trigger('_panmove', {deltaX: 10, deltaY: 10});
+                env.card._trigger('_panmove', {deltaX: 11, deltaY: 10});
+                env.card._trigger('_panmove', {deltaX: 12, deltaY: 10});
+
+                expect(spy.callCount).to.equal(3);
+            });
+        });
+        describe('transform', function () {
+            it('is invoked in the event of dragmove', function () {
+                var spy = sinon.spy(),
+                    env = setupEnv({transform: spy});
+
+                env.card.on('transform', spy);
+
+                env.card._trigger('_mousedown');
+                env.card._trigger('_panmove', {deltaX: 10, deltaY: 10});
+                env.card._trigger('_panmove', {deltaX: 11, deltaY: 10});
+                env.card._trigger('_panmove', {deltaX: 12, deltaY: 10});
+
+                expect(spy.callCount).to.equal(3);
+            });
+        });
     });
 });

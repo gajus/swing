@@ -3726,7 +3726,6 @@ Card = function Card (stack, targetElement) {
 
     Card.appendToParent(targetElement);
 
-
     eventEmitter.on('_mousedown', function () {
         Card.appendToParent(targetElement);
 
@@ -3740,7 +3739,7 @@ Card = function Card (stack, targetElement) {
             y = lastTranslate.y + e.deltaY,
             r = config.rotation(x, y, targetElement, config.maxRotation);
 
-        Card.transform(targetElement, x, y, r);
+        config.transform(targetElement, x, y, r);
 
         eventEmitter.trigger('dragmove', {
             target: targetElement,
