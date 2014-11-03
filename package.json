@@ -26,9 +26,9 @@
     "gulp-uglify": "^1.0.1",
     "jsonfile": "^2.0.0",
     "karma": "^0.12.24",
-    "karma-chai": "^0.1.0",
     "karma-mocha": "^0.1.9",
     "karma-phantomjs-launcher": "^0.1.4",
+    "karma-sinon-chai": "^0.2.0",
     "mocha": "^2.0.1"
   },
   "dependencies": {

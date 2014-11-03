@@ -41,12 +41,13 @@ Stack = function (config) {
     };
 
     /**
+     * Creates an instance of Card and associates it with the element.
+     * 
      * @return {Card}
      */
-    stack.createCard = function (targetElement) {
-        var card = new Card(this, targetElement),
-            events = ['throwout', 'throwoutleft', 'throwoutright', 'throwin', 'dragstart', 'dragmove', 'dragend'],
-            listeners = [];
+    stack.createCard = function (element) {
+        var card = new Card(this, element),
+            events = ['throwout', 'throwoutleft', 'throwoutright', 'throwin', 'dragstart', 'dragmove', 'dragend'];
 
         // Proxy Card events to the Stack.
         events.forEach(function (name) {
@@ -56,18 +57,41 @@ Stack = function (config) {
         });
 
         index.push({
-            card: card,
-            listeners: listeners
+            element: element,
+            card: card
         });
 
         return card;
     };
 
     /**
-     * 
+     * Returns card associated with an element.
+     *
+     * @param {HTMLElement} element
+     * @return {Card|null}
      */
-    stack.destroyCard = function (card) {
-        
+    stack.getCard = function (element) {
+        var j = index.length;
+        while (j--) {
+            if (index[j].element === element) {
+                return index[j].card;
+            }
+        }
+        return null;
+    };
+
+    /**
+     * @param {Card} card
+     */
+    stack._destroyCard = function (card) {
+        var j = index.length;
+        while (j--) {
+            if (index[j].card === card) {
+                index.splice(j, 1);
+
+                break;
+            }
+        }
     };
 
     return stack;

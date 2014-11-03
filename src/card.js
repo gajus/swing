@@ -147,7 +147,7 @@ Card = function (stack, targetElement) {
         springSnapBack.destroy();
         springThrowOut.destroy();
 
-        stack.destroyCard(card);
+        stack._destroyCard(card);
     };
 
     /**
