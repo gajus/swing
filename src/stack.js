@@ -9,7 +9,8 @@ var Stack,
 Stack = function (config) {
     var stack = {},
         springSystem = new rebound.SpringSystem(),
-        eventEmitter = Sister();
+        eventEmitter = Sister(),
+        index = [];
 
     /**
      * Get the configuration object.
@@ -43,18 +44,30 @@ Stack = function (config) {
      * @return {Card}
      */
     stack.createCard = function (targetElement) {
-        var card = new Card(this, targetElement);
+        var card = new Card(this, targetElement),
+            events = ['throwout', 'throwoutleft', 'throwoutright', 'throwin', 'dragstart', 'dragmove', 'dragend'],
+            listeners = [];
 
         // Proxy Card events to the Stack.
-        card.on('throwout', eventEmitter.trigger.bind(null, 'throwout'));
-        card.on('throwoutleft', eventEmitter.trigger.bind(null, 'throwoutleft'));
-        card.on('throwoutright', eventEmitter.trigger.bind(null, 'throwoutright'));
-        card.on('throwin', eventEmitter.trigger.bind(null, 'throwin'));
-        card.on('dragstart', eventEmitter.trigger.bind(null, 'dragstart'));
-        card.on('dragmove', eventEmitter.trigger.bind(null, 'dragmove'));
-        card.on('dragend', eventEmitter.trigger.bind(null, 'dragend'));
+        events.forEach(function (name) {
+            card.on(name, function (data) {
+                eventEmitter.trigger(name, data);
+            });
+        });
+
+        index.push({
+            card: card,
+            listeners: listeners
+        });
 
         return card;
+    };
+
+    /**
+     * 
+     */
+    stack.destroyCard = function (card) {
+        
     };
 
     return stack;

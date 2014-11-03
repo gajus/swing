@@ -8,17 +8,25 @@ describe('Stack', function () {
             var configInput = {},
                 stack = gajus.Swing.Stack(configInput);
             
-            expect(stack.config()).toEqual(configInput);
+            expect(stack.config()).to.equal(configInput);
         });
     });
     describe('.springSystem()', function () {
         it('returns an instance of SpringSystem', function () {
-            expect(stack.springSystem().constructor.name).toEqual('SpringSystem');
+            expect(stack.springSystem().constructor.name).to.equal('SpringSystem');
         });
     });
-    //describe('.eventEmitter()', function () {
-    //    it('returns an instance of the Sister event emitter', function () {
-    //        expect(stack.eventEmitter().constructor.name).toEqual('Sister');
-    //    });
-    //});
+    describe('.createCard()', function () {
+        it('returns an instance of Card', function () {
+            var parentElement = document.createElement('div'),
+                element = document.createElement('div'),
+                card;
+
+            parentElement.appendChild(element);
+
+            card = stack.createCard(element);
+
+            expect(card).to.instanceof(gajus.Swing.Card);
+        });
+    });
 });

@@ -17,7 +17,7 @@ util.randomInt = function (min, max) {
  * @param {HTMLElement} targetElement
  */
 Card = function (stack, targetElement) {
-    var card = {},
+    var card = this,
         config = Card.config(stack.config()),
         targetElementWidth = targetElement.offsetWidth,
         targetElementHeight = targetElement.offsetHeight,
@@ -146,6 +146,8 @@ Card = function (stack, targetElement) {
         mc.destroy();
         springSnapBack.destroy();
         springThrowOut.destroy();
+
+        stack.destroyCard(card);
     };
 
     /**

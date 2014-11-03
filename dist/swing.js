@@ -3569,19 +3569,32 @@ function Sister () {
         events = {};
 
     /**
-     * @name listener
+     * @name handler
      * @function
      * @param {Object} data Event data.
      */
 
     /**
      * @param {String} name Event name.
-     * @param {listener} listener
+     * @param {handler} handler
+     * @return {listener}
      */
-    sister.on = function (name, listener) {
+    sister.on = function (name, handler) {
+        var listener = {name: name, handler: handler};
         events[name] = events[name] || [];
         events[name].unshift(listener);
-        return this;
+        return listener;
+    };
+
+    /**
+     * @param {listener}
+     */
+    sister.off = function (listener) {
+        var index = events[listener.name].indexOf(listener);
+
+        if (index != -1) {
+            events[listener.name].splice(index, 1);
+        }
     };
 
     /**
@@ -3595,7 +3608,7 @@ function Sister () {
         if (listeners) {
             i = listeners.length;
             while (i--) {
-                listeners[i](data);
+                listeners[i].handler(data);
             }
         }
     };
@@ -3678,7 +3691,7 @@ util.randomInt = function (min, max) {
  * @param {HTMLElement} targetElement
  */
 Card = function (stack, targetElement) {
-    var card = {},
+    var card = this,
         config = Card.config(stack.config()),
         targetElementWidth = targetElement.offsetWidth,
         targetElementHeight = targetElement.offsetHeight,
@@ -3807,6 +3820,8 @@ Card = function (stack, targetElement) {
         mc.destroy();
         springSnapBack.destroy();
         springThrowOut.destroy();
+
+        stack.destroyCard(card);
     };
 
     /**
@@ -4003,7 +4018,8 @@ var Stack,
 Stack = function (config) {
     var stack = {},
         springSystem = new rebound.SpringSystem(),
-        eventEmitter = Sister();
+        eventEmitter = Sister(),
+        index = [];
 
     /**
      * Get the configuration object.
@@ -4037,18 +4053,30 @@ Stack = function (config) {
      * @return {Card}
      */
     stack.createCard = function (targetElement) {
-        var card = new Card(this, targetElement);
+        var card = new Card(this, targetElement),
+            events = ['throwout', 'throwoutleft', 'throwoutright', 'throwin', 'dragstart', 'dragmove', 'dragend'],
+            listeners = [];
 
         // Proxy Card events to the Stack.
-        card.on('throwout', eventEmitter.trigger.bind(null, 'throwout'));
-        card.on('throwoutleft', eventEmitter.trigger.bind(null, 'throwoutleft'));
-        card.on('throwoutright', eventEmitter.trigger.bind(null, 'throwoutright'));
-        card.on('throwin', eventEmitter.trigger.bind(null, 'throwin'));
-        card.on('dragstart', eventEmitter.trigger.bind(null, 'dragstart'));
-        card.on('dragmove', eventEmitter.trigger.bind(null, 'dragmove'));
-        card.on('dragend', eventEmitter.trigger.bind(null, 'dragend'));
+        events.forEach(function (name) {
+            card.on(name, function (data) {
+                eventEmitter.trigger(name, data);
+            });
+        });
+
+        index.push({
+            card: card,
+            listeners: listeners
+        });
 
         return card;
+    };
+
+    /**
+     * 
+     */
+    stack.destroyCard = function (card) {
+        
     };
 
     return stack;
