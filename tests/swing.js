@@ -60,8 +60,14 @@ describe('Stack', function () {
             setupEnv = function (config) {
                 var parentElement = document.createElement('div'),
                     cardElement = document.createElement('div'),
-                    stack = gajus.Swing.Stack(config),
+                    stack,
                     card;
+
+                config = config || {};
+                config.targetElementWidth = 100;
+                config.targetElementHeight = 100;
+
+                stack = gajus.Swing.Stack(config);
 
                 parentElement.appendChild(cardElement);
 
@@ -82,13 +88,37 @@ describe('Stack', function () {
         });
         describe('isThrowOut', function () {
             it('is invoked in the event of dragend', function () {
-                var env = setupEnv();
-                env.card.on('dragstart', function () {
-                    console.log('OK');
-                });
+                var spy = sinon.spy(),
+                    env = setupEnv({isThrowOut: spy});
+                expect(spy).to.not.have.been.called;
                 env.card._trigger('_mousedown');
+                expect(spy).to.not.have.been.called;
                 env.card._trigger('_panmove', {deltaX: 10, deltaY: 10});
+                expect(spy).to.not.have.been.called;
                 env.card._trigger('_panend', {deltaX: 10, deltaY: 10});
+                expect(spy).to.have.been.called;
+            });
+            [true, false].forEach(function (throwOut) {
+                it('determines throwOut event', function () {
+                    var env = setupEnv({isThrowOut: function () { return throwOut; }}),
+                        spy1 = sinon.spy(),
+                        spy2 = sinon.spy();
+
+                    env.card.on('throwout', spy1);
+                    env.card.on('throwin', spy2);
+
+                    env.card._trigger('_mousedown');
+                    env.card._trigger('_panmove', {deltaX: 10, deltaY: 10});
+                    env.card._trigger('_panend', {deltaX: 10, deltaY: 10});
+
+                    if (throwOut) {
+                        expect(spy1).to.have.been.called;
+                        expect(spy2).to.have.not.been.called;
+                    } else {
+                        expect(spy1).to.have.not.been.called;
+                        expect(spy2).to.have.been.called;
+                    }
+                });
             });
         });
     });

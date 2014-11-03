@@ -3,6 +3,7 @@ module.exports = function(config) {
         basePath: '',
         frameworks: ['mocha', 'sinon-chai'],
         files: [
+            'src/rAF.js',
             'dist/*',
             'tests/*.js'
         ],
