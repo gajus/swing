@@ -6,11 +6,20 @@ var Stack,
 /**
  * @param {Object} config
  */
-Stack = function (config) {
-    var stack = {},
-        springSystem = new rebound.SpringSystem(),
-        eventEmitter = Sister(),
-        index = [];
+Stack = function Stack (config) {
+    var stack,
+        springSystem,
+        eventEmitter,
+        index;
+
+    if (!(this instanceof Stack)) {
+        return new Stack(config);
+    }
+
+    stack = this;
+    springSystem = new rebound.SpringSystem();
+    eventEmitter = Sister();
+    index = [];
 
     /**
      * Get the configuration object.
@@ -46,7 +55,7 @@ Stack = function (config) {
      * @return {Card}
      */
     stack.createCard = function (element) {
-        var card = new Card(this, element),
+        var card = Card(this, element),
             events = ['throwout', 'throwoutleft', 'throwoutright', 'throwin', 'dragstart', 'dragmove', 'dragend'];
 
         // Proxy Card events to the Stack.

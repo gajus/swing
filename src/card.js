@@ -16,20 +16,38 @@ util.randomInt = function (min, max) {
  * @param {Stack} stack
  * @param {HTMLElement} targetElement
  */
-Card = function (stack, targetElement) {
-    var card = this,
-        config = Card.config(stack.config()),
-        targetElementWidth = targetElement.offsetWidth,
-        targetElementHeight = targetElement.offsetHeight,
-        eventEmitter = Sister(),
-        springSystem = stack.springSystem(),
-        springSnapBack = springSystem.createSpring(250, 10),
-        springThrowOut = springSystem.createSpring(500, 20),
-        lastThrow = {},
-        lastTranslate = {x: 0, y: 0},
+Card = function Card (stack, targetElement) {
+    var card,
+        config,
+        targetElementWidth,
+        targetElementHeight,
+        eventEmitter,
+        springSystem,
+        springSnapBack,
+        springThrowOut,
+        lastThrow,
+        lastTranslate,
         throwOutDistance,
         onSpringUpdate,
         throwWhere;
+
+    if (!(this instanceof Card)) {
+        return new Card(stack, targetElement);
+    }
+
+    card = this,
+    config = Card.config(stack.config()),
+    targetElementWidth = targetElement.offsetWidth,
+    targetElementHeight = targetElement.offsetHeight,
+    eventEmitter = Sister(),
+    springSystem = stack.springSystem(),
+    springSnapBack = springSystem.createSpring(250, 10),
+    springThrowOut = springSystem.createSpring(500, 20),
+    lastThrow = {},
+    lastTranslate = {x: 0, y: 0},
+    throwOutDistance,
+    onSpringUpdate,
+    throwWhere;
 
     throwOutDistance = config.throwOutDistance(config.minThrowOutDistance, config.maxThrowOutDistance);
 

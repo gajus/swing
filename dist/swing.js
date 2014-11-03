@@ -3690,20 +3690,38 @@ util.randomInt = function (min, max) {
  * @param {Stack} stack
  * @param {HTMLElement} targetElement
  */
-Card = function (stack, targetElement) {
-    var card = this,
-        config = Card.config(stack.config()),
-        targetElementWidth = targetElement.offsetWidth,
-        targetElementHeight = targetElement.offsetHeight,
-        eventEmitter = Sister(),
-        springSystem = stack.springSystem(),
-        springSnapBack = springSystem.createSpring(250, 10),
-        springThrowOut = springSystem.createSpring(500, 20),
-        lastThrow = {},
-        lastTranslate = {x: 0, y: 0},
+Card = function Card (stack, targetElement) {
+    var card,
+        config,
+        targetElementWidth,
+        targetElementHeight,
+        eventEmitter,
+        springSystem,
+        springSnapBack,
+        springThrowOut,
+        lastThrow,
+        lastTranslate,
         throwOutDistance,
         onSpringUpdate,
         throwWhere;
+
+    if (!(this instanceof Card)) {
+        return new Card(stack, targetElement);
+    }
+
+    card = this,
+    config = Card.config(stack.config()),
+    targetElementWidth = targetElement.offsetWidth,
+    targetElementHeight = targetElement.offsetHeight,
+    eventEmitter = Sister(),
+    springSystem = stack.springSystem(),
+    springSnapBack = springSystem.createSpring(250, 10),
+    springThrowOut = springSystem.createSpring(500, 20),
+    lastThrow = {},
+    lastTranslate = {x: 0, y: 0},
+    throwOutDistance,
+    onSpringUpdate,
+    throwWhere;
 
     throwOutDistance = config.throwOutDistance(config.minThrowOutDistance, config.maxThrowOutDistance);
 
@@ -4015,11 +4033,20 @@ var Stack,
 /**
  * @param {Object} config
  */
-Stack = function (config) {
-    var stack = {},
-        springSystem = new rebound.SpringSystem(),
-        eventEmitter = Sister(),
-        index = [];
+Stack = function Stack (config) {
+    var stack,
+        springSystem,
+        eventEmitter,
+        index;
+
+    if (!(this instanceof Stack)) {
+        return new Stack(config);
+    }
+
+    stack = this;
+    springSystem = new rebound.SpringSystem();
+    eventEmitter = Sister();
+    index = [];
 
     /**
      * Get the configuration object.
@@ -4055,7 +4082,7 @@ Stack = function (config) {
      * @return {Card}
      */
     stack.createCard = function (element) {
-        var card = new Card(this, element),
+        var card = Card(this, element),
             events = ['throwout', 'throwoutleft', 'throwoutright', 'throwin', 'dragstart', 'dragmove', 'dragend'];
 
         // Proxy Card events to the Stack.
