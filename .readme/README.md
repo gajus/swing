@@ -100,11 +100,11 @@ config = {
      * Ration of the absolute distance from the original card position and element width.
      * 
      * @param {Number} offset Distance from the dragStart.
-     * @param {Number} elementWidth Width of the element being dragged.
+     * @param {HTMLElement} element Element.
      * @return {Number}
      */
-    throwOutConfidence: function (offset, elementWidth) {
-        return Math.min(Math.abs(offset) / elementWidth, 1);
+    throwOutConfidence: function (offset, element) {
+        return Math.min(Math.abs(offset) / element.offsetWidth, 1);
     }
 };
 
