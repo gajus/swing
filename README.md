@@ -155,8 +155,8 @@ card = stack.createCard(HTMLElement);
 | --- | --- |
 | `stack.createCard(element)` | Creates an instance of Card and associates it with the element. |
 | `stack.getCard(element)` | Returns card associated with an element. |
-| `stack.on(eventName, listener)` | Attaches an [event listener](#events). |
-| `card.on(eventName, listener)` | Attaches an [event listener](#events). |
+| `stack.on(event, listener)` | Attaches an [event listener](#events). |
+| `card.on(event, listener)` | Attaches an [event listener](#events). |
 | `card.throwIn(x, y)` | Throws a card into the stack from an arbitrary position. `x, y` is the position at the start of the throw. |
 | `card.throwOut(x, y)` | Throws a card out of the stack in the direction away from the original offset. `x, y` is the position at the start of the throw. |
 | `card.destroy()` | Unbinds all Hammer.Manager events. Removes the listeners from the physics simulation. |
