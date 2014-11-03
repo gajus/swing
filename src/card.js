@@ -42,6 +42,12 @@ Card = function Card (stack, targetElement) {
     lastThrow = {};
     lastTranslate = {x: 0, y: 0};
 
+    springSnapBack.setRestSpeedThreshold(0.05);
+    springSnapBack.setRestDisplacementThreshold(0.05);
+
+    springThrowOut.setRestSpeedThreshold(0.05);
+    springThrowOut.setRestDisplacementThreshold(0.05);
+
     throwOutDistance = config.throwOutDistance(config.minThrowOutDistance, config.maxThrowOutDistance);
 
     mc = new Hammer.Manager(targetElement, {
@@ -108,6 +114,11 @@ Card = function Card (stack, targetElement) {
                 y = rebound.MathUtil.mapValueInRange(value, 0, 1, lastThrow.fromY, 0);
 
             onSpringUpdate(x, y);
+        },
+        onSpringAtRest: function () {
+            eventEmitter.trigger('throwoutend', {
+                target: targetElement
+            });
         }
     });
 
@@ -117,7 +128,12 @@ Card = function Card (stack, targetElement) {
                 x = rebound.MathUtil.mapValueInRange(value, 0, 1, lastThrow.fromX, throwOutDistance * lastThrow.direction),
                 y = lastThrow.fromY;
 
-            onSpringUpdate(x, y);            
+            onSpringUpdate(x, y);    
+        },
+        onSpringAtRest: function () {
+            eventEmitter.trigger('throwoutend', {
+                target: targetElement
+            });
         }
     });
 

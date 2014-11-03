@@ -191,6 +191,7 @@ stack.on('throwout', function () {});
 | Name | Description |
 | --- | --- |
 | `throwout` | When card has been thrown out of the stack. |
+| `throwoutend` | When card has been thrown out of the stack and the animation has ended. |
 | `throwoutleft` | Shorthand for `throwout` event in the `Card.DIRECTION_LEFT` direction. |
 | `throwoutright` | Shorthand for `throwout` event in the `Card.DIRECTION_RIGHT` direction. |
 | `throwin` | When card has been thrown into the stack, including the spring back into place effect. |
