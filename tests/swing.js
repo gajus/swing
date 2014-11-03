@@ -55,17 +55,24 @@ describe('Stack', function () {
         });
     });
     describe('.config()', function () {
-        var card,
-            cardElement;
+        var setupEnv;
         beforeEach(function () {
-            var parentElement = document.createElement('div');
-            
-            cardElement = document.createElement('div');
-            card;
+            setupEnv = function (config) {
+                var parentElement = document.createElement('div'),
+                    cardElement = document.createElement('div'),
+                    stack = gajus.Swing.Stack(config),
+                    card;
 
-            parentElement.appendChild(cardElement);
+                parentElement.appendChild(cardElement);
 
-            card = stack.createCard(cardElement);
+                card = stack.createCard(cardElement);
+
+                return {
+                    stack: stack,
+                    card: card,
+                    cardElement: cardElement
+                };
+            };            
         });
         it('returns the config object', function () {
             var configInput = {},
@@ -73,12 +80,16 @@ describe('Stack', function () {
             
             expect(stack.config()).to.equal(configInput);
         });
-        /*describe('isThrowOut', function () {
+        describe('isThrowOut', function () {
             it('is invoked in the event of dragend', function () {
-                card.on('dragstart', function () {
+                var env = setupEnv();
+                env.card.on('dragstart', function () {
                     console.log('OK');
                 });
+                env.card._trigger('_mousedown');
+                env.card._trigger('_panmove', {deltaX: 10, deltaY: 10});
+                env.card._trigger('_panend', {deltaX: 10, deltaY: 10});
             });
-        });*/
+        });
     });
 });

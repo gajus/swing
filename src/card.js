@@ -37,8 +37,8 @@ Card = function Card (stack, targetElement) {
 
     card = this;
     config = Card.config(stack.config());
-    targetElementWidth = targetElement.offsetWidth;
-    targetElementHeight = targetElement.offsetHeight;
+    targetElementWidth = config.targetElementWidth | targetElement.offsetWidth;
+    targetElementHeight = config.targetElementHeight | targetElement.offsetHeight;
     eventEmitter = Sister();
     springSystem = stack.springSystem();
     springSnapBack = springSystem.createSpring(250, 10);
