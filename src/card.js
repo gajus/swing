@@ -35,19 +35,16 @@ Card = function Card (stack, targetElement) {
         return new Card(stack, targetElement);
     }
 
-    card = this,
-    config = Card.config(stack.config()),
-    targetElementWidth = targetElement.offsetWidth,
-    targetElementHeight = targetElement.offsetHeight,
-    eventEmitter = Sister(),
-    springSystem = stack.springSystem(),
-    springSnapBack = springSystem.createSpring(250, 10),
-    springThrowOut = springSystem.createSpring(500, 20),
-    lastThrow = {},
-    lastTranslate = {x: 0, y: 0},
-    throwOutDistance,
-    onSpringUpdate,
-    throwWhere;
+    card = this;
+    config = Card.config(stack.config());
+    targetElementWidth = targetElement.offsetWidth;
+    targetElementHeight = targetElement.offsetHeight;
+    eventEmitter = Sister();
+    springSystem = stack.springSystem();
+    springSnapBack = springSystem.createSpring(250, 10);
+    springThrowOut = springSystem.createSpring(500, 20);
+    lastThrow = {};
+    lastTranslate = {x: 0, y: 0};
 
     throwOutDistance = config.throwOutDistance(config.minThrowOutDistance, config.maxThrowOutDistance);
 
@@ -59,7 +56,8 @@ Card = function Card (stack, targetElement) {
 
     Card.appendToParent(targetElement);
 
-    targetElement.addEventListener('mousedown', function () {
+
+    eventEmitter.on('_mousedown', function () {
         Card.appendToParent(targetElement);
 
         eventEmitter.trigger('dragstart', {
@@ -67,7 +65,7 @@ Card = function Card (stack, targetElement) {
         });
     });
 
-    mc.on('panmove', function (e) {
+    eventEmitter.on('_panmove', function (e) {
         var x = lastTranslate.x + e.deltaX,
             y = lastTranslate.y + e.deltaY,
             r = config.rotation(x, y, targetElementWidth, targetElementHeight, config.maxRotation);
@@ -81,7 +79,7 @@ Card = function Card (stack, targetElement) {
         });
     });
 
-    mc.on('panend', function(e) {
+    eventEmitter.on('_panend', function (e) {
         var x = lastTranslate.x + e.deltaX,
             y = lastTranslate.y + e.deltaY;
 
@@ -94,6 +92,18 @@ Card = function Card (stack, targetElement) {
         eventEmitter.trigger('dragend', {
             target: targetElement
         });
+    });
+
+    targetElement.addEventListener('mousedown', function () {
+        eventEmitter.trigger('_mousedown');
+    });
+
+    mc.on('panmove', function (e) {
+        eventEmitter.trigger('_panmove', e);
+    });
+
+    mc.on('panend', function(e) {
+        eventEmitter.trigger('_panend', e);
     });
 
     springSnapBack.addListener({
@@ -135,6 +145,7 @@ Card = function Card (stack, targetElement) {
      * Alias
      */
     card.on = eventEmitter.on;
+    card._trigger = eventEmitter.trigger;
 
     /**
      * Throws a card into the stack from an arbitrary position.

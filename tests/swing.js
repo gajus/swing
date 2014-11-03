@@ -3,14 +3,6 @@ describe('Stack', function () {
     beforeEach(function () {
         stack = gajus.Swing.Stack();
     });
-    describe('.config()', function () {
-        it('returns the config object', function () {
-            var configInput = {},
-                stack = gajus.Swing.Stack(configInput);
-            
-            expect(stack.config()).to.equal(configInput);
-        });
-    });
     describe('.springSystem()', function () {
         it('returns an instance of SpringSystem', function () {
             expect(stack.springSystem().constructor.name).to.equal('SpringSystem');
@@ -61,5 +53,32 @@ describe('Stack', function () {
 
             expect(spy).to.have.been.calledWith(card);
         });
+    });
+    describe('.config()', function () {
+        var card,
+            cardElement;
+        beforeEach(function () {
+            var parentElement = document.createElement('div');
+            
+            cardElement = document.createElement('div');
+            card;
+
+            parentElement.appendChild(cardElement);
+
+            card = stack.createCard(cardElement);
+        });
+        it('returns the config object', function () {
+            var configInput = {},
+                stack = gajus.Swing.Stack(configInput);
+            
+            expect(stack.config()).to.equal(configInput);
+        });
+        /*describe('isThrowOut', function () {
+            it('is invoked in the event of dragend', function () {
+                card.on('dragstart', function () {
+                    console.log('OK');
+                });
+            });
+        });*/
     });
 });
