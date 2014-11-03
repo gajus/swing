@@ -3693,8 +3693,6 @@ util.randomInt = function (min, max) {
 Card = function Card (stack, targetElement) {
     var card,
         config,
-        targetElementWidth,
-        targetElementHeight,
         eventEmitter,
         springSystem,
         springSnapBack,
@@ -3711,8 +3709,6 @@ Card = function Card (stack, targetElement) {
 
     card = this;
     config = Card.config(stack.config());
-    targetElementWidth = config.targetElementWidth || targetElement.offsetWidth;
-    targetElementHeight = config.targetElementHeight || targetElement.offsetHeight;
     eventEmitter = Sister();
     springSystem = stack.springSystem();
     springSnapBack = springSystem.createSpring(250, 10);
@@ -3742,13 +3738,13 @@ Card = function Card (stack, targetElement) {
     eventEmitter.on('_panmove', function (e) {
         var x = lastTranslate.x + e.deltaX,
             y = lastTranslate.y + e.deltaY,
-            r = config.rotation(x, y, targetElementWidth, targetElementHeight, config.maxRotation);
+            r = config.rotation(x, y, targetElement, config.maxRotation);
 
         Card.transform(targetElement, x, y, r);
 
         eventEmitter.trigger('dragmove', {
             target: targetElement,
-            throwOutConfidence: Card.throwOutConfidence(x, targetElementWidth),
+            throwOutConfidence: config.throwOutConfidence(x, targetElement),
             throwDirection: x < 0 ? Card.DIRECTION_LEFT : Card.DIRECTION_RIGHT
         });
     });
@@ -3757,7 +3753,7 @@ Card = function Card (stack, targetElement) {
         var x = lastTranslate.x + e.deltaX,
             y = lastTranslate.y + e.deltaY;
 
-        if (config.isThrowOut(x, targetElementWidth)) {
+        if (config.isThrowOut(x, targetElement, config.throwOutConfidence(x, targetElement))) {
             card.throwOut(x, y);
         } else {
             card.throwIn(x, y);
@@ -3807,7 +3803,7 @@ Card = function Card (stack, targetElement) {
      * @param {Number} y
      */
     onSpringUpdate = function (x, y) {
-        var r = config.rotation(x, y, targetElementWidth, targetElementHeight, config.maxRotation);
+        var r = config.rotation(x, y, targetElement, config.maxRotation);
 
         lastTranslate.x = x;
         lastTranslate.y = y;
@@ -3961,11 +3957,11 @@ Card.appendToParent = function (element) {
  * Ration of the absolute distance from the original card position and element width.
  * 
  * @param {Number} offset Distance from the dragStart.
- * @param {Number} elementWidth Width of the element being dragged.
+ * @param {HTMLElement} element Element.
  * @return {Number}
  */
-Card.throwOutConfidence = function (offset, elementWidth) {
-    return Math.min(Math.abs(offset) / elementWidth, 1);
+Card.throwOutConfidence = function (offset, element) {
+    return Math.min(Math.abs(offset) / element.offsetWidth, 1);
 };
 
 /**
@@ -3974,11 +3970,12 @@ Card.throwOutConfidence = function (offset, elementWidth) {
  * Element is considered to be thrown out when throwOutConfidence is equal to 1.
  * 
  * @param {Number} offset Distance from the dragStart.
- * @param {Number} elementWidth Width of the element being dragged.
+ * @param {HTMLElement} element Element.
+ * @param {Number} throwOutConfidence config.throwOutConfidence
  * @return {Boolean}
  */
-Card.isThrowOut = function (offset, elementWidth) {
-    return Card.throwOutConfidence(offset, elementWidth) == 1;
+Card.isThrowOut = function (offset, element, throwOutConfidence) {
+    return throwOutConfidence == 1;
 };
 
 /**
@@ -3998,13 +3995,12 @@ Card.throwOutDistance = function (minThrowOutDistance, maxThrowOutDistance) {
  * 
  * @param {Number} x Horizontal offset from the startDrag.
  * @param {Number} y Vertical offset from the startDrag.
- * @param {Number} elementWidth
- * @param {Number} elementHeight
+ * @param {HTMLElement} element Element.
  * @param {Number} maxRotation
  * @return {Number} Rotation angle expressed in degrees.
  */
-Card.rotation = function (x, y, elementWidth, elementHeight, maxRotation) {
-    var horizontalOffset = Math.min(Math.max(x/elementWidth, -1), 1),
+Card.rotation = function (x, y, element, maxRotation) {
+    var horizontalOffset = Math.min(Math.max(x/element.offsetWidth, -1), 1),
         verticalOffset = (y > 0 ? 1 : -1) * Math.min(Math.abs(y)/100, 1),
         rotation = horizontalOffset * verticalOffset * maxRotation;
 

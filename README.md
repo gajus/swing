@@ -138,8 +138,6 @@ stack = stack = Swing.Stack(config);
 | `rotation` | Invoked in the event of `dragmove`. Determine the rotation of the element. | Rotation is equal to the proportion of horizontal and vertical offset times the `maximumRotation` constant. |
 | `maxRotation` | In effect when `rotation` is not overwritten. | 20. |
 | `transform` | Invoked in the event of `dragmove` and every time the physics solver is triggered. | Uses CSS transform to translate element position and rotation. |
-| `targetElementWidth` | Set target element width. | Using `offsetWidth` at a time of creating the card. |
-| `targetElementHeight` | Set target element height. | Using `offsetWidth` at a time of creating the card. |
 
 All of the configuration parameters are optional. Refer to the source code of the [card](https://github.com/gajus/swing/blob/master/src/card.js) module to learn the parameters associated with every callback.
 

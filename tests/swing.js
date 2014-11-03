@@ -121,5 +121,20 @@ describe('Stack', function () {
                 });
             });
         });
+        describe('throwOutConfidence', function () {
+            it('is invoked in the event of dragmove', function () {
+                var spy = sinon.spy(),
+                    env = setupEnv({throwOutConfidence: spy});
+
+                env.card.on('throwout', spy);
+
+                env.card._trigger('_mousedown');
+                env.card._trigger('_panmove', {deltaX: 10, deltaY: 10});
+                env.card._trigger('_panmove', {deltaX: 11, deltaY: 10});
+                env.card._trigger('_panmove', {deltaX: 12, deltaY: 10});
+
+                expect(spy.callCount).to.equal(3);
+            });
+        });
     });
 });
