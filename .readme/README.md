@@ -178,6 +178,7 @@ stack.on('throwout', function () {});
 | `throwoutleft` | Shorthand for `throwout` event in the `Card.DIRECTION_LEFT` direction. |
 | `throwoutright` | Shorthand for `throwout` event in the `Card.DIRECTION_RIGHT` direction. |
 | `throwin` | When card has been thrown into the stack, including the spring back into place effect. |
+| `throwinend` | When card has been thrown into the stack and the animation has ended. |
 | `dragstart` | Hammer [panstart](http://hammerjs.github.io/recognizer-pan/). |
 | `dragmove` | Hammer [panmove](http://hammerjs.github.io/recognizer-pan/). |
 | `dragend` | Hammer [panend](http://hammerjs.github.io/recognizer-pan/). |

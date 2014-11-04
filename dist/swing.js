@@ -3695,7 +3695,7 @@ Card = function Card (stack, targetElement) {
         config,
         eventEmitter,
         springSystem,
-        springSnapBack,
+        springThrowIn,
         springThrowOut,
         lastThrow,
         lastTranslate,
@@ -3711,13 +3711,13 @@ Card = function Card (stack, targetElement) {
     config = Card.config(stack.config());
     eventEmitter = Sister();
     springSystem = stack.springSystem();
-    springSnapBack = springSystem.createSpring(250, 10);
+    springThrowIn = springSystem.createSpring(250, 10);
     springThrowOut = springSystem.createSpring(500, 20);
     lastThrow = {};
     lastTranslate = {x: 0, y: 0};
 
-    springSnapBack.setRestSpeedThreshold(0.05);
-    springSnapBack.setRestDisplacementThreshold(0.05);
+    springThrowIn.setRestSpeedThreshold(0.05);
+    springThrowIn.setRestDisplacementThreshold(0.05);
 
     springThrowOut.setRestSpeedThreshold(0.05);
     springThrowOut.setRestDisplacementThreshold(0.05);
@@ -3781,7 +3781,7 @@ Card = function Card (stack, targetElement) {
         eventEmitter.trigger('_panend', e);
     });
 
-    springSnapBack.addListener({
+    springThrowIn.addListener({
         onSpringUpdate: function (spring) {
             var value = spring.getCurrentValue(),
                 x = rebound.MathUtil.mapValueInRange(value, 0, 1, lastThrow.fromX, 0),
@@ -3790,7 +3790,7 @@ Card = function Card (stack, targetElement) {
             onSpringUpdate(x, y);
         },
         onSpringAtRest: function () {
-            eventEmitter.trigger('throwoutend', {
+            eventEmitter.trigger('throwinend', {
                 target: targetElement
             });
         }
@@ -3858,7 +3858,7 @@ Card = function Card (stack, targetElement) {
      */
     card.destroy = function () {
         mc.destroy();
-        springSnapBack.destroy();
+        springThrowIn.destroy();
         springThrowOut.destroy();
 
         stack._destroyCard(card);
@@ -3875,7 +3875,7 @@ Card = function Card (stack, targetElement) {
         lastThrow.direction = lastThrow.fromX < 0 ? Card.DIRECTION_LEFT : Card.DIRECTION_RIGHT;
 
         if (where == Card.THROW_IN) {
-            springSnapBack.setCurrentValue(0).setAtRest().setEndValue(1);
+            springThrowIn.setCurrentValue(0).setAtRest().setEndValue(1);
 
             eventEmitter.trigger('throwin', {
                 target: targetElement,

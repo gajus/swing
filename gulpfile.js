@@ -5,7 +5,6 @@ var karma = require('karma').server,
     rename = require('gulp-rename'),
     uglify = require('gulp-uglify'),
     browserify = require('gulp-browserify'),
-    fs = require('fs'),
     del = require('del'),
     exec = require('child_process').exec,
     jsonfile = require('jsonfile');
