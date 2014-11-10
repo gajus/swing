@@ -3942,7 +3942,7 @@ Card.config = function (config) {
  * @return {null}
  */
 Card.transform = function (element, x, y, r) {
-    element.style[vendorPrefix('transform')] = 'translate(' + x + 'px, ' + y + 'px) rotate(' + r + 'deg)';
+    element.style[vendorPrefix('transform')] = 'translate3d(0, 0, 0) translate(' + x + 'px, ' + y + 'px) rotate(' + r + 'deg)';    
 };
 
 /**
