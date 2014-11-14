@@ -56,7 +56,16 @@ Stack = function Stack (config) {
      */
     stack.createCard = function (element) {
         var card = Card(this, element),
-            events = ['throwout', 'throwoutend', 'throwoutleft', 'throwoutright', 'throwin', 'dragstart', 'dragmove', 'dragend'];
+            events = [
+                'throwout',
+                'throwoutend',
+                'throwoutleft',
+                'throwoutright',
+                'throwin',
+                'dragstart',
+                'dragmove',
+                'dragend'
+            ];
 
         // Proxy Card events to the Stack.
         events.forEach(function (name) {

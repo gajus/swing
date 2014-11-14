@@ -3,7 +3,8 @@ var Card,
     Hammer = require('hammerjs'),
     rebound = require('rebound'),
     vendorPrefix = require('vendor-prefix'),
-    util = {};
+    util = {},
+    _isTouchDevice;
 
 /**
  * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random
@@ -58,7 +59,7 @@ Card = function Card (stack, targetElement) {
 
     Card.appendToParent(targetElement);
 
-    eventEmitter.on('_mousedown', function () {
+    eventEmitter.on('_panstart', function () {
         Card.appendToParent(targetElement);
 
         eventEmitter.trigger('dragstart', {
@@ -95,9 +96,37 @@ Card = function Card (stack, targetElement) {
         });
     });
 
-    targetElement.addEventListener('mousedown', function () {
-        eventEmitter.trigger('_mousedown');
-    });
+    // "mousedown" event fires late on touch enabled devices, thus listening
+    // to the touchstart event for touch enabled devices and mousedown otherwise.
+    if (_isTouchDevice()) {
+         targetElement.addEventListener('touchstart', function () {
+                eventEmitter.trigger('_panstart');
+        });
+
+        // Disable scrolling while dragging the element on the touch enabled devices.
+        // @see http://stackoverflow.com/a/12090055/368691
+        (function () {
+            var dragging;
+
+            targetElement.addEventListener('touchstart', function () {
+                dragging = true;
+            });
+
+            targetElement.addEventListener('touchend', function () {
+                dragging = false;
+            });
+
+            global.addEventListener('touchmove', function (e) {
+                if (dragging) {
+                    e.preventDefault();
+                }
+            });
+        } ());
+    } else {
+        targetElement.addEventListener('mousedown', function () {
+            eventEmitter.trigger('_panstart');
+        });
+    }
 
     mc.on('panmove', function (e) {
         eventEmitter.trigger('_panmove', e);
@@ -268,7 +297,7 @@ Card.config = function (config) {
  * @return {null}
  */
 Card.transform = function (element, x, y, r) {
-    element.style[vendorPrefix('transform')] = 'translate3d(0, 0, 0) translate(' + x + 'px, ' + y + 'px) rotate(' + r + 'deg)';    
+    element.style[vendorPrefix('transform')] = 'translate3d(0, 0, 0) translate(' + x + 'px, ' + y + 'px) rotate(' + r + 'deg)';
 };
 
 /**
@@ -346,6 +375,13 @@ Card.rotation = function (x, y, element, maxRotation) {
         rotation = horizontalOffset * verticalOffset * maxRotation;
 
     return rotation;
+};
+
+/**
+ * @see http://stackoverflow.com/questions/4817029/whats-the-best-way-to-detect-a-touch-screen-device-using-javascript/4819886#4819886
+ */
+_isTouchDevice = function () {
+    return 'ontouchstart' in window || navigator.msMaxTouchPoints;
 };
 
 Card.DIRECTION_LEFT = -1;
