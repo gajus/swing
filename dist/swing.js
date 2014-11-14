@@ -1,5 +1,5 @@
 /**
- * @version 1.1.1
+ * @version 1.1.2
  * @link https://github.com/gajus/swing for the canonical source repository
  * @license https://github.com/gajus/swing/blob/master/LICENSE BSD 3-Clause
  */
