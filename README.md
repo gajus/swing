@@ -82,7 +82,7 @@ var stack,
 cards = [].slice.call(document.querySelectorAll('ul li'))
 
 // An instance of the Stack is used to attach event listeners.
-stack = Swing.Stack();
+stack = gajus.Swing.Stack();
 
 cards.forEach(function (targetElement) {
     // Add card element to the Stack.
