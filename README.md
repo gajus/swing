@@ -1,35 +1,37 @@
-# Swing
+<!--
+This file has been generated using GitDown (https://github.com/gajus/gitdown).
+Direct edits to this will be be overwritten. Look for GitDown markup file under ./.gitdown/ path.
+-->
+<h1 id="swing">Swing</h1>
 
-[![Build Status](https://travis-ci.org/gajus/swing.png?branch=master&decache2)](https://travis-ci.org/gajus/swing)
-[![NPM version](https://badge.fury.io/js/swing.svg)](http://badge.fury.io/js/swing)
-[![Bower version](https://badge.fury.io/bo/swing.svg)](http://badge.fury.io/bo/swing)
+[![Travis build status](http://img.shields.io/travis/gajus/swing/master.svg?style=flat)](https://travis-ci.org/gajus/swing)
+[![NPM version](http://img.shields.io/npm/v/swing.svg?style=flat)](https://www.npmjs.org/package/swing)
+[![Bower version](http://img.shields.io/bower/v/swing.svg?style=flat)](http://bower.io/search/?q=swing)
 
 A swipeable cards interface. The swipe-left/swipe-right for yes/no input. As seen in apps like [Jelly](http://jelly.co/) and [Tinder](http://www.gotinder.com/), and [many others](http://www.saydaily.com/2014/09/tinder-swipe-and-media).
 
 Give it a [swing](http://gajus.com/sandbox/swing/examples/card-stack/)! and please [tweet it](https://twitter.com/intent/retweet?tweet_id=527505589732405248) if you like it. : )
 
-![Card stack example.](./.readme/card-stack.gif)
+![Card stack example.](./.gitdown/card-stack.gif)
 
-## Contents
-
-- [Usage Examples](#usage-examples)
-- [Use Case](#use-case)
-    - [Single-Handed Navigation](#singlehanded-navigation)
-    - [Digestible Unit of Information](#digestible-unit-of-information)
-    - [Data](#data)
-- [Quick Start](#quick-start)
-- [Configuration](#configuration)
-- [Methods](#methods)
-    - [Throwing Card Out of the Stack](#throwing-card-out-of-the-stack)
-- [Events](#events)
-    - [Event Object](#event-object)
-- [Download](#download)
-    - [Browser Bundle](#browser-bundle)
-- [Dependencies](#dependencies)
-
+* [Swing](#swing)
+    * [Usage Examples](#swing-usage-examples)
+    * [Use Case](#swing-use-case)
+        * [Single-Handed Navigation](#swing-use-case-single-handed-navigation)
+        * [Digestible Unit of Information](#swing-use-case-digestible-unit-of-information)
+        * [Data](#swing-use-case-data)
+    * [Quick Start](#swing-quick-start)
+    * [Configuration](#swing-configuration)
+    * [Methods](#swing-methods)
+        * [Throwing Card Out of the Stack](#swing-methods-throwing-card-out-of-the-stack)
+    * [Events](#swing-events)
+        * [Event Object](#swing-events-event-object)
+    * [Download](#swing-download)
+        * [Browser Bundle](#swing-download-browser-bundle)
+    * [Dependencies](#swing-dependencies)
 
 
-## Usage Examples
+<h2 id="swing-usage-examples">Usage Examples</h2>
 
 * [Card stack](http://gajus.com/sandbox/swing/examples/card-stack/).
 * [Card stack](http://gajus.com/sandbox/angular-swing/examples/card-stack/) using [angular-swing](https://github.com/gajus/angular-swing/) module.
@@ -40,31 +42,31 @@ The code for all of the examples is in the [./examples/](https://github.com/gaju
 
 [Raise an issue](https://github.com/gajus/swing/issues) if you are missing an example.
 
-## Use Case
+<h2 id="swing-use-case">Use Case</h2>
 
 A collection of observations about the extended use case of the swipeable cards interface, that I found useful when considering the implementation.
 
-### Single-Handed Navigation
+<h3 id="swing-use-case-single-handed-navigation">Single-Handed Navigation</h3>
 
 > Mobile devices are frequently used on-the-go, which drastically increases the probability that you'll attempt to navigate apps using just one hand, with the key digit being the mighty thumb.
 > Instead of browsing endless lists for the hidden perfect piece of data — be it the right music for the moment, what to do tonight, or your next potential hookup — card-swiping turns decision making into a highly engaging Choose-Your-Own-Adventure game.
 
 – https://medium.com/@janel_az/small-data-why-tinder-like-apps-are-the-way-of-the-future-1a4d5703b4b
 
-### Digestible Unit of Information
+<h3 id="swing-use-case-digestible-unit-of-information">Digestible Unit of Information</h3>
 
 > [..] the "card" on a mobile device becomes more and more important as a digestible unit of information on a small screen for users who are on the go and mostly glancing through their apps before settling into the ones that truly engage them.
 
 – http://techcrunch.com/2013/09/22/mobile-apps-card-interfaces-and-our-opposable-thumbs/
 
-### Data
+<h3 id="swing-use-case-data">Data</h3>
 
 > More than a scroll and perhaps even more than discrete taps themselves, cards create repetitive, deliberate, discrete decision moments over and over. And as the user swipes, you can learn.
 > The time they swipe, the speed they swipe, what they swiped, the geolocation where they swiped, and even how similar the results of that swipe are vs. a swipe earlier that session are all possibilities that are yielding smarter apps for you and me every day.
 
 – http://www.itsmakeable.com/unconventional-wisdom/good-user-experience-design-ux-can-do-what-now/
 
-## Quick Start
+<h2 id="swing-quick-start">Quick Start</h2>
 
 ```html
 <ul>
@@ -104,7 +106,7 @@ stack.on('throwin', function (e) {
 });
 ```
 
-## Configuration
+<h2 id="swing-configuration">Configuration</h2>
 
 ```js
 var stack,
@@ -141,7 +143,7 @@ stack = stack = Swing.Stack(config);
 
 All of the configuration parameters are optional. Refer to the source code of the [card](https://github.com/gajus/swing/blob/master/src/card.js) module to learn the parameters associated with every callback.
 
-## Methods
+<h2 id="swing-methods">Methods</h2>
 
 ```js
 var stack,
@@ -161,7 +163,7 @@ card = stack.createCard(HTMLElement);
 | `card.throwOut(x, y)` | Throws a card out of the stack in the direction away from the original offset. `x, y` is the position at the start of the throw. |
 | `card.destroy()` | Unbinds all Hammer.Manager events. Removes the listeners from the physics simulation. |
 
-### Throwing Card Out of the Stack
+<h3 id="swing-methods-throwing-card-out-of-the-stack">Throwing Card Out of the Stack</h3>
 
 Use the `card.throwOut(x, y)` method to throw the card out of the stack. Offset the position to whatever direction you want to throw the card, e.g.
 
@@ -172,7 +174,7 @@ card.throwOut(Card.DIRECTION_RIGHT, 0);
 
 To make the animation more diverse, use random value for the `y` parameter.
 
-## Events
+<h2 id="swing-events">Events</h2>
 
 Event listener can be attached to an instance of `Swing.Stack` or `Swing.Card` using the `on` method:
 
@@ -200,7 +202,7 @@ stack.on('throwout', function () {});
 | `dragmove` | Hammer [panmove](http://hammerjs.github.io/recognizer-pan/). |
 | `dragend` | Hammer [panend](http://hammerjs.github.io/recognizer-pan/). |
 
-### Event Object
+<h3 id="swing-events-event-object">Event Object</h3>
 
 Event listener is invoked with a single `eventObject` parameter:
 
@@ -218,7 +220,7 @@ stack.on('throwout', function (eventObject) {});
 | `direction` | The direction in which the element is being dragged: `Card.DIRECTION_LEFT` or `Card.DIRECTION_RIGHT`. |
 | `throwOutConfidence` | A value between 0 and 1 indicating the completeness of the throw out condition. |
 
-## Download
+<h2 id="swing-download">Download</h2>
 
 Using [Bower](http://bower.io/):
 
@@ -237,7 +239,7 @@ The old-fashioned way, download either of the following files:
 * https://raw.githubusercontent.com/gajus/swing/master/dist/swing.js
 * https://raw.githubusercontent.com/gajus/swing/master/dist/swing.min.js
 
-### Browser Bundle
+<h3 id="swing-download-browser-bundle">Browser Bundle</h3>
 
 When using the `./dist/` version the Swing resides under `gajus` namespace:
 
@@ -245,7 +247,7 @@ When using the `./dist/` version the Swing resides under `gajus` namespace:
 var stack = gajus.Swing.Stack();
 ```
 
-## Dependencies
+<h2 id="swing-dependencies">Dependencies</h2>
 
 If you are using the `./dist/` version, you do not need to download the dependencies.
 
