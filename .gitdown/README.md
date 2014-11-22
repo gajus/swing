@@ -10,6 +10,8 @@ Give it a [swing](http://gajus.com/sandbox/swing/examples/card-stack/)! and plea
 
 ![Card stack example.](./.gitdown/card-stack.gif)
 
+## Contents
+
 {"gitdown": "contents"}
 
 ## Usage Examples

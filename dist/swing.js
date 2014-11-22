@@ -4149,6 +4149,7 @@ Stack = function Stack (config) {
                 'throwoutleft',
                 'throwoutright',
                 'throwin',
+                'throwinend',
                 'dragstart',
                 'dragmove',
                 'dragend'
@@ -4203,4 +4204,5 @@ Stack = function Stack (config) {
 };
 
 module.exports = Stack;
+
 },{"./card.js":6,"rebound":3,"sister":4}]},{},[7])

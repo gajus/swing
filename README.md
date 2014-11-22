@@ -14,7 +14,10 @@ Give it a [swing](http://gajus.com/sandbox/swing/examples/card-stack/)! and plea
 
 ![Card stack example.](./.gitdown/card-stack.gif)
 
+<h2 id="swing-contents">Contents</h2>
+
 * [Swing](#swing)
+    * [Contents](#swing-contents)
     * [Usage Examples](#swing-usage-examples)
     * [Use Case](#swing-use-case)
         * [Single-Handed Navigation](#swing-use-case-single-handed-navigation)
