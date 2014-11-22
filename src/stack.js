@@ -62,6 +62,7 @@ Stack = function Stack (config) {
                 'throwoutleft',
                 'throwoutright',
                 'throwin',
+                'throwinend',
                 'dragstart',
                 'dragmove',
                 'dragend'
