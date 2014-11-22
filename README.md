@@ -237,11 +237,6 @@ Using [NPM](https://www.npmjs.org/):
 npm install swing
 ```
 
-The old-fashioned way, download either of the following files:
-
-* https://raw.githubusercontent.com/gajus/swing/master/dist/swing.js
-* https://raw.githubusercontent.com/gajus/swing/master/dist/swing.min.js
-
 <h3 id="swing-download-browser-bundle">Browser Bundle</h3>
 
 When using the `./dist/` version the Swing resides under `gajus` namespace:
