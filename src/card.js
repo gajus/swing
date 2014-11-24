@@ -316,8 +316,6 @@ Card.appendToParent = function (element) {
         siblings = siblings = dom.elementChildren(parent),
         targetIndex = siblings.indexOf(element);
 
-    console.log(siblings);
-
     if (targetIndex + 1 != siblings.length) {
         parent.removeChild(element);
         parent.appendChild(element);
