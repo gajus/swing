@@ -3,6 +3,7 @@ var Card,
     Hammer = require('hammerjs'),
     rebound = require('rebound'),
     vendorPrefix = require('vendor-prefix'),
+    dom = require('./dom.js'),
     util = {},
     _isTouchDevice;
 
@@ -312,8 +313,10 @@ Card.transform = function (element, x, y, r) {
  */
 Card.appendToParent = function (element) {
     var parent = element.parentNode,
-        siblings = parent.querySelectorAll('li'),
-        targetIndex = [].slice.apply(siblings).indexOf(element);
+        siblings = siblings = dom.elementChildren(parent),
+        targetIndex = siblings.indexOf(element);
+
+    console.log(siblings);
 
     if (targetIndex + 1 != siblings.length) {
         parent.removeChild(element);

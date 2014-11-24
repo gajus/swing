@@ -3678,6 +3678,7 @@ var Card,
     Hammer = require('hammerjs'),
     rebound = require('rebound'),
     vendorPrefix = require('vendor-prefix'),
+    dom = require('./dom.js'),
     util = {},
     _isTouchDevice;
 
@@ -3987,8 +3988,10 @@ Card.transform = function (element, x, y, r) {
  */
 Card.appendToParent = function (element) {
     var parent = element.parentNode,
-        siblings = parent.querySelectorAll('li'),
-        targetIndex = [].slice.apply(siblings).indexOf(element);
+        siblings = siblings = dom.elementChildren(parent),
+        targetIndex = siblings.indexOf(element);
+
+    console.log(siblings);
 
     if (targetIndex + 1 != siblings.length) {
         parent.removeChild(element);
@@ -4067,7 +4070,32 @@ Card.THROW_OUT = 'out';
 
 module.exports = Card;
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"hammerjs":2,"rebound":3,"sister":4,"vendor-prefix":5}],7:[function(require,module,exports){
+},{"./dom.js":7,"hammerjs":2,"rebound":3,"sister":4,"vendor-prefix":5}],7:[function(require,module,exports){
+var dom = {};
+
+/**
+ * Return direct children elements.
+ *
+ * @see http://stackoverflow.com/a/27102446/368691
+ * @param {HTMLElement}
+ * @return {Array}
+ */
+dom.elementChildren = function (element) {
+    var childNodes = element.childNodes,
+        children = [],
+        i = childNodes.length;
+
+    while (i--) {
+        if (childNodes[i].nodeType == 1) {
+            children.unshift(childNodes[i]);
+        }
+    }
+
+    return children;
+}
+
+module.exports = dom;
+},{}],8:[function(require,module,exports){
 (function (global){
 var Stack = require('./stack.js'),
     Card = require('./card.js');
@@ -4084,7 +4112,7 @@ module.exports = {
     Card: Card
 };
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./card.js":6,"./stack.js":8}],8:[function(require,module,exports){
+},{"./card.js":6,"./stack.js":9}],9:[function(require,module,exports){
 var Stack,
     Sister = require('sister'),
     rebound = require('rebound'),
@@ -4205,4 +4233,4 @@ Stack = function Stack (config) {
 
 module.exports = Stack;
 
-},{"./card.js":6,"rebound":3,"sister":4}]},{},[7])
+},{"./card.js":6,"rebound":3,"sister":4}]},{},[8])
