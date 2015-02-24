@@ -3991,8 +3991,6 @@ Card.appendToParent = function (element) {
         siblings = siblings = dom.elementChildren(parent),
         targetIndex = siblings.indexOf(element);
 
-    console.log(siblings);
-
     if (targetIndex + 1 != siblings.length) {
         parent.removeChild(element);
         parent.appendChild(element);
@@ -4069,6 +4067,7 @@ Card.THROW_IN = 'in';
 Card.THROW_OUT = 'out';
 
 module.exports = Card;
+
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./dom.js":7,"hammerjs":2,"rebound":3,"sister":4,"vendor-prefix":5}],7:[function(require,module,exports){
 var dom = {};
