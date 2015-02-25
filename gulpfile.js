@@ -1,19 +1,27 @@
 var karma = require('karma').server,
     gulp = require('gulp'),
-    jshint = require('gulp-jshint'),
+    eslint = require('gulp-eslint'),
     header = require('gulp-header'),
     rename = require('gulp-rename'),
     uglify = require('gulp-uglify'),
-    browserify = require('gulp-browserify'),
+    sourcemaps = require('gulp-sourcemaps'),
+    browserify = require('browserify'),
     del = require('del'),
+    source = require('vinyl-source-stream'),
+    buffer = require('vinyl-buffer'),
     jsonfile = require('jsonfile'),
-    GitDown = require('gitdown');
+    gitdown = require('gitdown'),
+    bundler;
+
+bundler = browserify('./src/swing.js');
+// bundler.transform(babelify);
 
 gulp.task('lint', function () {
     return gulp
-        .src('./src/*.js')
-        .pipe(jshint())
-        .pipe(jshint.reporter('jshint-stylish'));
+        .src(['./src/**/*.js','./tests/**/*.js'])
+        .pipe(eslint())
+        .pipe(eslint.format())
+        .pipe(eslint.failOnError());
 });
 
 gulp.task('clean', ['lint'], function (cb) {
@@ -21,27 +29,22 @@ gulp.task('clean', ['lint'], function (cb) {
 });
 
 gulp.task('bundle', ['clean'], function () {
-    return gulp
-        .src('./src/swing.js')
-        .pipe(browserify({
-            //debug : true
-        }))
+    return bundler
+        .bundle()
+        .on('error', function(err) {
+            console.log(err.message);
+        })
+        .pipe(source('swing.min.js'))
+        .pipe(buffer())
+        .pipe(sourcemaps.init({loadMaps: true}))
+        .pipe(uglify())
+        .pipe(sourcemaps.write('./'))
         .pipe(gulp.dest('./dist/'));
 });
 
 gulp.task('version', ['bundle'], function () {
-    var name = 'swing',
-        pkg = jsonfile.readFileSync('./package.json'),
+    var pkg = jsonfile.readFileSync('./package.json'),
         bower = jsonfile.readFileSync('./bower.json');
-
-    gulp
-        .src('./dist/' + name + '.js')
-        .pipe(header('/**\n * @version <%= version %>\n * @link https://github.com/gajus/' + name + ' for the canonical source repository\n * @license https://github.com/gajus/' + name + '/blob/master/LICENSE BSD 3-Clause\n */\n', {version: pkg.version}))
-        .pipe(gulp.dest('./dist/'))
-        .pipe(uglify())
-        .pipe(rename(name + '.min.js'))
-        .pipe(header('/**\n * @version <%= version %>\n * @link https://github.com/gajus/' + name + ' for the canonical source repository\n * @license https://github.com/gajus/' + name + '/blob/master/LICENSE BSD 3-Clause\n */\n', {version: pkg.version}))
-        .pipe(gulp.dest('./dist/'));
 
     bower.name = pkg.name;
     bower.description = pkg.description;
@@ -54,9 +57,9 @@ gulp.task('version', ['bundle'], function () {
 });
 
 gulp.task('gitdown', function () {
-    return GitDown
-        .read('.gitdown/README.md')
-        .write('README.md');
+    return gitdown
+        .read('./.gitdown/README.md')
+        .write('./README.md');
 });
 
 gulp.task('watch', function () {

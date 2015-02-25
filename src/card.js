@@ -1,3 +1,7 @@
+'use strict';
+
+/* global window, navigator */
+
 var Card,
     Sister = require('sister'),
     Hammer = require('hammerjs'),
@@ -29,7 +33,8 @@ Card = function Card (stack, targetElement) {
         lastTranslate,
         throwOutDistance,
         onSpringUpdate,
-        throwWhere;
+        throwWhere,
+        mc;
 
     if (!(this instanceof Card)) {
         return new Card(stack, targetElement);
@@ -122,7 +127,7 @@ Card = function Card (stack, targetElement) {
                     e.preventDefault();
                 }
             });
-        } ());
+        }());
     } else {
         targetElement.addEventListener('mousedown', function () {
             eventEmitter.trigger('_panstart');
@@ -230,14 +235,14 @@ Card = function Card (stack, targetElement) {
         lastThrow.fromY = fromY;
         lastThrow.direction = lastThrow.fromX < 0 ? Card.DIRECTION_LEFT : Card.DIRECTION_RIGHT;
 
-        if (where == Card.THROW_IN) {
+        if (where === Card.THROW_IN) {
             springThrowIn.setCurrentValue(0).setAtRest().setEndValue(1);
 
             eventEmitter.trigger('throwin', {
                 target: targetElement,
                 throwDirection: lastThrow.direction
             });
-        } else if (where == Card.THROW_OUT) {
+        } else if (where === Card.THROW_OUT) {
             springThrowOut.setCurrentValue(0).setAtRest().setVelocity(100).setEndValue(1);
 
             eventEmitter.trigger('throwout', {
@@ -245,7 +250,7 @@ Card = function Card (stack, targetElement) {
                 throwDirection: lastThrow.direction
             });
 
-            if (lastThrow.direction == Card.DIRECTION_LEFT) {
+            if (lastThrow.direction === Card.DIRECTION_LEFT) {
                 eventEmitter.trigger('throwoutleft', {
                     target: targetElement,
                     throwDirection: lastThrow.direction
@@ -316,7 +321,7 @@ Card.appendToParent = function (element) {
         siblings = dom.elementChildren(parent),
         targetIndex = siblings.indexOf(element);
 
-    if (targetIndex + 1 != siblings.length) {
+    if (targetIndex + 1 !== siblings.length) {
         parent.removeChild(element);
         parent.appendChild(element);
     }
@@ -346,7 +351,7 @@ Card.throwOutConfidence = function (offset, element) {
  * @return {Boolean}
  */
 Card.isThrowOut = function (offset, element, throwOutConfidence) {
-    return throwOutConfidence == 1;
+    return throwOutConfidence === 1;
 };
 
 /**
@@ -371,8 +376,8 @@ Card.throwOutDistance = function (minThrowOutDistance, maxThrowOutDistance) {
  * @return {Number} Rotation angle expressed in degrees.
  */
 Card.rotation = function (x, y, element, maxRotation) {
-    var horizontalOffset = Math.min(Math.max(x/element.offsetWidth, -1), 1),
-        verticalOffset = (y > 0 ? 1 : -1) * Math.min(Math.abs(y)/100, 1),
+    var horizontalOffset = Math.min(Math.max(x / element.offsetWidth, -1), 1),
+        verticalOffset = (y > 0 ? 1 : -1) * Math.min(Math.abs(y) / 100, 1),
         rotation = horizontalOffset * verticalOffset * maxRotation;
 
     return rotation;

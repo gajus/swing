@@ -1,3 +1,5 @@
+'use strict';
+
 var dom = {};
 
 /**
@@ -13,7 +15,7 @@ dom.elementChildren = function (element) {
         i = childNodes.length;
 
     while (i--) {
-        if (childNodes[i].nodeType == 1) {
+        if (childNodes[i].nodeType === 1) {
             children.unshift(childNodes[i]);
         }
     }

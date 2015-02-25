@@ -3,12 +3,12 @@ module.exports = function(config) {
         basePath: '',
         frameworks: ['mocha', 'sinon-chai'],
         files: [
-            'src/rAF.js',
+            'lib/rAF.js',
             'dist/*',
             'tests/*.js'
         ],
         exclude: [
-            'dist/swing.min.js'
+            'dist/swing.min.js.map'
         ],
         reporters: [
             'progress'

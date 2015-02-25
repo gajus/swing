@@ -1,3 +1,5 @@
+'use strict';
+
 var Stack,
     Sister = require('sister'),
     rebound = require('rebound'),
@@ -23,7 +25,7 @@ Stack = function Stack (config) {
 
     /**
      * Get the configuration object.
-     * 
+     *
      * @return {Object}
      */
     stack.config = function () {
@@ -32,7 +34,7 @@ Stack = function Stack (config) {
 
     /**
      * Get a singleton instance of the SpringSystem physics engine.
-     * 
+     *
      * @return {Sister}
      */
     stack.springSystem = function () {
@@ -41,7 +43,7 @@ Stack = function Stack (config) {
 
     /**
      * Proxy to the instance of the event emitter.
-     * 
+     *
      * @param {String} eventName
      * @param {String} listener
      */
@@ -51,7 +53,7 @@ Stack = function Stack (config) {
 
     /**
      * Creates an instance of Card and associates it with the element.
-     * 
+     *
      * @return {Card}
      */
     stack.createCard = function (element) {

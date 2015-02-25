@@ -1,12 +1,11 @@
+'use strict';
+
+/* global gajus, expect, sinon, document */
+
 describe('Stack', function () {
     var stack;
     beforeEach(function () {
         stack = gajus.Swing.Stack();
-    });
-    describe('.springSystem()', function () {
-        it('returns an instance of SpringSystem', function () {
-            expect(stack.springSystem().constructor.name).to.equal('SpringSystem');
-        });
     });
     describe('.createCard()', function () {
         it('returns an instance of Card', function () {
@@ -35,8 +34,8 @@ describe('Stack', function () {
         });
         it('returns null when element is not associated with a card', function () {
             var element = document.createElement('div');
-            
-            expect(stack.getCard(element)).to.null;
+
+            expect(stack.getCard(element)).to.equal(null);
         });
     });
     describe('._destroyCard()', function () {
@@ -78,29 +77,31 @@ describe('Stack', function () {
                     card: card,
                     cardElement: cardElement
                 };
-            };            
+            };
         });
         it('returns the config object', function () {
             var configInput = {},
                 stack = gajus.Swing.Stack(configInput);
-            
+
             expect(stack.config()).to.equal(configInput);
         });
         describe('isThrowOut', function () {
             it('is invoked in the event of dragend', function () {
                 var spy = sinon.spy(),
                     env = setupEnv({isThrowOut: spy});
-                expect(spy).to.not.have.been.called;
+                expect(spy.called).to.equal(false);
                 env.card._trigger('_mousedown');
-                expect(spy).to.not.have.been.called;
+                expect(spy.called).to.equal(false);
                 env.card._trigger('_panmove', {deltaX: 10, deltaY: 10});
-                expect(spy).to.not.have.been.called;
+                expect(spy.called).to.equal(false);
                 env.card._trigger('_panend', {deltaX: 10, deltaY: 10});
-                expect(spy).to.have.been.called;
+                expect(spy.called).to.equal(true);
             });
             [true, false].forEach(function (throwOut) {
                 it('determines throwOut event', function () {
-                    var env = setupEnv({isThrowOut: function () { return throwOut; }}),
+                    var env = setupEnv({isThrowOut: function () {
+                            return throwOut;
+                        }}),
                         spy1 = sinon.spy(),
                         spy2 = sinon.spy();
 
@@ -112,11 +113,11 @@ describe('Stack', function () {
                     env.card._trigger('_panend', {deltaX: 10, deltaY: 10});
 
                     if (throwOut) {
-                        expect(spy1).to.have.been.called;
-                        expect(spy2).to.have.not.been.called;
+                        expect(spy1.called).to.equal(true);
+                        expect(spy2.called).to.equal(false);
                     } else {
-                        expect(spy1).to.have.not.been.called;
-                        expect(spy2).to.have.been.called;
+                        expect(spy1.called).to.equal(false);
+                        expect(spy2.called).to.equal(true);
                     }
                 });
             });

@@ -1,3 +1,5 @@
+'use strict';
+
 var Stack = require('./stack.js'),
     Card = require('./card.js');
 
