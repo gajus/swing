@@ -19,6 +19,6 @@ dom.elementChildren = function (element) {
     }
 
     return children;
-}
+};
 
 module.exports = dom;

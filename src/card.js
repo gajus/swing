@@ -158,7 +158,7 @@ Card = function Card (stack, targetElement) {
                 x = rebound.MathUtil.mapValueInRange(value, 0, 1, lastThrow.fromX, throwOutDistance * lastThrow.direction),
                 y = lastThrow.fromY;
 
-            onSpringUpdate(x, y);    
+            onSpringUpdate(x, y);
         },
         onSpringAtRest: function () {
             eventEmitter.trigger('throwoutend', {
@@ -266,7 +266,7 @@ Card = function Card (stack, targetElement) {
 
 /**
  * Interprets stack.config() object. Sets default configuration.
- * 
+ *
  * @param {Object} config
  * @return {Object}
  */
@@ -274,7 +274,7 @@ Card.config = function (config) {
     config = config || {};
 
     config.isThrowOut = config.isThrowOut ? config.isThrowOut : Card.isThrowOut;
-    
+
     config.throwOutConfidence = config.throwOutConfidence ? config.throwOutConfidence : Card.throwOutConfidence;
 
     config.throwOutDistance = config.throwOutDistance ? config.throwOutDistance : Card.throwOutDistance;
@@ -292,7 +292,7 @@ Card.config = function (config) {
 /**
  * Invoked in the event of `dragmove` and every time the physics solver is triggered.
  * Uses CSS transform to translate element position and rotation.
- * 
+ *
  * @param {Number} x Horizontal offset from the startDrag.
  * @param {Number} y Vertical offset from the startDrag.
  * @return {null}
@@ -308,12 +308,12 @@ Card.transform = function (element, x, y, r) {
  *
  * Invoked in the event of mousedown.
  * Invoked when card is added to the stack.
- * 
+ *
  * @param {HTMLElement} element The target element.
  */
 Card.appendToParent = function (element) {
     var parent = element.parentNode,
-        siblings = siblings = dom.elementChildren(parent),
+        siblings = dom.elementChildren(parent),
         targetIndex = siblings.indexOf(element);
 
     if (targetIndex + 1 != siblings.length) {
@@ -326,7 +326,7 @@ Card.appendToParent = function (element) {
  * Invoked in the event of dragmove.
  * Returns a value between 0 and 1 indicating the completeness of the throw out condition.
  * Ration of the absolute distance from the original card position and element width.
- * 
+ *
  * @param {Number} offset Distance from the dragStart.
  * @param {HTMLElement} element Element.
  * @return {Number}
@@ -339,7 +339,7 @@ Card.throwOutConfidence = function (offset, element) {
  * Invoked in the event of dragend.
  * Determines if element is being thrown out of the stack.
  * Element is considered to be thrown out when throwOutConfidence is equal to 1.
- * 
+ *
  * @param {Number} offset Distance from the dragStart.
  * @param {HTMLElement} element Element.
  * @param {Number} throwOutConfidence config.throwOutConfidence
@@ -353,7 +353,7 @@ Card.isThrowOut = function (offset, element, throwOutConfidence) {
  * Invoked when card is added to the stack.
  * The card is thrown to this offset from the stack.
  * The value is a random number between minThrowOutDistance and maxThrowOutDistance.
- * 
+ *
  * @return {Number}
  */
 Card.throwOutDistance = function (minThrowOutDistance, maxThrowOutDistance) {
@@ -363,7 +363,7 @@ Card.throwOutDistance = function (minThrowOutDistance, maxThrowOutDistance) {
 /**
  * Rotation is equal to the proportion of horizontal and vertical offset
  * times the maximumRotation constant.
- * 
+ *
  * @param {Number} x Horizontal offset from the startDrag.
  * @param {Number} y Vertical offset from the startDrag.
  * @param {HTMLElement} element Element.
