@@ -181,8 +181,8 @@ Card = function Card (stack, targetElement) {
     onSpringUpdate = function (x, y) {
         var r = config.rotation(x, y, targetElement, config.maxRotation);
 
-        lastTranslate.x = x;
-        lastTranslate.y = y;
+        lastTranslate.x = x||0;
+        lastTranslate.y = y||0;
 
         Card.transform(targetElement, x, y, r);
     };
