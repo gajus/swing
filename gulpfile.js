@@ -20,7 +20,7 @@ gulp.task('lint', function () {
     return gulp
         .src(['./src/**/*.js','./tests/**/*.js'])
         .pipe(eslint())
-        .pipe(eslint.format())
+        .pipe(eslint.v())
         .pipe(eslint.failOnError());
 });
 
@@ -48,7 +48,6 @@ gulp.task('version', ['bundle'], function () {
 
     bower.name = pkg.name;
     bower.description = pkg.description;
-    bower.version = pkg.version;
     bower.keywords = pkg.keywords;
     bower.license = pkg.license;
     bower.authors = [pkg.author];
