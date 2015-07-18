@@ -17,7 +17,19 @@ var Card,
 util.randomInt = function (min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 };
-
+//http://notes.jetienne.com/2011/05/18/cancelRequestAnimFrame-for-paul-irish-requestAnimFrame.html
+cancelRequestAnimFrame = ( function() {
+    return window.cancelAnimationFrame          ||
+        window.webkitCancelRequestAnimationFrame    ||
+        clearTimeout
+} )();
+requestAnimFrame = (function(){
+    return  window.requestAnimationFrame       ||
+        window.webkitRequestAnimationFrame ||
+        function(/* function */ callback, /* DOMElement */ element){
+            return window.setTimeout(callback, 1000 / 60);
+        };
+})();
 /**
  * @param {Stack} stack
  * @param {HTMLElement} targetElement
@@ -34,7 +46,11 @@ Card = function Card (stack, targetElement) {
         throwOutDistance,
         onSpringUpdate,
         throwWhere,
-        mc;
+        mc,
+        dragTimer = 0,
+        isDraging = false,
+        curX = 0,
+        curY = 0;
 
     if (!(this instanceof Card)) {
         return new Card(stack, targetElement);
@@ -65,17 +81,9 @@ Card = function Card (stack, targetElement) {
 
     Card.appendToParent(targetElement);
 
-    eventEmitter.on('_panstart', function () {
-        Card.appendToParent(targetElement);
-
-        eventEmitter.trigger('dragstart', {
-            target: targetElement
-        });
-    });
-
-    eventEmitter.on('_panmove', function (e) {
-        var x = lastTranslate.x + e.deltaX,
-            y = lastTranslate.y + e.deltaY,
+    function doMove(){
+        var x = lastTranslate.x + curX,
+            y = lastTranslate.y + curY,
             r = config.rotation(x, y, targetElement, config.maxRotation);
 
         config.transform(targetElement, x, y, r);
@@ -85,9 +93,42 @@ Card = function Card (stack, targetElement) {
             throwOutConfidence: config.throwOutConfidence(x, targetElement),
             throwDirection: x < 0 ? Card.DIRECTION_LEFT : Card.DIRECTION_RIGHT
         });
+
+    }
+    function cancelMove(){
+        dragTimer && cancelRequestAnimFrame(dragTimer);
+    }
+
+    eventEmitter.on('_panstart', function () {
+        Card.appendToParent(targetElement);
+
+        curX = curY = 0;
+
+        cancelMove();
+        isDraging = true;
+        //raf
+        (function animloop(){
+            if(!isDraging){
+                return;
+            }
+            doMove();
+            dragTimer = requestAnimFrame(animloop);
+        })();
+        //end raf
+
+        eventEmitter.trigger('dragstart', {
+            target: targetElement
+        });
+    });
+
+    eventEmitter.on('_panmove', function (e) {
+        curX = e.deltaX;
+        curY = e.deltaY;
     });
 
     eventEmitter.on('_panend', function (e) {
+        isDraging = false;
+        cancelMove();
         var x = lastTranslate.x + e.deltaX,
             y = lastTranslate.y + e.deltaY;
 
@@ -181,8 +222,8 @@ Card = function Card (stack, targetElement) {
     onSpringUpdate = function (x, y) {
         var r = config.rotation(x, y, targetElement, config.maxRotation);
 
-        lastTranslate.x = x;
-        lastTranslate.y = y;
+        lastTranslate.x = x||0;
+        lastTranslate.y = y||0;
 
         Card.transform(targetElement, x, y, r);
     };
@@ -218,6 +259,7 @@ Card = function Card (stack, targetElement) {
      * Removes the listeners from the physics simulation.
      */
     card.destroy = function () {
+        cancelMove();
         mc.destroy();
         springThrowIn.destroy();
         springThrowOut.destroy();
