@@ -65,11 +65,12 @@ Card = function Card (stack, targetElement) {
 
     Card.appendToParent(targetElement);
 
-    eventEmitter.on('_panstart', function () {
+    eventEmitter.on('_panstart', function (e) {
         Card.appendToParent(targetElement);
 
         eventEmitter.trigger('dragstart', {
-            target: targetElement
+            target: targetElement,
+            origEvent: e
         });
     });
 
@@ -83,7 +84,8 @@ Card = function Card (stack, targetElement) {
         eventEmitter.trigger('dragmove', {
             target: targetElement,
             throwOutConfidence: config.throwOutConfidence(x, targetElement),
-            throwDirection: x < 0 ? Card.DIRECTION_LEFT : Card.DIRECTION_RIGHT
+            throwDirection: x < 0 ? Card.DIRECTION_LEFT : Card.DIRECTION_RIGHT,
+            origEvent: e
         });
     });
 
@@ -98,7 +100,8 @@ Card = function Card (stack, targetElement) {
         }
 
         eventEmitter.trigger('dragend', {
-            target: targetElement
+            target: targetElement,
+            origEvent: e
         });
     });
 
