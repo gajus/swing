@@ -253,3 +253,5 @@ The list of the dependencies and description of their role is for your reference
 
 * [Rebound](http://facebook.github.io/rebound-js/docs/rebound.html) to drive physical animations. Notice how if you drag too little and let go, the cards spring back into place.
 * [Hammer](http://hammerjs.github.io/) to handle drag interactions.
+
+[![Join the chat at https://gitter.im/gajus/swing](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/gajus/swing?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
