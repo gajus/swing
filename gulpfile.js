@@ -1,48 +1,19 @@
-var karma = require('karma').server,
-    gulp = require('gulp'),
+var gulp = require('gulp'),
+    karma = require('karma').server,
     eslint = require('gulp-eslint'),
-    header = require('gulp-header'),
-    rename = require('gulp-rename'),
-    uglify = require('gulp-uglify'),
-    sourcemaps = require('gulp-sourcemaps'),
-    browserify = require('browserify'),
     del = require('del'),
-    source = require('vinyl-source-stream'),
-    buffer = require('vinyl-buffer'),
     jsonfile = require('jsonfile'),
-    gitdown = require('gitdown'),
-    bundler;
-
-bundler = browserify('./src/swing.js');
-// bundler.transform(babelify);
+    gitdown = require('gitdown');
 
 gulp.task('lint', function () {
     return gulp
         .src(['./src/**/*.js','./tests/**/*.js'])
         .pipe(eslint())
-        .pipe(eslint.v())
+        .pipe(eslint.format())
         .pipe(eslint.failOnError());
 });
 
-gulp.task('clean', ['lint'], function (cb) {
-    del(['dist'], cb);
-});
-
-gulp.task('bundle', ['clean'], function () {
-    return bundler
-        .bundle()
-        .on('error', function(err) {
-            console.log(err.message);
-        })
-        .pipe(source('swing.min.js'))
-        .pipe(buffer())
-        .pipe(sourcemaps.init({loadMaps: true}))
-        .pipe(uglify())
-        .pipe(sourcemaps.write('./'))
-        .pipe(gulp.dest('./dist/'));
-});
-
-gulp.task('version', ['bundle'], function () {
+gulp.task('version', function () {
     var pkg = jsonfile.readFileSync('./package.json'),
         bower = jsonfile.readFileSync('./bower.json');
 
@@ -62,8 +33,8 @@ gulp.task('gitdown', function () {
 });
 
 gulp.task('watch', function () {
-    gulp.watch(['./src/*', './package.json'], ['default']);
-    gulp.watch(['./.gitdown/*'], ['gitdown']);
+    gulp.watch(['./src/**/*', './tests/**/*', './package.json'], ['default']);
+    gulp.watch(['./.gitdown/**/*'], ['gitdown']);
 });
 
 gulp.task('test', ['default'], function (cb) {
