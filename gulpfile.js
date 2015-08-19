@@ -13,7 +13,7 @@ gulp.task('lint', function () {
         .pipe(eslint.failOnError());
 });
 
-gulp.task('version', function () {
+gulp.task('version', ['lint'], function () {
     var pkg = jsonfile.readFileSync('./package.json'),
         bower = jsonfile.readFileSync('./bower.json');
 

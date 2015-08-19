@@ -1,15 +1,14 @@
-'use strict';
+import Sister from 'sister';
+import rebound from 'rebound';
+import Card from './card';
 
-var Stack,
-    Sister = require('sister'),
-    rebound = require('rebound'),
-    Card = require('./card.js');
+let Stack;
 
 /**
  * @param {Object} config
  */
-Stack = function Stack (config) {
-    var stack,
+Stack = (config) => {
+    let stack,
         springSystem,
         eventEmitter,
         index;
@@ -28,18 +27,14 @@ Stack = function Stack (config) {
      *
      * @return {Object}
      */
-    stack.config = function () {
-        return config;
-    };
+    stack.config = () => config;
 
     /**
      * Get a singleton instance of the SpringSystem physics engine.
      *
      * @return {Sister}
      */
-    stack.springSystem = function () {
-        return springSystem;
-    };
+    stack.springSystem = () => springSystem;
 
     /**
      * Proxy to the instance of the event emitter.
@@ -47,7 +42,7 @@ Stack = function Stack (config) {
      * @param {String} eventName
      * @param {String} listener
      */
-    stack.on = function (eventName, listener) {
+    stack.on = (eventName, listener) => {
         eventEmitter.on(eventName, listener);
     };
 
@@ -56,30 +51,34 @@ Stack = function Stack (config) {
      *
      * @return {Card}
      */
-    stack.createCard = function (element) {
-        var card = Card(this, element),
-            events = [
-                'throwout',
-                'throwoutend',
-                'throwoutleft',
-                'throwoutright',
-                'throwin',
-                'throwinend',
-                'dragstart',
-                'dragmove',
-                'dragend'
-            ];
+    stack.createCard = (element) => {
+        let card,
+            events;
+
+        card = Card(this, element);
+
+        events = [
+            'throwout',
+            'throwoutend',
+            'throwoutleft',
+            'throwoutright',
+            'throwin',
+            'throwinend',
+            'dragstart',
+            'dragmove',
+            'dragend'
+        ];
 
         // Proxy Card events to the Stack.
-        events.forEach(function (name) {
-            card.on(name, function (data) {
+        events.forEach((name) => {
+            card.on(name, (data) => {
                 eventEmitter.trigger(name, data);
             });
         });
 
         index.push({
-            element: element,
-            card: card
+            element,
+            card
         });
 
         return card;
@@ -91,21 +90,28 @@ Stack = function Stack (config) {
      * @param {HTMLElement} element
      * @return {Card|null}
      */
-    stack.getCard = function (element) {
-        var j = index.length;
+    stack.getCard = (element) => {
+        let j;
+
+        j = index.length;
+
         while (j--) {
             if (index[j].element === element) {
                 return index[j].card;
             }
         }
+
         return null;
     };
 
     /**
      * @param {Card} card
      */
-    stack._destroyCard = function (card) {
-        var j = index.length;
+    stack.destroyCard = (card) => {
+        let j;
+
+        j = index.length;
+
         while (j--) {
             if (index[j].card === card) {
                 index.splice(j, 1);
@@ -118,4 +124,4 @@ Stack = function Stack (config) {
     return stack;
 };
 
-module.exports = Stack;
+export default Stack;

@@ -1,20 +1,19 @@
-'use strict';
+import Sister from 'sister';
+import Hammer from 'hammerjs';
+import rebound from 'rebound';
+import vendorPrefix from 'vendor-prefix';
+import dom from './dom.js';
 
-/* global window, navigator */
+let Card,
+    util,
+    isTouchDevice;
 
-var Card,
-    Sister = require('sister'),
-    Hammer = require('hammerjs'),
-    rebound = require('rebound'),
-    vendorPrefix = require('vendor-prefix'),
-    dom = require('./dom.js'),
-    util = {},
-    _isTouchDevice;
+util = {};
 
 /**
  * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random
  */
-util.randomInt = function (min, max) {
+util.randomInt = (min, max) => {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 
@@ -22,8 +21,8 @@ util.randomInt = function (min, max) {
  * @param {Stack} stack
  * @param {HTMLElement} targetElement
  */
-Card = function Card (stack, targetElement) {
-    var card,
+Card = (stack, targetElement) => {
+    let card,
         config,
         eventEmitter,
         springSystem,
@@ -65,7 +64,7 @@ Card = function Card (stack, targetElement) {
 
     Card.appendToParent(targetElement);
 
-    eventEmitter.on('_panstart', function () {
+    eventEmitter.on('panstart', () => {
         Card.appendToParent(targetElement);
 
         eventEmitter.trigger('dragstart', {
@@ -73,10 +72,14 @@ Card = function Card (stack, targetElement) {
         });
     });
 
-    eventEmitter.on('_panmove', function (e) {
-        var x = lastTranslate.x + e.deltaX,
-            y = lastTranslate.y + e.deltaY,
-            r = config.rotation(x, y, targetElement, config.maxRotation);
+    eventEmitter.on('panmove', (e) => {
+        let x,
+            y,
+            r;
+
+        x = lastTranslate.x + e.deltaX;
+        y = lastTranslate.y + e.deltaY;
+        r = config.rotation(x, y, targetElement, config.maxRotation);
 
         config.transform(targetElement, x, y, r);
 
@@ -87,9 +90,12 @@ Card = function Card (stack, targetElement) {
         });
     });
 
-    eventEmitter.on('_panend', function (e) {
-        var x = lastTranslate.x + e.deltaX,
-            y = lastTranslate.y + e.deltaY;
+    eventEmitter.on('panend', (e) => {
+        let x,
+            y;
+
+        x = lastTranslate.x + e.deltaX;
+        y = lastTranslate.y + e.deltaY;
 
         if (config.isThrowOut(x, targetElement, config.throwOutConfidence(x, targetElement))) {
             card.throwOut(x, y);
@@ -104,53 +110,57 @@ Card = function Card (stack, targetElement) {
 
     // "mousedown" event fires late on touch enabled devices, thus listening
     // to the touchstart event for touch enabled devices and mousedown otherwise.
-    if (_isTouchDevice()) {
-         targetElement.addEventListener('touchstart', function () {
-                eventEmitter.trigger('_panstart');
+    if (isTouchDevice()) {
+        targetElement.addEventListener('touchstart', () => {
+            eventEmitter.trigger('panstart');
         });
 
         // Disable scrolling while dragging the element on the touch enabled devices.
         // @see http://stackoverflow.com/a/12090055/368691
-        (function () {
-            var dragging;
+        (() => {
+            let dragging;
 
-            targetElement.addEventListener('touchstart', function () {
+            targetElement.addEventListener('touchstart', () => {
                 dragging = true;
             });
 
-            targetElement.addEventListener('touchend', function () {
+            targetElement.addEventListener('touchend', () => {
                 dragging = false;
             });
 
-            global.addEventListener('touchmove', function (e) {
+            global.addEventListener('touchmove', (e) => {
                 if (dragging) {
                     e.preventDefault();
                 }
             });
-        }());
+        }) ();
     } else {
-        targetElement.addEventListener('mousedown', function () {
-            eventEmitter.trigger('_panstart');
+        targetElement.addEventListener('mousedown', () => {
+            eventEmitter.trigger('panstart');
         });
     }
 
-    mc.on('panmove', function (e) {
-        eventEmitter.trigger('_panmove', e);
+    mc.on('panmove', (e) => {
+        eventEmitter.trigger('panmove', e);
     });
 
-    mc.on('panend', function(e) {
-        eventEmitter.trigger('_panend', e);
+    mc.on('panend', (e) => {
+        eventEmitter.trigger('panend', e);
     });
 
     springThrowIn.addListener({
-        onSpringUpdate: function (spring) {
-            var value = spring.getCurrentValue(),
-                x = rebound.MathUtil.mapValueInRange(value, 0, 1, lastThrow.fromX, 0),
-                y = rebound.MathUtil.mapValueInRange(value, 0, 1, lastThrow.fromY, 0);
+        onSpringUpdate: (spring) => {
+            let value,
+                x,
+                y;
+
+            value = spring.getCurrentValue();
+            x = rebound.MathUtil.mapValueInRange(value, 0, 1, lastThrow.fromX, 0);
+            y = rebound.MathUtil.mapValueInRange(value, 0, 1, lastThrow.fromY, 0);
 
             onSpringUpdate(x, y);
         },
-        onSpringAtRest: function () {
+        onSpringAtRest: () => {
             eventEmitter.trigger('throwinend', {
                 target: targetElement
             });
@@ -158,14 +168,18 @@ Card = function Card (stack, targetElement) {
     });
 
     springThrowOut.addListener({
-        onSpringUpdate: function (spring) {
-            var value = spring.getCurrentValue(),
-                x = rebound.MathUtil.mapValueInRange(value, 0, 1, lastThrow.fromX, throwOutDistance * lastThrow.direction),
-                y = lastThrow.fromY;
+        onSpringUpdate: (spring) => {
+            let value,
+                x,
+                y;
+
+            value = spring.getCurrentValue();
+            x = rebound.MathUtil.mapValueInRange(value, 0, 1, lastThrow.fromX, throwOutDistance * lastThrow.direction);
+            y = lastThrow.fromY;
 
             onSpringUpdate(x, y);
         },
-        onSpringAtRest: function () {
+        onSpringAtRest: () => {
             eventEmitter.trigger('throwoutend', {
                 target: targetElement
             });
@@ -178,8 +192,10 @@ Card = function Card (stack, targetElement) {
      * @param {Number} x
      * @param {Number} y
      */
-    onSpringUpdate = function (x, y) {
-        var r = config.rotation(x, y, targetElement, config.maxRotation);
+    onSpringUpdate = (x, y) => {
+        let r;
+
+        r = config.rotation(x, y, targetElement, config.maxRotation);
 
         lastTranslate.x = x;
         lastTranslate.y = y;
@@ -191,7 +207,7 @@ Card = function Card (stack, targetElement) {
      * Alias
      */
     card.on = eventEmitter.on;
-    card._trigger = eventEmitter.trigger;
+    card.trigger = eventEmitter.trigger;
 
     /**
      * Throws a card into the stack from an arbitrary position.
@@ -199,7 +215,7 @@ Card = function Card (stack, targetElement) {
      * @param {Number} fromX
      * @param {Number} fromY
      */
-    card.throwIn = function (fromX, fromY) {
+    card.throwIn = (fromX, fromY) => {
         throwWhere(Card.THROW_IN, fromX, fromY);
     };
 
@@ -209,7 +225,7 @@ Card = function Card (stack, targetElement) {
      * @param {Number} fromX
      * @param {Number} fromY
      */
-    card.throwOut = function (fromX, fromY) {
+    card.throwOut = (fromX, fromY) => {
         throwWhere(Card.THROW_OUT, fromX, fromY);
     };
 
@@ -217,12 +233,12 @@ Card = function Card (stack, targetElement) {
      * Unbinds all Hammer.Manager events.
      * Removes the listeners from the physics simulation.
      */
-    card.destroy = function () {
+    card.destroy = () => {
         mc.destroy();
         springThrowIn.destroy();
         springThrowOut.destroy();
 
-        stack._destroyCard(card);
+        stack.destroyCard(card);
     };
 
     /**
@@ -230,7 +246,7 @@ Card = function Card (stack, targetElement) {
      * @param {Number} fromX
      * @param {Number} fromY
      */
-    throwWhere = function (where, fromX, fromY) {
+    throwWhere = (where, fromX, fromY) => {
         lastThrow.fromX = fromX;
         lastThrow.fromY = fromY;
         lastThrow.direction = lastThrow.fromX < 0 ? Card.DIRECTION_LEFT : Card.DIRECTION_RIGHT;
@@ -275,7 +291,7 @@ Card = function Card (stack, targetElement) {
  * @param {Object} config
  * @return {Object}
  */
-Card.config = function (config) {
+Card.config = (config) => {
     config = config || {};
 
     config.isThrowOut = config.isThrowOut ? config.isThrowOut : Card.isThrowOut;
@@ -302,8 +318,8 @@ Card.config = function (config) {
  * @param {Number} y Vertical offset from the startDrag.
  * @return {null}
  */
-Card.transform = function (element, x, y, r) {
-    element.style[vendorPrefix('transform')] = 'translate3d(0, 0, 0) translate(' + x + 'px, ' + y + 'px) rotate(' + r + 'deg)';
+Card.transform = (element, x, y, r) => {
+    element.style[vendorPrefix('transform')] = `translate3d(0, 0, 0) translate(${x}px, ${y}px) rotate(${r}deg)`;
 };
 
 /**
@@ -316,10 +332,14 @@ Card.transform = function (element, x, y, r) {
  *
  * @param {HTMLElement} element The target element.
  */
-Card.appendToParent = function (element) {
-    var parent = element.parentNode,
-        siblings = dom.elementChildren(parent),
-        targetIndex = siblings.indexOf(element);
+Card.appendToParent = (element) => {
+    let parent,
+        siblings,
+        targetIndex;
+
+    parent = element.parentNode;
+    siblings = dom.elementChildren(parent);
+    targetIndex = siblings.indexOf(element);
 
     if (targetIndex + 1 !== siblings.length) {
         parent.removeChild(element);
@@ -336,7 +356,7 @@ Card.appendToParent = function (element) {
  * @param {HTMLElement} element Element.
  * @return {Number}
  */
-Card.throwOutConfidence = function (offset, element) {
+Card.throwOutConfidence = (offset, element) => {
     return Math.min(Math.abs(offset) / element.offsetWidth, 1);
 };
 
@@ -350,7 +370,7 @@ Card.throwOutConfidence = function (offset, element) {
  * @param {Number} throwOutConfidence config.throwOutConfidence
  * @return {Boolean}
  */
-Card.isThrowOut = function (offset, element, throwOutConfidence) {
+Card.isThrowOut = (offset, element, throwOutConfidence) => {
     return throwOutConfidence === 1;
 };
 
@@ -361,7 +381,7 @@ Card.isThrowOut = function (offset, element, throwOutConfidence) {
  *
  * @return {Number}
  */
-Card.throwOutDistance = function (minThrowOutDistance, maxThrowOutDistance) {
+Card.throwOutDistance = (minThrowOutDistance, maxThrowOutDistance) => {
     return util.randomInt(minThrowOutDistance, maxThrowOutDistance);
 };
 
@@ -375,10 +395,14 @@ Card.throwOutDistance = function (minThrowOutDistance, maxThrowOutDistance) {
  * @param {Number} maxRotation
  * @return {Number} Rotation angle expressed in degrees.
  */
-Card.rotation = function (x, y, element, maxRotation) {
-    var horizontalOffset = Math.min(Math.max(x / element.offsetWidth, -1), 1),
-        verticalOffset = (y > 0 ? 1 : -1) * Math.min(Math.abs(y) / 100, 1),
-        rotation = horizontalOffset * verticalOffset * maxRotation;
+Card.rotation = (x, y, element, maxRotation) => {
+    let horizontalOffset,
+        verticalOffset,
+        rotation;
+
+    horizontalOffset = Math.min(Math.max(x / element.offsetWidth, -1), 1);
+    verticalOffset = (y > 0 ? 1 : -1) * Math.min(Math.abs(y) / 100, 1);
+    rotation = horizontalOffset * verticalOffset * maxRotation;
 
     return rotation;
 };
@@ -386,7 +410,7 @@ Card.rotation = function (x, y, element, maxRotation) {
 /**
  * @see http://stackoverflow.com/questions/4817029/whats-the-best-way-to-detect-a-touch-screen-device-using-javascript/4819886#4819886
  */
-_isTouchDevice = function () {
+isTouchDevice = () => {
     return 'ontouchstart' in window || navigator.msMaxTouchPoints;
 };
 
@@ -396,4 +420,4 @@ Card.DIRECTION_RIGHT = 1;
 Card.THROW_IN = 'in';
 Card.THROW_OUT = 'out';
 
-module.exports = Card;
+export default Card;

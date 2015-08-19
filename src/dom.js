@@ -1,6 +1,8 @@
 'use strict';
 
-var dom = {};
+let dom;
+
+dom = {};
 
 /**
  * Return direct children elements.
@@ -9,10 +11,14 @@ var dom = {};
  * @param {HTMLElement}
  * @return {Array}
  */
-dom.elementChildren = function (element) {
-    var childNodes = element.childNodes,
-        children = [],
-        i = childNodes.length;
+dom.elementChildren = (element) => {
+    let childNodes,
+        children,
+        i;
+
+    childNodes = element.childNodes;
+    children = [];
+    i = childNodes.length;
 
     while (i--) {
         if (childNodes[i].nodeType === 1) {
@@ -23,4 +29,4 @@ dom.elementChildren = function (element) {
     return children;
 };
 
-module.exports = dom;
+export default dom;
