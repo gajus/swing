@@ -6,23 +6,24 @@ import util from './util';
 let Stack;
 
 /**
- * @param {Object} config
+ * @param {Object} config Stack configuration.
+ * @return {Object} An instance of Stack object.
  */
 Stack = (config) => {
-    let constructor,
-        stack,
-        springSystem,
+    let construct,
         eventEmitter,
-        index;
+        index,
+        springSystem,
+        stack;
 
-    constructor = () => {
+    construct = () => {
         stack = {};
         springSystem = new rebound.SpringSystem();
         eventEmitter = Sister();
         index = [];
     };
 
-    constructor();
+    construct();
 
     /**
      * Get the configuration object.
@@ -43,6 +44,7 @@ Stack = (config) => {
      *
      * @param {String} eventName
      * @param {String} listener
+     * @return {undefined}
      */
     stack.on = (eventName, listener) => {
         eventEmitter.on(eventName, listener);
@@ -73,9 +75,9 @@ Stack = (config) => {
         ];
 
         // Proxy Card events to the Stack.
-        events.forEach((name) => {
+        events.forEach((eventName) => {
             card.on(name, (data) => {
-                eventEmitter.trigger(name, data);
+                eventEmitter.trigger(eventName, data);
             });
         });
 
@@ -103,6 +105,7 @@ Stack = (config) => {
      * Remove an instance of Card from the stack index.
      *
      * @param {Card} card
+     * @return {Card}
      */
     stack.destroyCard = (card) => {
         return util.remove(index, card);

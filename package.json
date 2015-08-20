@@ -27,6 +27,7 @@
     "gulp-eslint": "^1.0.0",
     "jsonfile": "^2.2.1",
     "karma": "^0.13.9",
+    "karma-babel-preprocessor": "^5.2.1",
     "karma-mocha": "^0.2.0",
     "karma-phantomjs-launcher": "^0.2.1",
     "karma-sinon-chai": "^1.0.0",

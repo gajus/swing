@@ -102,23 +102,24 @@
 	var Stack = undefined;
 	
 	/**
-	 * @param {Object} config
+	 * @param {Object} config Stack configuration.
+	 * @return {Object} An instance of Stack object.
 	 */
 	Stack = function (config) {
-	    var constructor = undefined,
-	        stack = undefined,
-	        springSystem = undefined,
+	    var construct = undefined,
 	        eventEmitter = undefined,
-	        index = undefined;
+	        index = undefined,
+	        springSystem = undefined,
+	        stack = undefined;
 	
-	    constructor = function () {
+	    construct = function () {
 	        stack = {};
 	        springSystem = new _rebound2['default'].SpringSystem();
 	        eventEmitter = (0, _sister2['default'])();
 	        index = [];
 	    };
 	
-	    constructor();
+	    construct();
 	
 	    /**
 	     * Get the configuration object.
@@ -143,6 +144,7 @@
 	     *
 	     * @param {String} eventName
 	     * @param {String} listener
+	     * @return {undefined}
 	     */
 	    stack.on = function (eventName, listener) {
 	        eventEmitter.on(eventName, listener);
@@ -163,9 +165,9 @@
 	        events = ['throwout', 'throwoutend', 'throwoutleft', 'throwoutright', 'throwin', 'throwinend', 'dragstart', 'dragmove', 'dragend'];
 	
 	        // Proxy Card events to the Stack.
-	        events.forEach(function (name) {
+	        events.forEach(function (eventName) {
 	            card.on(name, function (data) {
-	                eventEmitter.trigger(name, data);
+	                eventEmitter.trigger(eventName, data);
 	            });
 	        });
 	
@@ -193,6 +195,7 @@
 	     * Remove an instance of Card from the stack index.
 	     *
 	     * @param {Card} card
+	     * @return {Card}
 	     */
 	    stack.destroyCard = function (card) {
 	        return _util2['default'].remove(index, card);
@@ -1648,29 +1651,30 @@
 	/**
 	 * @param {Stack} stack
 	 * @param {HTMLElement} targetElement
+	 * @return {Object} An instance of Card.
 	 */
 	Card = function (stack, targetElement) {
-	    var constructor = undefined,
-	        card = undefined,
+	    var card = undefined,
 	        config = undefined,
-	        eventEmitter = undefined,
-	        springSystem = undefined,
-	        springThrowIn = undefined,
-	        springThrowOut = undefined,
-	        lastThrow = undefined,
-	        lastTranslate = undefined,
-	        throwOutDistance = undefined,
-	        _onSpringUpdate = undefined,
-	        mc = undefined,
-	        dragTimer = undefined,
-	        isDraging = undefined,
+	        construct = undefined,
 	        currentX = undefined,
 	        currentY = undefined,
 	        doMove = undefined,
-	        cancelMove = undefined,
+	        eventEmitter = undefined,
+	        isDraging = undefined,
+	        lastThrow = undefined,
+	        lastTranslate = undefined,
+	        lastX = undefined,
+	        lastY = undefined,
+	        mc = undefined,
+	        _onSpringUpdate = undefined,
+	        springSystem = undefined,
+	        springThrowIn = undefined,
+	        springThrowOut = undefined,
+	        throwOutDistance = undefined,
 	        throwWhere = undefined;
 	
-	    constructor = function () {
+	    construct = function () {
 	        card = {};
 	        config = Card.makeConfig(stack.getConfig());
 	        eventEmitter = (0, _sister2['default'])();
@@ -1682,9 +1686,6 @@
 	            x: 0,
 	            y: 0
 	        };
-	        isDraging = false;
-	        currentX = 0;
-	        currentY = 0;
 	
 	        springThrowIn.setRestSpeedThreshold(0.05);
 	        springThrowIn.setRestDisplacementThreshold(0.05);
@@ -1712,8 +1713,6 @@
 	            currentX = 0;
 	            currentY = 0;
 	
-	            cancelMove();
-	
 	            isDraging = true;
 	
 	            (function animation() {
@@ -1723,7 +1722,7 @@
 	
 	                doMove();
 	
-	                dragTimer = (0, _raf2['default'])(animation);
+	                (0, _raf2['default'])(animation);
 	            })();
 	        });
 	
@@ -1737,8 +1736,6 @@
 	                y = undefined;
 	
 	            isDraging = false;
-	
-	            cancelMove();
 	
 	            x = lastTranslate.x + e.deltaX;
 	            y = lastTranslate.y + e.deltaY;
@@ -1832,10 +1829,22 @@
 	            }
 	        });
 	
+	        /**
+	         * Transforms card position based on the current environment variables.
+	         *
+	         * @return {undefined}
+	         */
 	        doMove = function () {
-	            var x = undefined,
-	                y = undefined,
-	                r = undefined;
+	            var r = undefined,
+	                x = undefined,
+	                y = undefined;
+	
+	            if (currentX === lastX && currentY === lastY) {
+	                return;
+	            }
+	
+	            lastX = currentX;
+	            lastY = currentY;
 	
 	            x = lastTranslate.x + currentX;
 	            y = lastTranslate.y + currentY;
@@ -1850,15 +1859,12 @@
 	            });
 	        };
 	
-	        cancelMove = function () {
-	            dragTimer && _raf2['default'].cancel(dragTimer);
-	        };
-	
 	        /**
 	         * Invoked every time the physics solver updates the Spring's value.
 	         *
 	         * @param {Number} x
 	         * @param {Number} y
+	         * @return {undefined}
 	         */
 	        _onSpringUpdate = function (x, y) {
 	            var r = undefined;
@@ -1875,6 +1881,7 @@
 	         * @param {Card.THROW_IN|Card.THROW_OUT} where
 	         * @param {Number} fromX
 	         * @param {Number} fromY
+	         * @return {undefined}
 	         */
 	        throwWhere = function (where, fromX, fromY) {
 	            lastThrow.fromX = fromX;
@@ -1913,7 +1920,7 @@
 	        };
 	    };
 	
-	    constructor();
+	    construct();
 	
 	    /**
 	     * Alias
@@ -1926,6 +1933,7 @@
 	     *
 	     * @param {Number} fromX
 	     * @param {Number} fromY
+	     * @return {undefined}
 	     */
 	    card.throwIn = function (fromX, fromY) {
 	        throwWhere(Card.THROW_IN, fromX, fromY);
@@ -1936,6 +1944,7 @@
 	     *
 	     * @param {Number} fromX
 	     * @param {Number} fromY
+	     * @return {undefined}
 	     */
 	    card.throwOut = function (fromX, fromY) {
 	        throwWhere(Card.THROW_OUT, fromX, fromY);
@@ -1944,10 +1953,10 @@
 	    /**
 	     * Unbinds all Hammer.Manager events.
 	     * Removes the listeners from the physics simulation.
+	     *
+	     * @return {undefined}
 	     */
 	    card.destroy = function () {
-	        cancelMove();
-	
 	        mc.destroy();
 	        springThrowIn.destroy();
 	        springThrowOut.destroy();
@@ -1964,10 +1973,10 @@
 	 * @param {Object} config
 	 * @return {Object}
 	 */
-	Card.makeConfig = function (config) {
-	    var defaultConfig = undefined;
+	Card.makeConfig = function () {
+	    var config = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 	
-	    config = config || {};
+	    var defaultConfig = undefined;
 	
 	    defaultConfig = {
 	        isThrowOut: Card.isThrowOut,
@@ -1988,8 +1997,11 @@
 	 *
 	 * Invoked in the event of `dragmove` and every time the physics solver is triggered.
 	 *
+	 * @param {HTMLElement} element
 	 * @param {Number} x Horizontal offset from the startDrag.
 	 * @param {Number} y Vertical offset from the startDrag.
+	 * @param {Number} r
+	 * @return {undefined}
 	 */
 	Card.transform = function (element, x, y, r) {
 	    element.style[(0, _vendorPrefix2['default'])('transform')] = 'translate3d(0, 0, 0) translate(' + x + 'px, ' + y + 'px) rotate(' + r + 'deg)';
@@ -2005,19 +2017,20 @@
 	 * Invoked when card is added to the stack.
 	 *
 	 * @param {HTMLElement} element The target element.
+	 * @return {undefined}
 	 */
 	Card.appendToParent = function (element) {
-	    var parent = undefined,
+	    var parentNode = undefined,
 	        siblings = undefined,
 	        targetIndex = undefined;
 	
-	    parent = element.parentNode;
-	    siblings = _utilJs2['default'].elementChildren(parent);
+	    parentNode = element.parentNode;
+	    siblings = _utilJs2['default'].elementChildren(parentNode);
 	    targetIndex = siblings.indexOf(element);
 	
 	    if (targetIndex + 1 !== siblings.length) {
-	        parent.removeChild(element);
-	        parent.appendChild(element);
+	        parentNode.removeChild(element);
+	        parentNode.appendChild(element);
 	    }
 	};
 	
@@ -2051,6 +2064,8 @@
 	/**
 	 * Calculates a distances at which the card is thrown out of the stack.
 	 *
+	 * @param {Number} min
+	 * @param {Number} max
 	 * @return {Number}
 	 */
 	Card.throwOutDistance = function (min, max) {
@@ -2068,8 +2083,8 @@
 	 */
 	Card.rotation = function (x, y, element, maxRotation) {
 	    var horizontalOffset = undefined,
-	        verticalOffset = undefined,
-	        rotation = undefined;
+	        rotation = undefined,
+	        verticalOffset = undefined;
 	
 	    horizontalOffset = Math.min(Math.max(x / element.offsetWidth, -1), 1);
 	    verticalOffset = (y > 0 ? 1 : -1) * Math.min(Math.abs(y) / 100, 1);
@@ -4665,7 +4680,7 @@
 	 * Return direct children elements.
 	 *
 	 * @see http://stackoverflow.com/a/27102446/368691
-	 * @param {HTMLElement}
+	 * @param {HTMLElement} element
 	 * @return {Array}
 	 */
 	util.elementChildren = function (element) {

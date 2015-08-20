@@ -10,27 +10,30 @@ let Card;
 /**
  * @param {Stack} stack
  * @param {HTMLElement} targetElement
+ * @return {Object} An instance of Card.
  */
 Card = (stack, targetElement) => {
-    let constructor,
-        card,
+    let card,
         config,
-        eventEmitter,
-        springSystem,
-        springThrowIn,
-        springThrowOut,
-        lastThrow,
-        lastTranslate,
-        throwOutDistance,
-        onSpringUpdate,
-        mc,
-        isDraging,
+        construct,
         currentX,
         currentY,
         doMove,
+        eventEmitter,
+        isDraging,
+        lastThrow,
+        lastTranslate,
+        lastX,
+        lastY,
+        mc,
+        onSpringUpdate,
+        springSystem,
+        springThrowIn,
+        springThrowOut,
+        throwOutDistance,
         throwWhere;
 
-    constructor = () => {
+    construct = () => {
         card = {};
         config = Card.makeConfig(stack.getConfig());
         eventEmitter = Sister();
@@ -42,9 +45,6 @@ Card = (stack, targetElement) => {
             x: 0,
             y: 0
         };
-        isDraging = false;
-        currentX = 0;
-        currentY = 0;
 
         springThrowIn.setRestSpeedThreshold(0.05);
         springThrowIn.setRestDisplacementThreshold(0.05);
@@ -79,7 +79,7 @@ Card = (stack, targetElement) => {
 
             isDraging = true;
 
-            (function animation (){
+            (function animation () {
                 if (!isDraging) {
                     return;
                 }
@@ -87,7 +87,7 @@ Card = (stack, targetElement) => {
                 doMove();
 
                 raf(animation);
-            }) ();
+            })();
         });
 
         eventEmitter.on('panmove', (e) => {
@@ -98,8 +98,6 @@ Card = (stack, targetElement) => {
         eventEmitter.on('panend', (e) => {
             let x,
                 y;
-
-            console.log('OK#$%^&*');
 
             isDraging = false;
 
@@ -142,7 +140,7 @@ Card = (stack, targetElement) => {
                         e.preventDefault();
                     }
                 });
-            }) ();
+            })();
         } else {
             targetElement.addEventListener('mousedown', () => {
                 eventEmitter.trigger('panstart');
@@ -154,8 +152,6 @@ Card = (stack, targetElement) => {
         });
 
         mc.on('panend', (e) => {
-            console.log('OK#$%^&* 2');
-
             eventEmitter.trigger('panend', e);
         });
 
@@ -199,11 +195,20 @@ Card = (stack, targetElement) => {
 
         /**
          * Transforms card position based on the current environment variables.
+         *
+         * @return {undefined}
          */
         doMove = () => {
-            let x,
-                y,
-                r;
+            let r,
+                x,
+                y;
+
+            if (currentX === lastX && currentY === lastY) {
+                return;
+            }
+
+            lastX = currentX;
+            lastY = currentY;
 
             x = lastTranslate.x + currentX;
             y = lastTranslate.y + currentY;
@@ -223,6 +228,7 @@ Card = (stack, targetElement) => {
          *
          * @param {Number} x
          * @param {Number} y
+         * @return {undefined}
          */
         onSpringUpdate = (x, y) => {
             let r;
@@ -239,6 +245,7 @@ Card = (stack, targetElement) => {
          * @param {Card.THROW_IN|Card.THROW_OUT} where
          * @param {Number} fromX
          * @param {Number} fromY
+         * @return {undefined}
          */
         throwWhere = (where, fromX, fromY) => {
             lastThrow.fromX = fromX;
@@ -277,7 +284,7 @@ Card = (stack, targetElement) => {
         };
     };
 
-    constructor();
+    construct();
 
     /**
      * Alias
@@ -290,6 +297,7 @@ Card = (stack, targetElement) => {
      *
      * @param {Number} fromX
      * @param {Number} fromY
+     * @return {undefined}
      */
     card.throwIn = (fromX, fromY) => {
         throwWhere(Card.THROW_IN, fromX, fromY);
@@ -300,6 +308,7 @@ Card = (stack, targetElement) => {
      *
      * @param {Number} fromX
      * @param {Number} fromY
+     * @return {undefined}
      */
     card.throwOut = (fromX, fromY) => {
         throwWhere(Card.THROW_OUT, fromX, fromY);
@@ -308,6 +317,8 @@ Card = (stack, targetElement) => {
     /**
      * Unbinds all Hammer.Manager events.
      * Removes the listeners from the physics simulation.
+     *
+     * @return {undefined}
      */
     card.destroy = () => {
         mc.destroy();
@@ -326,10 +337,8 @@ Card = (stack, targetElement) => {
  * @param {Object} config
  * @return {Object}
  */
-Card.makeConfig = (config) => {
+Card.makeConfig = (config = {}) => {
     let defaultConfig;
-
-    config = config || {};
 
     defaultConfig = {
         isThrowOut: Card.isThrowOut,
@@ -342,12 +351,7 @@ Card.makeConfig = (config) => {
         transform: Card.transform
     };
 
-    config = util.assign({}, defaultConfig, config);
-
-    // console.log('config', typeof config.throwOutConfidence);
-    // config.throwOutConfidence();
-
-    return config;
+    return util.assign({}, defaultConfig, config);
 };
 
 /**
@@ -355,8 +359,11 @@ Card.makeConfig = (config) => {
  *
  * Invoked in the event of `dragmove` and every time the physics solver is triggered.
  *
+ * @param {HTMLElement} element
  * @param {Number} x Horizontal offset from the startDrag.
  * @param {Number} y Vertical offset from the startDrag.
+ * @param {Number} r
+ * @return {undefined}
  */
 Card.transform = (element, x, y, r) => {
     element.style[vendorPrefix('transform')] = `translate3d(0, 0, 0) translate(${x}px, ${y}px) rotate(${r}deg)`;
@@ -372,19 +379,20 @@ Card.transform = (element, x, y, r) => {
  * Invoked when card is added to the stack.
  *
  * @param {HTMLElement} element The target element.
+ * @return {undefined}
  */
 Card.appendToParent = (element) => {
-    let parent,
+    let parentNode,
         siblings,
         targetIndex;
 
-    parent = element.parentNode;
-    siblings = util.elementChildren(parent);
+    parentNode = element.parentNode;
+    siblings = util.elementChildren(parentNode);
     targetIndex = siblings.indexOf(element);
 
     if (targetIndex + 1 !== siblings.length) {
-        parent.removeChild(element);
-        parent.appendChild(element);
+        parentNode.removeChild(element);
+        parentNode.appendChild(element);
     }
 };
 
@@ -418,6 +426,8 @@ Card.isThrowOut = (offset, element, throwOutConfidence) => {
 /**
  * Calculates a distances at which the card is thrown out of the stack.
  *
+ * @param {Number} min
+ * @param {Number} max
  * @return {Number}
  */
 Card.throwOutDistance = (min, max) => {
@@ -435,8 +445,8 @@ Card.throwOutDistance = (min, max) => {
  */
 Card.rotation = (x, y, element, maxRotation) => {
     let horizontalOffset,
-        verticalOffset,
-        rotation;
+        rotation,
+        verticalOffset;
 
     horizontalOffset = Math.min(Math.max(x / element.offsetWidth, -1), 1);
     verticalOffset = (y > 0 ? 1 : -1) * Math.min(Math.abs(y) / 100, 1);

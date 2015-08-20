@@ -1,5 +1,5 @@
 var gulp = require('gulp'),
-    karma = require('karma').server,
+    Server = require('karma').Server,
     eslint = require('gulp-eslint'),
     del = require('del'),
     jsonfile = require('jsonfile'),
@@ -37,11 +37,17 @@ gulp.task('watch', function () {
     gulp.watch(['./.gitdown/**/*'], ['gitdown']);
 });
 
-gulp.task('test', ['default'], function (cb) {
-    karma.start({
+gulp.task('test', ['default'], function (done) {
+    var server;
+
+    server = new Server({
         configFile: __dirname + '/karma.conf.js',
         singleRun: true
-    }, cb);
+    });
+
+    server.start(function () {
+        done();
+    });
 });
 
 gulp.task('default', ['version']);

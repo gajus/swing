@@ -18,7 +18,7 @@ util.where = utilityWhere;
  * Return direct children elements.
  *
  * @see http://stackoverflow.com/a/27102446/368691
- * @param {HTMLElement}
+ * @param {HTMLElement} element
  * @return {Array}
  */
 util.elementChildren = (element) => {
