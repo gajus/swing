@@ -1,18 +1,18 @@
-import remove from 'lodash/array/remove';
-import assign from 'lodash/object/assign';
-import random from 'lodash/number/random';
-import find from 'lodash/collection/find';
-import where from 'lodash/collection/where';
+import utilityRemove from 'lodash/array/remove';
+import utilityAssign from 'lodash/object/assign';
+import utilityRandom from 'lodash/number/random';
+import utilityFind from 'lodash/collection/find';
+import utilityWhere from 'lodash/collection/where';
 
 let util;
 
 util = {};
 
-util.remove = remove;
-util.assign = assign;
-util.random = random;
-util.find = find;
-util.where = where;
+util.remove = utilityRemove;
+util.assign = utilityAssign;
+util.random = utilityRandom;
+util.find = utilityFind;
+util.where = utilityWhere;
 
 /**
  * Return direct children elements.

@@ -12,7 +12,8 @@ let Card;
  * @param {HTMLElement} targetElement
  */
 Card = (stack, targetElement) => {
-    let card,
+    let constructor,
+        card,
         config,
         eventEmitter,
         springSystem,
@@ -23,56 +24,191 @@ Card = (stack, targetElement) => {
         throwOutDistance,
         onSpringUpdate,
         throwWhere,
-        mc;
+        mc,
+        dragTimer,
+        isDraging,
+        currentX,
+        currentY,
+        doMove,
+        cancelMove;
 
-    card = {};
-    config = Card.makeConfig(stack.getConfig());
-    eventEmitter = Sister();
-    springSystem = stack.getSpringSystem();
-    springThrowIn = springSystem.createSpring(250, 10);
-    springThrowOut = springSystem.createSpring(500, 20);
-    lastThrow = {};
-    lastTranslate = {
-        x: 0,
-        y: 0
-    };
+    constructor = () => {
+        card = {};
+        config = Card.makeConfig(stack.getConfig());
+        eventEmitter = Sister();
+        springSystem = stack.getSpringSystem();
+        springThrowIn = springSystem.createSpring(250, 10);
+        springThrowOut = springSystem.createSpring(500, 20);
+        lastThrow = {};
+        lastTranslate = {
+            x: 0,
+            y: 0
+        };
+        isDraging = false;
+        currentX = 0;
+        currentY = 0;
 
-    springThrowIn.setRestSpeedThreshold(0.05);
-    springThrowIn.setRestDisplacementThreshold(0.05);
+        springThrowIn.setRestSpeedThreshold(0.05);
+        springThrowIn.setRestDisplacementThreshold(0.05);
 
-    springThrowOut.setRestSpeedThreshold(0.05);
-    springThrowOut.setRestDisplacementThreshold(0.05);
+        springThrowOut.setRestSpeedThreshold(0.05);
+        springThrowOut.setRestDisplacementThreshold(0.05);
 
-    throwOutDistance = config.throwOutDistance(config.minThrowOutDistance, config.maxThrowOutDistance);
+        throwOutDistance = config.throwOutDistance(config.minThrowOutDistance, config.maxThrowOutDistance);
 
-    mc = new Hammer.Manager(targetElement, {
-        recognizers: [
-            [
-                Hammer.Pan,
-                {
-                    threshold: 2
-                }
+        mc = new Hammer.Manager(targetElement, {
+            recognizers: [
+                [
+                    Hammer.Pan,
+                    {
+                        threshold: 2
+                    }
+                ]
             ]
-        ]
-    });
+        });
 
-    Card.appendToParent(targetElement);
-
-    eventEmitter.on('panstart', () => {
         Card.appendToParent(targetElement);
 
-        eventEmitter.trigger('dragstart', {
-            target: targetElement
-        });
-    });
+        eventEmitter.on('panstart', () => {
+            Card.appendToParent(targetElement);
 
-    eventEmitter.on('panmove', (e) => {
+            eventEmitter.trigger('dragstart', {
+                target: targetElement
+            });
+
+            currentX = 0;
+            currentY = 0;
+
+            cancelMove();
+
+            isDraging = true;
+
+            (function animation (){
+                if (!isDraging) {
+                    return;
+                }
+
+                doMove();
+
+                dragTimer = raf(animation);
+            }) ();
+        });
+
+        eventEmitter.on('panmove', (e) => {
+            currentX = e.deltaX;
+            currentY = e.deltaY;
+        });
+
+        eventEmitter.on('panend', (e) => {
+            let x,
+                y;
+
+            isDraging = false;
+
+            cancelMove();
+
+            x = lastTranslate.x + e.deltaX;
+            y = lastTranslate.y + e.deltaY;
+
+            if (config.isThrowOut(x, targetElement, config.throwOutConfidence(x, targetElement))) {
+                card.throwOut(x, y);
+            } else {
+                card.throwIn(x, y);
+            }
+
+            eventEmitter.trigger('dragend', {
+                target: targetElement
+            });
+        });
+
+        // "mousedown" event fires late on touch enabled devices, thus listening
+        // to the touchstart event for touch enabled devices and mousedown otherwise.
+        if (util.isTouchDevice()) {
+            targetElement.addEventListener('touchstart', () => {
+                eventEmitter.trigger('panstart');
+            });
+
+            // Disable scrolling while dragging the element on the touch enabled devices.
+            // @see http://stackoverflow.com/a/12090055/368691
+            (() => {
+                let dragging;
+
+                targetElement.addEventListener('touchstart', () => {
+                    dragging = true;
+                });
+
+                targetElement.addEventListener('touchend', () => {
+                    dragging = false;
+                });
+
+                global.addEventListener('touchmove', (e) => {
+                    if (dragging) {
+                        e.preventDefault();
+                    }
+                });
+            }) ();
+        } else {
+            targetElement.addEventListener('mousedown', () => {
+                eventEmitter.trigger('panstart');
+            });
+        }
+
+        mc.on('panmove', (e) => {
+            eventEmitter.trigger('panmove', e);
+        });
+
+        mc.on('panend', (e) => {
+            eventEmitter.trigger('panend', e);
+        });
+
+        springThrowIn.addListener({
+            onSpringUpdate: (spring) => {
+                let value,
+                    x,
+                    y;
+
+                value = spring.getCurrentValue();
+                x = rebound.MathUtil.mapValueInRange(value, 0, 1, lastThrow.fromX, 0);
+                y = rebound.MathUtil.mapValueInRange(value, 0, 1, lastThrow.fromY, 0);
+
+                onSpringUpdate(x, y);
+            },
+            onSpringAtRest: () => {
+                eventEmitter.trigger('throwinend', {
+                    target: targetElement
+                });
+            }
+        });
+
+        springThrowOut.addListener({
+            onSpringUpdate: (spring) => {
+                let value,
+                    x,
+                    y;
+
+                value = spring.getCurrentValue();
+                x = rebound.MathUtil.mapValueInRange(value, 0, 1, lastThrow.fromX, throwOutDistance * lastThrow.direction);
+                y = lastThrow.fromY;
+
+                onSpringUpdate(x, y);
+            },
+            onSpringAtRest: () => {
+                eventEmitter.trigger('throwoutend', {
+                    target: targetElement
+                });
+            }
+        });
+    };
+
+    constructor();
+
+    doMove = () => {
         let x,
             y,
             r;
 
-        x = lastTranslate.x + e.deltaX;
-        y = lastTranslate.y + e.deltaY;
+        x = lastTranslate.x + currentX;
+        y = lastTranslate.y + currentY;
         r = config.rotation(x, y, targetElement, config.maxRotation);
 
         config.transform(targetElement, x, y, r);
@@ -82,103 +218,11 @@ Card = (stack, targetElement) => {
             throwOutConfidence: config.throwOutConfidence(x, targetElement),
             throwDirection: x < 0 ? Card.DIRECTION_LEFT : Card.DIRECTION_RIGHT
         });
-    });
+    };
 
-    eventEmitter.on('panend', (e) => {
-        let x,
-            y;
-
-        x = lastTranslate.x + e.deltaX;
-        y = lastTranslate.y + e.deltaY;
-
-        if (config.isThrowOut(x, targetElement, config.throwOutConfidence(x, targetElement))) {
-            card.throwOut(x, y);
-        } else {
-            card.throwIn(x, y);
-        }
-
-        eventEmitter.trigger('dragend', {
-            target: targetElement
-        });
-    });
-
-    // "mousedown" event fires late on touch enabled devices, thus listening
-    // to the touchstart event for touch enabled devices and mousedown otherwise.
-    if (util.isTouchDevice()) {
-        targetElement.addEventListener('touchstart', () => {
-            eventEmitter.trigger('panstart');
-        });
-
-        // Disable scrolling while dragging the element on the touch enabled devices.
-        // @see http://stackoverflow.com/a/12090055/368691
-        (() => {
-            let dragging;
-
-            targetElement.addEventListener('touchstart', () => {
-                dragging = true;
-            });
-
-            targetElement.addEventListener('touchend', () => {
-                dragging = false;
-            });
-
-            global.addEventListener('touchmove', (e) => {
-                if (dragging) {
-                    e.preventDefault();
-                }
-            });
-        }) ();
-    } else {
-        targetElement.addEventListener('mousedown', () => {
-            eventEmitter.trigger('panstart');
-        });
-    }
-
-    mc.on('panmove', (e) => {
-        eventEmitter.trigger('panmove', e);
-    });
-
-    mc.on('panend', (e) => {
-        eventEmitter.trigger('panend', e);
-    });
-
-    springThrowIn.addListener({
-        onSpringUpdate: (spring) => {
-            let value,
-                x,
-                y;
-
-            value = spring.getCurrentValue();
-            x = rebound.MathUtil.mapValueInRange(value, 0, 1, lastThrow.fromX, 0);
-            y = rebound.MathUtil.mapValueInRange(value, 0, 1, lastThrow.fromY, 0);
-
-            onSpringUpdate(x, y);
-        },
-        onSpringAtRest: () => {
-            eventEmitter.trigger('throwinend', {
-                target: targetElement
-            });
-        }
-    });
-
-    springThrowOut.addListener({
-        onSpringUpdate: (spring) => {
-            let value,
-                x,
-                y;
-
-            value = spring.getCurrentValue();
-            x = rebound.MathUtil.mapValueInRange(value, 0, 1, lastThrow.fromX, throwOutDistance * lastThrow.direction);
-            y = lastThrow.fromY;
-
-            onSpringUpdate(x, y);
-        },
-        onSpringAtRest: () => {
-            eventEmitter.trigger('throwoutend', {
-                target: targetElement
-            });
-        }
-    });
+    cancelMove = () => {
+        dragTimer && raf.cancel(dragTimer);
+    };
 
     /**
      * Invoked every time the physics solver updates the Spring's value.
@@ -228,6 +272,8 @@ Card = (stack, targetElement) => {
      * Removes the listeners from the physics simulation.
      */
     card.destroy = () => {
+        cancelMove();
+
         mc.destroy();
         springThrowIn.destroy();
         springThrowOut.destroy();

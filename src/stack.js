@@ -9,15 +9,20 @@ let Stack;
  * @param {Object} config
  */
 Stack = (config) => {
-    let stack,
+    let constructor,
+        stack,
         springSystem,
         eventEmitter,
         index;
 
-    stack = {};
-    springSystem = new rebound.SpringSystem();
-    eventEmitter = Sister();
-    index = [];
+    constructor = () => {
+        stack = {};
+        springSystem = new rebound.SpringSystem();
+        eventEmitter = Sister();
+        index = [];
+    };
+
+    constructor();
 
     /**
      * Get the configuration object.
@@ -90,7 +95,7 @@ Stack = (config) => {
      */
     stack.getCard = (element) => {
         return util.find(index, {
-            element: element
+            element
         });
     };
 
