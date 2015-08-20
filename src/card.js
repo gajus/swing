@@ -2,20 +2,10 @@ import Sister from 'sister';
 import Hammer from 'hammerjs';
 import rebound from 'rebound';
 import vendorPrefix from 'vendor-prefix';
-import dom from './dom.js';
+import util from './util.js';
+import raf from 'raf';
 
-let Card,
-    util,
-    isTouchDevice;
-
-util = {};
-
-/**
- * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random
- */
-util.randomInt = (min, max) => {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-};
+let Card;
 
 /**
  * @param {Stack} stack
@@ -35,11 +25,7 @@ Card = (stack, targetElement) => {
         throwWhere,
         mc;
 
-    if (!(this instanceof Card)) {
-        return new Card(stack, targetElement);
-    }
-
-    card = this;
+    card = {};
     config = Card.config(stack.config());
     eventEmitter = Sister();
     springSystem = stack.springSystem();
@@ -110,7 +96,7 @@ Card = (stack, targetElement) => {
 
     // "mousedown" event fires late on touch enabled devices, thus listening
     // to the touchstart event for touch enabled devices and mousedown otherwise.
-    if (isTouchDevice()) {
+    if (util.isTouchDevice()) {
         targetElement.addEventListener('touchstart', () => {
             eventEmitter.trigger('panstart');
         });
@@ -197,8 +183,8 @@ Card = (stack, targetElement) => {
 
         r = config.rotation(x, y, targetElement, config.maxRotation);
 
-        lastTranslate.x = x;
-        lastTranslate.y = y;
+        lastTranslate.x = x || 0;
+        lastTranslate.y = y || 0;
 
         Card.transform(targetElement, x, y, r);
     };
@@ -338,7 +324,7 @@ Card.appendToParent = (element) => {
         targetIndex;
 
     parent = element.parentNode;
-    siblings = dom.elementChildren(parent);
+    siblings = util.elementChildren(parent);
     targetIndex = siblings.indexOf(element);
 
     if (targetIndex + 1 !== siblings.length) {
@@ -405,13 +391,6 @@ Card.rotation = (x, y, element, maxRotation) => {
     rotation = horizontalOffset * verticalOffset * maxRotation;
 
     return rotation;
-};
-
-/**
- * @see http://stackoverflow.com/questions/4817029/whats-the-best-way-to-detect-a-touch-screen-device-using-javascript/4819886#4819886
- */
-isTouchDevice = () => {
-    return 'ontouchstart' in window || navigator.msMaxTouchPoints;
 };
 
 Card.DIRECTION_LEFT = -1;

@@ -13,11 +13,7 @@ Stack = (config) => {
         eventEmitter,
         index;
 
-    if (!(this instanceof Stack)) {
-        return new Stack(config);
-    }
-
-    stack = this;
+    stack = {};
     springSystem = new rebound.SpringSystem();
     eventEmitter = Sister();
     index = [];
@@ -47,15 +43,16 @@ Stack = (config) => {
     };
 
     /**
-     * Creates an instance of Card and associates it with the element.
+     * Creates an instance of Card and associates it with an element.
      *
+     * @param {DOMElement} element
      * @return {Card}
      */
     stack.createCard = (element) => {
         let card,
             events;
 
-        card = Card(this, element);
+        card = Card(stack, element);
 
         events = [
             'throwout',
