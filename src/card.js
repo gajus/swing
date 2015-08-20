@@ -26,9 +26,9 @@ Card = (stack, targetElement) => {
         mc;
 
     card = {};
-    config = Card.config(stack.config());
+    config = Card.makeConfig(stack.getConfig());
     eventEmitter = Sister();
-    springSystem = stack.springSystem();
+    springSystem = stack.getSpringSystem();
     springThrowIn = springSystem.createSpring(250, 10);
     springThrowOut = springSystem.createSpring(500, 20);
     lastThrow = {};
@@ -285,7 +285,7 @@ Card = (stack, targetElement) => {
  * @param {Object} config
  * @return {Object}
  */
-Card.config = (config) => {
+Card.makeConfig = (config) => {
     let defaultConfig;
 
     config = config || {};

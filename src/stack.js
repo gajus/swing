@@ -24,14 +24,14 @@ Stack = (config) => {
      *
      * @return {Object}
      */
-    stack.config = () => config;
+    stack.getConfig = () => config;
 
     /**
      * Get a singleton instance of the SpringSystem physics engine.
      *
      * @return {Sister}
      */
-    stack.springSystem = () => springSystem;
+    stack.getSpringSystem = () => springSystem;
 
     /**
      * Proxy to the instance of the event emitter.
