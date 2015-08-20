@@ -1,9 +1,15 @@
 document.addEventListener('DOMContentLoaded', function () {
-    var stack = gajus.Swing.Stack(),
-        cardElement = document.querySelector('.stack li'),
-        throwOutConfidenceBind = document.querySelector('#throw-out-confidence-bind'),
-        directionBind = document.querySelector('#direction-bind'),
-        throwOutConfidenceElements = {};
+    var stack,
+        cardElement,
+        throwOutConfidenceBind,
+        directionBind,
+        throwOutConfidenceElements;
+
+    stack = gajus.Swing.Stack();
+    cardElement = document.querySelector('.stack li');
+    throwOutConfidenceBind = document.querySelector('#throw-out-confidence-bind');
+    directionBind = document.querySelector('#direction-bind');
+    throwOutConfidenceElements = {};
 
     window.card = stack.createCard(cardElement);
 

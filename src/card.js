@@ -23,14 +23,14 @@ Card = (stack, targetElement) => {
         lastTranslate,
         throwOutDistance,
         onSpringUpdate,
-        throwWhere,
         mc,
         dragTimer,
         isDraging,
         currentX,
         currentY,
         doMove,
-        cancelMove;
+        cancelMove,
+        throwWhere;
 
     constructor = () => {
         card = {};
@@ -198,48 +198,89 @@ Card = (stack, targetElement) => {
                 });
             }
         });
+
+        doMove = () => {
+            let x,
+                y,
+                r;
+
+            x = lastTranslate.x + currentX;
+            y = lastTranslate.y + currentY;
+            r = config.rotation(x, y, targetElement, config.maxRotation);
+
+            config.transform(targetElement, x, y, r);
+
+            eventEmitter.trigger('dragmove', {
+                target: targetElement,
+                throwOutConfidence: config.throwOutConfidence(x, targetElement),
+                throwDirection: x < 0 ? Card.DIRECTION_LEFT : Card.DIRECTION_RIGHT
+            });
+        };
+
+        cancelMove = () => {
+            dragTimer && raf.cancel(dragTimer);
+        };
+
+        /**
+         * Invoked every time the physics solver updates the Spring's value.
+         *
+         * @param {Number} x
+         * @param {Number} y
+         */
+        onSpringUpdate = (x, y) => {
+            let r;
+
+            r = config.rotation(x, y, targetElement, config.maxRotation);
+
+            lastTranslate.x = x || 0;
+            lastTranslate.y = y || 0;
+
+            Card.transform(targetElement, x, y, r);
+        };
+
+        /**
+         * @param {Card.THROW_IN|Card.THROW_OUT} where
+         * @param {Number} fromX
+         * @param {Number} fromY
+         */
+        throwWhere = (where, fromX, fromY) => {
+            lastThrow.fromX = fromX;
+            lastThrow.fromY = fromY;
+            lastThrow.direction = lastThrow.fromX < 0 ? Card.DIRECTION_LEFT : Card.DIRECTION_RIGHT;
+
+            if (where === Card.THROW_IN) {
+                springThrowIn.setCurrentValue(0).setAtRest().setEndValue(1);
+
+                eventEmitter.trigger('throwin', {
+                    target: targetElement,
+                    throwDirection: lastThrow.direction
+                });
+            } else if (where === Card.THROW_OUT) {
+                springThrowOut.setCurrentValue(0).setAtRest().setVelocity(100).setEndValue(1);
+
+                eventEmitter.trigger('throwout', {
+                    target: targetElement,
+                    throwDirection: lastThrow.direction
+                });
+
+                if (lastThrow.direction === Card.DIRECTION_LEFT) {
+                    eventEmitter.trigger('throwoutleft', {
+                        target: targetElement,
+                        throwDirection: lastThrow.direction
+                    });
+                } else {
+                    eventEmitter.trigger('throwoutright', {
+                        target: targetElement,
+                        throwDirection: lastThrow.direction
+                    });
+                }
+            } else {
+                throw new Error('Invalid throw event.');
+            }
+        };
     };
 
     constructor();
-
-    doMove = () => {
-        let x,
-            y,
-            r;
-
-        x = lastTranslate.x + currentX;
-        y = lastTranslate.y + currentY;
-        r = config.rotation(x, y, targetElement, config.maxRotation);
-
-        config.transform(targetElement, x, y, r);
-
-        eventEmitter.trigger('dragmove', {
-            target: targetElement,
-            throwOutConfidence: config.throwOutConfidence(x, targetElement),
-            throwDirection: x < 0 ? Card.DIRECTION_LEFT : Card.DIRECTION_RIGHT
-        });
-    };
-
-    cancelMove = () => {
-        dragTimer && raf.cancel(dragTimer);
-    };
-
-    /**
-     * Invoked every time the physics solver updates the Spring's value.
-     *
-     * @param {Number} x
-     * @param {Number} y
-     */
-    onSpringUpdate = (x, y) => {
-        let r;
-
-        r = config.rotation(x, y, targetElement, config.maxRotation);
-
-        lastTranslate.x = x || 0;
-        lastTranslate.y = y || 0;
-
-        Card.transform(targetElement, x, y, r);
-    };
 
     /**
      * Alias
@@ -279,47 +320,6 @@ Card = (stack, targetElement) => {
         springThrowOut.destroy();
 
         stack.destroyCard(card);
-    };
-
-    /**
-     * @param {Card.THROW_IN|Card.THROW_OUT} where
-     * @param {Number} fromX
-     * @param {Number} fromY
-     */
-    throwWhere = (where, fromX, fromY) => {
-        lastThrow.fromX = fromX;
-        lastThrow.fromY = fromY;
-        lastThrow.direction = lastThrow.fromX < 0 ? Card.DIRECTION_LEFT : Card.DIRECTION_RIGHT;
-
-        if (where === Card.THROW_IN) {
-            springThrowIn.setCurrentValue(0).setAtRest().setEndValue(1);
-
-            eventEmitter.trigger('throwin', {
-                target: targetElement,
-                throwDirection: lastThrow.direction
-            });
-        } else if (where === Card.THROW_OUT) {
-            springThrowOut.setCurrentValue(0).setAtRest().setVelocity(100).setEndValue(1);
-
-            eventEmitter.trigger('throwout', {
-                target: targetElement,
-                throwDirection: lastThrow.direction
-            });
-
-            if (lastThrow.direction === Card.DIRECTION_LEFT) {
-                eventEmitter.trigger('throwoutleft', {
-                    target: targetElement,
-                    throwDirection: lastThrow.direction
-                });
-            } else {
-                eventEmitter.trigger('throwoutright', {
-                    target: targetElement,
-                    throwDirection: lastThrow.direction
-                });
-            }
-        } else {
-            throw new Error('Invalid throw event.');
-        }
     };
 
     return card;
