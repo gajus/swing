@@ -24,12 +24,10 @@ Card = (stack, targetElement) => {
         throwOutDistance,
         onSpringUpdate,
         mc,
-        dragTimer,
         isDraging,
         currentX,
         currentY,
         doMove,
-        cancelMove,
         throwWhere;
 
     constructor = () => {
@@ -79,8 +77,6 @@ Card = (stack, targetElement) => {
             currentX = 0;
             currentY = 0;
 
-            cancelMove();
-
             isDraging = true;
 
             (function animation (){
@@ -90,7 +86,7 @@ Card = (stack, targetElement) => {
 
                 doMove();
 
-                dragTimer = raf(animation);
+                raf(animation);
             }) ();
         });
 
@@ -103,9 +99,9 @@ Card = (stack, targetElement) => {
             let x,
                 y;
 
-            isDraging = false;
+            console.log('OK#$%^&*');
 
-            cancelMove();
+            isDraging = false;
 
             x = lastTranslate.x + e.deltaX;
             y = lastTranslate.y + e.deltaY;
@@ -158,6 +154,8 @@ Card = (stack, targetElement) => {
         });
 
         mc.on('panend', (e) => {
+            console.log('OK#$%^&* 2');
+
             eventEmitter.trigger('panend', e);
         });
 
@@ -199,6 +197,9 @@ Card = (stack, targetElement) => {
             }
         });
 
+        /**
+         * Transforms card position based on the current environment variables.
+         */
         doMove = () => {
             let x,
                 y,
@@ -215,10 +216,6 @@ Card = (stack, targetElement) => {
                 throwOutConfidence: config.throwOutConfidence(x, targetElement),
                 throwDirection: x < 0 ? Card.DIRECTION_LEFT : Card.DIRECTION_RIGHT
             });
-        };
-
-        cancelMove = () => {
-            dragTimer && raf.cancel(dragTimer);
         };
 
         /**
@@ -313,8 +310,6 @@ Card = (stack, targetElement) => {
      * Removes the listeners from the physics simulation.
      */
     card.destroy = () => {
-        cancelMove();
-
         mc.destroy();
         springThrowIn.destroy();
         springThrowOut.destroy();
@@ -347,7 +342,12 @@ Card.makeConfig = (config) => {
         transform: Card.transform
     };
 
-    return util.assign({}, defaultConfig, config);
+    config = util.assign({}, defaultConfig, config);
+
+    // console.log('config', typeof config.throwOutConfidence);
+    // config.throwOutConfidence();
+
+    return config;
 };
 
 /**
