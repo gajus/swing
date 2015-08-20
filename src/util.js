@@ -1,6 +1,11 @@
+import assign from 'lodash/object/assign';
+
+
 let util;
 
 util = {};
+
+util.assign = assign;
 
 /**
  * Return direct children elements.
@@ -41,5 +46,7 @@ util.randomInt = (min, max) => {
 util.isTouchDevice = () => {
     return 'ontouchstart' in window || navigator.msMaxTouchPoints;
 };
+
+
 
 export default util;
