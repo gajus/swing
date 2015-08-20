@@ -80,13 +80,11 @@ Card = (stack, targetElement) => {
             isDraging = true;
 
             (function animation () {
-                if (!isDraging) {
-                    return;
+                if (isDraging) {
+                    doMove();
+
+                    raf(animation);
                 }
-
-                doMove();
-
-                raf(animation);
             })();
         });
 

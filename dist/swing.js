@@ -183,12 +183,20 @@
 	     * Returns an instance of Card associated with an element.
 	     *
 	     * @param {HTMLElement} element
-	     * @return {Card|undefined}
+	     * @return {Card|null}
 	     */
 	    stack.getCard = function (element) {
-	        return _util2['default'].find(index, {
+	        var card = undefined;
+	
+	        card = _util2['default'].find(index, {
 	            element: element
 	        });
+	
+	        if (card) {
+	            return card.card;
+	        }
+	
+	        return null;
 	    };
 	
 	    /**
@@ -1716,13 +1724,11 @@
 	            isDraging = true;
 	
 	            (function animation() {
-	                if (!isDraging) {
-	                    return;
+	                if (isDraging) {
+	                    doMove();
+	
+	                    (0, _raf2['default'])(animation);
 	                }
-	
-	                doMove();
-	
-	                (0, _raf2['default'])(animation);
 	            })();
 	        });
 	

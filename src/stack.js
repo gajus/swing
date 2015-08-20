@@ -93,12 +93,20 @@ Stack = (config) => {
      * Returns an instance of Card associated with an element.
      *
      * @param {HTMLElement} element
-     * @return {Card|undefined}
+     * @return {Card|null}
      */
     stack.getCard = (element) => {
-        return util.find(index, {
+        let card;
+
+        card = util.find(index, {
             element
         });
+
+        if (card) {
+            return card.card;
+        }
+
+        return null;
     };
 
     /**

@@ -1,4 +1,54 @@
 describe('Stack', () => {
+    let stack;
+
+    beforeEach(() => {
+        stack = gajus.Swing.Stack();
+    });
+    describe('.getCard()', () => {
+        it('returns card associated with an element', () => {
+            let card,
+                element,
+                parentElement;
+
+            parentElement = document.createElement('div');
+            element = document.createElement('div');
+
+            parentElement.appendChild(element);
+
+            card = stack.createCard(element);
+
+            expect(stack.getCard(element)).to.equal(card);
+        });
+        it('returns null when element is not associated with a card', () => {
+            let element;
+
+            element = document.createElement('div');
+
+            expect(stack.getCard(element)).to.equal(null);
+        });
+    });
+    describe('.destroyCard()', () => {
+        it('is called when Card is destroyed', () => {
+            let card,
+                element,
+                parentElement,
+                spy;
+
+            parentElement = document.createElement('div');
+            element = document.createElement('div');
+            spy = sinon.spy(stack, 'destroyCard');
+
+            parentElement.appendChild(element);
+
+            card = stack.createCard(element);
+            card.destroy();
+
+            expect(spy).to.have.been.calledWith(card);
+        });
+    });
+});
+
+describe('Stack', () => {
     describe('.getConfig()', () => {
         let setupEnv;
 
@@ -83,7 +133,7 @@ describe('Stack', () => {
             });
         });
         describe('throwOutConfidence', () => {
-            it.only('is invoked in the event of dragmove', (done) => {
+            it('is invoked in the event of dragmove', (done) => {
                 let env,
                     spy;
 
@@ -112,7 +162,7 @@ describe('Stack', () => {
             });
         });
         describe('rotation', () => {
-            it('is invoked in the event of dragmove', () => {
+            it('is invoked in the event of dragmove', (done) => {
                 let env,
                     spy;
 
@@ -121,16 +171,26 @@ describe('Stack', () => {
 
                 env.card.on('rotation', spy);
 
-                env.card.trigger('mousedown');
+                env.card.trigger('panstart');
                 env.card.trigger('panmove', {deltaX: 10, deltaY: 10});
-                env.card.trigger('panmove', {deltaX: 11, deltaY: 10});
-                env.card.trigger('panmove', {deltaX: 12, deltaY: 10});
 
-                expect(spy.callCount).to.equal(3);
+                setTimeout(() => {
+                    env.card.trigger('panmove', {deltaX: 11, deltaY: 10});
+                }, 10);
+
+                setTimeout(() => {
+                    env.card.trigger('panmove', {deltaX: 12, deltaY: 10});
+                }, 20);
+
+                setTimeout(() => {
+                    expect(spy.callCount).to.equal(3);
+
+                    done();
+                }, 30);
             });
         });
         describe('transform', () => {
-            it('is invoked in the event of dragmove', () => {
+            it('is invoked in the event of dragmove', (done) => {
                 let env,
                     spy;
 
@@ -139,12 +199,22 @@ describe('Stack', () => {
 
                 env.card.on('transform', spy);
 
-                env.card.trigger('mousedown');
+                env.card.trigger('panstart');
                 env.card.trigger('panmove', {deltaX: 10, deltaY: 10});
-                env.card.trigger('panmove', {deltaX: 11, deltaY: 10});
-                env.card.trigger('panmove', {deltaX: 12, deltaY: 10});
 
-                expect(spy.callCount).to.equal(3);
+                setTimeout(() => {
+                    env.card.trigger('panmove', {deltaX: 11, deltaY: 10});
+                }, 10);
+
+                setTimeout(() => {
+                    env.card.trigger('panmove', {deltaX: 12, deltaY: 10});
+                }, 20);
+
+                setTimeout(() => {
+                    expect(spy.callCount).to.equal(3);
+
+                    done();
+                }, 30);
             });
         });
     });
