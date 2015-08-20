@@ -278,40 +278,41 @@ Card = (stack, targetElement) => {
  * @return {Object}
  */
 Card.config = (config) => {
+    let defaultConfig;
+
     config = config || {};
 
-    config.isThrowOut = config.isThrowOut ? config.isThrowOut : Card.isThrowOut;
+    defaultConfig = {
+        isThrowOut: Card.isThrowOut,
+        throwOutConfidence: Card.throwOutConfidence,
+        throwOutDistance: Card.throwOutDistance,
+        minThrowOutDistance: 400,
+        maxThrowOutDistance: 500,
+        rotation: Card.rotation,
+        maxRotation: 20,
+        transform: Card.transform
+    };
 
-    config.throwOutConfidence = config.throwOutConfidence ? config.throwOutConfidence : Card.throwOutConfidence;
-
-    config.throwOutDistance = config.throwOutDistance ? config.throwOutDistance : Card.throwOutDistance;
-    config.minThrowOutDistance = config.minThrowOutDistance ? config.minThrowOutDistance : 400;
-    config.maxThrowOutDistance = config.maxThrowOutDistance ? config.maxThrowOutDistance : 500;
-
-    config.rotation = config.rotation ? config.rotation : Card.rotation;
-    config.maxRotation = config.maxRotation ? config.maxRotation : 20;
-
-    config.transform = config.transform ? config.transform : Card.transform;
-
-    return config;
+    return util.assign({}, defaultConfig, config);
 };
 
 /**
- * Invoked in the event of `dragmove` and every time the physics solver is triggered.
  * Uses CSS transform to translate element position and rotation.
+ *
+ * Invoked in the event of `dragmove` and every time the physics solver is triggered.
  *
  * @param {Number} x Horizontal offset from the startDrag.
  * @param {Number} y Vertical offset from the startDrag.
- * @return {null}
  */
 Card.transform = (element, x, y, r) => {
     element.style[vendorPrefix('transform')] = `translate3d(0, 0, 0) translate(${x}px, ${y}px) rotate(${r}deg)`;
 };
 
 /**
- * If element is not the last among the siblings, append the
- * element to the parentNode. The reason for using this as opposed to zIndex
- * is to allow CSS selector :nth-child, etc.
+ * Append element to the parentNode.
+ *
+ * This makes the element first among the siblings. The reason for using
+ * this as opposed to zIndex is to allow CSS selector :nth-child.
  *
  * Invoked in the event of mousedown.
  * Invoked when card is added to the stack.
@@ -334,8 +335,8 @@ Card.appendToParent = (element) => {
 };
 
 /**
- * Invoked in the event of dragmove.
  * Returns a value between 0 and 1 indicating the completeness of the throw out condition.
+ *
  * Ration of the absolute distance from the original card position and element width.
  *
  * @param {Number} offset Distance from the dragStart.
@@ -347,8 +348,8 @@ Card.throwOutConfidence = (offset, element) => {
 };
 
 /**
- * Invoked in the event of dragend.
  * Determines if element is being thrown out of the stack.
+ *
  * Element is considered to be thrown out when throwOutConfidence is equal to 1.
  *
  * @param {Number} offset Distance from the dragStart.
@@ -361,19 +362,16 @@ Card.isThrowOut = (offset, element, throwOutConfidence) => {
 };
 
 /**
- * Invoked when card is added to the stack.
- * The card is thrown to this offset from the stack.
- * The value is a random number between minThrowOutDistance and maxThrowOutDistance.
+ * Calculates a distances at which the card is thrown out of the stack.
  *
  * @return {Number}
  */
-Card.throwOutDistance = (minThrowOutDistance, maxThrowOutDistance) => {
-    return util.randomInt(minThrowOutDistance, maxThrowOutDistance);
+Card.throwOutDistance = (min, max) => {
+    return util.randomInt(min, max);
 };
 
 /**
- * Rotation is equal to the proportion of horizontal and vertical offset
- * times the maximumRotation constant.
+ * Calculates rotation based on the element x and y offset, element width and maxRotation variables.
  *
  * @param {Number} x Horizontal offset from the startDrag.
  * @param {Number} y Vertical offset from the startDrag.
