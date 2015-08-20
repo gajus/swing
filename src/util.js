@@ -1,11 +1,18 @@
+import remove from 'lodash/array/remove';
 import assign from 'lodash/object/assign';
-
+import random from 'lodash/number/random';
+import find from 'lodash/collection/find';
+import where from 'lodash/collection/where';
 
 let util;
 
 util = {};
 
+util.remove = remove;
 util.assign = assign;
+util.random = random;
+util.find = find;
+util.where = where;
 
 /**
  * Return direct children elements.
@@ -15,28 +22,9 @@ util.assign = assign;
  * @return {Array}
  */
 util.elementChildren = (element) => {
-    let childNodes,
-        children,
-        i;
-
-    childNodes = element.childNodes;
-    children = [];
-    i = childNodes.length;
-
-    while (i--) {
-        if (childNodes[i].nodeType === 1) {
-            children.unshift(childNodes[i]);
-        }
-    }
-
-    return children;
-};
-
-/**
- * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random
- */
-util.randomInt = (min, max) => {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+    return util.where(element.childNodes, {
+        nodeType: 1
+    });
 };
 
 /**
@@ -46,7 +34,5 @@ util.randomInt = (min, max) => {
 util.isTouchDevice = () => {
     return 'ontouchstart' in window || navigator.msMaxTouchPoints;
 };
-
-
 
 export default util;

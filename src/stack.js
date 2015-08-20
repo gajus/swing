@@ -1,6 +1,7 @@
 import Sister from 'sister';
 import rebound from 'rebound';
 import Card from './card';
+import util from './util';
 
 let Stack;
 
@@ -45,7 +46,7 @@ Stack = (config) => {
     /**
      * Creates an instance of Card and associates it with an element.
      *
-     * @param {DOMElement} element
+     * @param {HTMLElement} element
      * @return {Card}
      */
     stack.createCard = (element) => {
@@ -82,40 +83,24 @@ Stack = (config) => {
     };
 
     /**
-     * Returns card associated with an element.
+     * Returns an instance of Card associated with an element.
      *
      * @param {HTMLElement} element
-     * @return {Card|null}
+     * @return {Card|undefined}
      */
     stack.getCard = (element) => {
-        let j;
-
-        j = index.length;
-
-        while (j--) {
-            if (index[j].element === element) {
-                return index[j].card;
-            }
-        }
-
-        return null;
+        return util.find(index, {
+            element: element
+        });
     };
 
     /**
+     * Remove an instance of Card from the stack index.
+     *
      * @param {Card} card
      */
     stack.destroyCard = (card) => {
-        let j;
-
-        j = index.length;
-
-        while (j--) {
-            if (index[j].card === card) {
-                index.splice(j, 1);
-
-                break;
-            }
-        }
+        return util.remove(index, card);
     };
 
     return stack;

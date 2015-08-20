@@ -32,7 +32,10 @@ Card = (stack, targetElement) => {
     springThrowIn = springSystem.createSpring(250, 10);
     springThrowOut = springSystem.createSpring(500, 20);
     lastThrow = {};
-    lastTranslate = {x: 0, y: 0};
+    lastTranslate = {
+        x: 0,
+        y: 0
+    };
 
     springThrowIn.setRestSpeedThreshold(0.05);
     springThrowIn.setRestDisplacementThreshold(0.05);
@@ -44,7 +47,12 @@ Card = (stack, targetElement) => {
 
     mc = new Hammer.Manager(targetElement, {
         recognizers: [
-            [Hammer.Pan, {threshold: 2}]
+            [
+                Hammer.Pan,
+                {
+                    threshold: 2
+                }
+            ]
         ]
     });
 
@@ -272,7 +280,7 @@ Card = (stack, targetElement) => {
 };
 
 /**
- * Interprets stack.config() object. Sets default configuration.
+ * Creates a configuration object.
  *
  * @param {Object} config
  * @return {Object}
@@ -367,7 +375,7 @@ Card.isThrowOut = (offset, element, throwOutConfidence) => {
  * @return {Number}
  */
 Card.throwOutDistance = (min, max) => {
-    return util.randomInt(min, max);
+    return util.random(min, max);
 };
 
 /**
