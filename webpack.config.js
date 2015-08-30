@@ -1,6 +1,11 @@
 var webpack = require('webpack'),
-    minimize = !!Number(process.env.MINIMIZE),
+    minimize,
+    filename,
     plugins;
+
+minimize = Boolean(Number(process.env.MINIMIZE));
+
+filename = minimize ? '[name].min.js' : '[name].js',
 
 plugins = [
     new webpack.OldWatchingPlugin(),
@@ -21,7 +26,7 @@ module.exports = {
     },
     output: {
         path: __dirname + '/dist',
-        filename: '[name].js'
+        filename: filename
     },
     plugins: plugins,
     module: {

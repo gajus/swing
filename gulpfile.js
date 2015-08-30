@@ -1,7 +1,6 @@
 var gulp = require('gulp'),
     Server = require('karma').Server,
     eslint = require('gulp-eslint'),
-    del = require('del'),
     jsonfile = require('jsonfile'),
     gitdown = require('gitdown');
 
@@ -33,7 +32,7 @@ gulp.task('gitdown', function () {
 });
 
 gulp.task('watch', function () {
-    gulp.watch(['./src/**/*', './tests/**/*', './package.json'], ['default']);
+    gulp.watch(['./src/**/*', './tests/**/*'], ['default']);
     gulp.watch(['./.gitdown/**/*'], ['gitdown']);
 });
 
