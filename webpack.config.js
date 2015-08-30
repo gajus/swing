@@ -25,7 +25,7 @@ module.exports = {
         swing: './index.js'
     },
     output: {
-        path: __dirname + '/dist',
+        path: __dirname + '/dist/browser',
         filename: filename
     },
     plugins: plugins,

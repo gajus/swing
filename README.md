@@ -252,6 +252,7 @@ The list of the dependencies and description of their role is for your reference
 ## Building
 
 ```sh
-MINIMIZE=0 webpack
+rm -f ./dist/es5/* ./dist/browser/*
+babel ./src/ --out-dir ./dist/es5/
 MINIMIZE=1 webpack
 ```
