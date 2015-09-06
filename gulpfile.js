@@ -1,10 +1,13 @@
-var gulp = require('gulp'),
-    Server = require('karma').Server,
-    eslint = require('gulp-eslint'),
-    jsonfile = require('jsonfile'),
-    gitdown = require('gitdown');
+import gulp from 'gulp';
+import karma from 'karma';
+import eslint from 'gulp-eslint';
+import jsonfile from 'jsonfile';
+import webpack from 'webpack';
+import gutil from 'gulp-util';
 
-gulp.task('lint', function () {
+let Server = karma.Server;
+
+gulp.task('lint', () => {
     return gulp
         .src(['./src/**/*.js','./tests/**/*.js'])
         .pipe(eslint())
@@ -12,8 +15,8 @@ gulp.task('lint', function () {
         .pipe(eslint.failOnError());
 });
 
-gulp.task('version', ['lint'], function () {
-    var pkg = jsonfile.readFileSync('./package.json'),
+gulp.task('version', ['lint'], () => {
+    let pkg = jsonfile.readFileSync('./package.json'),
         bower = jsonfile.readFileSync('./bower.json');
 
     bower.name = pkg.name;
@@ -25,28 +28,33 @@ gulp.task('version', ['lint'], function () {
     jsonfile.writeFileSync('./bower.json', bower);
 });
 
-gulp.task('gitdown', function () {
-    return gitdown
-        .read('./.gitdown/README.md')
-        .write('./README.md');
+gulp.task('build', ['version'], (done) => {
+    webpack({}, (error, stats) => {
+        if (error) {
+            throw new gutil.PluginError('webpack', error);
+        }
+
+        gutil.log('[webpack]', stats.toString());
+
+        done();
+    });
 });
 
-gulp.task('watch', function () {
-    gulp.watch(['./src/**/*', './tests/**/*'], ['default']);
-    gulp.watch(['./.gitdown/**/*'], ['gitdown']);
-});
-
-gulp.task('test', ['default'], function (done) {
-    var server;
+gulp.task('test', ['build'], (done) => {
+    let server;
 
     server = new Server({
         configFile: __dirname + '/karma.conf.js',
         singleRun: true
     });
 
-    server.start(function () {
+    server.start(() => {
         done();
     });
 });
 
-gulp.task('default', ['version']);
+gulp.task('default', ['test']);
+
+gulp.task('watch', () => {
+    gulp.watch(['./src/**/*', './tests/**/*'], ['default']);
+});
