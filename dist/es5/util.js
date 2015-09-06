@@ -59,3 +59,4 @@ util.isTouchDevice = function () {
 
 exports['default'] = util;
 module.exports = exports['default'];
+//# sourceMappingURL=util.js.map

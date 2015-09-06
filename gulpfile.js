@@ -1,12 +1,13 @@
 import gulp from 'gulp';
-import karma from 'karma';
 import jsonfile from 'jsonfile';
 import webpack from 'webpack';
+import del from 'del';
+import mocha from 'gulp-mocha';
 import eslint from 'gulp-eslint';
 import babel from 'gulp-babel';
 import gutil from 'gulp-util';
-
-let Server = karma.Server;
+import sourcemaps from 'gulp-sourcemaps';
+import webpackConfig from './webpack.config';
 
 gulp.task('lint', () => {
     return gulp
@@ -16,7 +17,46 @@ gulp.task('lint', () => {
         .pipe(eslint.failOnError());
 });
 
-gulp.task('version', ['lint'], () => {
+gulp.task('clean', ['lint'], () => {
+    return;
+    return del([
+            './dist/es5/*',
+            './dist/browser/*'
+        ]);
+});
+
+gulp.task('build-browser', ['clean'], (done) => {
+    webpack(webpackConfig, (error, stats) => {
+        if (error) {
+            throw new gutil.PluginError('webpack', error);
+        }
+
+        gutil.log('[webpack]', stats.toString());
+
+        console.log('WHAT');
+
+        done();
+    });
+});
+
+gulp.task('build-es5', ['clean'], () => {
+    return gulp
+        .src('./src/*')
+        .pipe(sourcemaps.init())
+        .pipe(babel())
+        .pipe(sourcemaps.write('./'))
+        .pipe(gulp.dest('./dist/es5'));
+});
+
+gulp.task('test', ['build-browser', 'build-es5'], (done) => {
+    return gulp
+        .src('./test/*', {
+            read: false
+        })
+        .pipe(mocha());
+});
+
+gulp.task('version', ['test'], () => {
     let pkg = jsonfile.readFileSync('./package.json'),
         bower = jsonfile.readFileSync('./bower.json');
 
@@ -29,39 +69,7 @@ gulp.task('version', ['lint'], () => {
     jsonfile.writeFileSync('./bower.json', bower);
 });
 
-gulp.task('build-browser', ['version'], (done) => {
-    webpack({}, (error, stats) => {
-        if (error) {
-            throw new gutil.PluginError('webpack', error);
-        }
-
-        gutil.log('[webpack]', stats.toString());
-
-        done();
-    });
-});
-
-gulp.task('build-es5', () => {
-    /* return gulp
-        .src('./src/index')
-        .pipe(babel())
-        .pipe(gulp.dest()); */
-});
-
-gulp.task('test', ['build-browser', 'build-es5'], (done) => {
-    let server;
-
-    server = new Server({
-        configFile: __dirname + '/karma.conf.js',
-        singleRun: true
-    });
-
-    server.start(() => {
-        done();
-    });
-});
-
-gulp.task('default', ['test']);
+gulp.task('default', ['version']);
 
 gulp.task('watch', () => {
     gulp.watch(['./src/**/*', './tests/**/*'], ['default']);

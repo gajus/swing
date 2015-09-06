@@ -23,3 +23,4 @@ global.gajus.Swing = {
 
 exports.Stack = _stack2['default'];
 exports.Card = _card2['default'];
+//# sourceMappingURL=index.js.map

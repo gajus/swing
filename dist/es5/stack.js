@@ -89,7 +89,7 @@ Stack = function (config) {
 
         // Proxy Card events to the Stack.
         events.forEach(function (eventName) {
-            card.on(name, function (data) {
+            card.on(eventName, function (data) {
                 eventEmitter.trigger(eventName, data);
             });
         });
@@ -137,3 +137,4 @@ Stack = function (config) {
 
 exports['default'] = Stack;
 module.exports = exports['default'];
+//# sourceMappingURL=stack.js.map

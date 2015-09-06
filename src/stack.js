@@ -76,7 +76,7 @@ Stack = (config) => {
 
         // Proxy Card events to the Stack.
         events.forEach((eventName) => {
-            card.on(name, (data) => {
+            card.on(eventName, (data) => {
                 eventEmitter.trigger(eventName, data);
             });
         });
