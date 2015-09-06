@@ -1,28 +1,23 @@
-var webpack = require('webpack'),
-    minimize,
+var webpack,
     filename,
     plugins;
 
-minimize = Boolean(Number(process.env.MINIMIZE));
-
-filename = minimize ? '[name].min.js' : '[name].js',
+webpack = require('webpack');
+filename = '[name].js',
 
 plugins = [
+    new webpack.optimize.UglifyJsPlugin({minimize: true}),
     new webpack.OldWatchingPlugin(),
     // new webpack.NewWatchingPlugin(),
     new webpack.optimize.DedupePlugin(),
     new webpack.NoErrorsPlugin()
 ];
 
-if (minimize) {
-    plugins.push(new webpack.optimize.UglifyJsPlugin({minimize: true}));
-}
-
 module.exports = {
     devtool: 'source-map',
     context: __dirname + '/src',
     entry: {
-        swing: './index.js'
+        swing: './index'
     },
     output: {
         path: __dirname + '/dist/browser',

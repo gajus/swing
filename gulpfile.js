@@ -1,8 +1,9 @@
 import gulp from 'gulp';
 import karma from 'karma';
-import eslint from 'gulp-eslint';
 import jsonfile from 'jsonfile';
 import webpack from 'webpack';
+import eslint from 'gulp-eslint';
+import babel from 'gulp-babel';
 import gutil from 'gulp-util';
 
 let Server = karma.Server;
@@ -28,7 +29,7 @@ gulp.task('version', ['lint'], () => {
     jsonfile.writeFileSync('./bower.json', bower);
 });
 
-gulp.task('build', ['version'], (done) => {
+gulp.task('build-browser', ['version'], (done) => {
     webpack({}, (error, stats) => {
         if (error) {
             throw new gutil.PluginError('webpack', error);
@@ -40,7 +41,14 @@ gulp.task('build', ['version'], (done) => {
     });
 });
 
-gulp.task('test', ['build'], (done) => {
+gulp.task('build-es5', () => {
+    /* return gulp
+        .src('./src/index')
+        .pipe(babel())
+        .pipe(gulp.dest()); */
+});
+
+gulp.task('test', ['build-browser', 'build-es5'], (done) => {
     let server;
 
     server = new Server({

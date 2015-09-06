@@ -248,11 +248,3 @@ The list of the dependencies and description of their role is for your reference
 
 * [Rebound](http://facebook.github.io/rebound-js/docs/rebound.html) to drive physical animations. Notice how if you drag too little and let go, the cards spring back into place.
 * [Hammer](http://hammerjs.github.io/) to handle drag interactions.
-
-## Building
-
-```sh
-rm -f ./dist/es5/* ./dist/browser/*
-babel ./src/ --out-dir ./dist/es5/
-MINIMIZE=1 webpack
-```

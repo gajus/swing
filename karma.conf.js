@@ -22,7 +22,7 @@ module.exports = function (config) {
             'sinon-chai'
         ],
         files: [
-            'dist/swing.js',
+            'dist/browser/swing.js',
             'tests/*.js'
         ],
         reporters: [

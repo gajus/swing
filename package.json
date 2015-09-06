@@ -7,7 +7,7 @@
     "swipeable"
   ],
   "version": "3.0.1",
-  "main": "dist/es5/index.js",
+  "main": "./dist/es5/index.js",
   "author": {
     "name": "Gajus Kuizinas",
     "email": "gk@anuary.com",
@@ -22,7 +22,9 @@
     "babel-core": "^5.8.23",
     "babel-loader": "^5.3.2",
     "gulp": "^3.9.0",
+    "gulp-babel": "^5.2.1",
     "gulp-eslint": "^1.0.0",
+    "gulp-util": "^3.0.6",
     "jsonfile": "^2.2.1",
     "karma": "^0.13.9",
     "karma-babel-preprocessor": "^5.2.2",
@@ -33,12 +35,13 @@
   },
   "dependencies": {
     "hammerjs": "^2.0.4",
+    "lodash": "^3.10.1",
     "raf": "^3.1.0",
     "rebound": "^0.0.13",
     "sister": "^3.0.0",
     "vendor-prefix": "^0.1.0"
   },
-  "scrips": {
-    "test": "gulp test"
+  "scripts": {
+    "test": "babel-node ./node_modules/.bin/gulp test"
   }
 }
