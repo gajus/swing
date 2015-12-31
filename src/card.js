@@ -116,7 +116,8 @@ Card = (stack, targetElement) => {
         // "mousedown" event fires late on touch enabled devices, thus listening
         // to the touchstart event for touch enabled devices and mousedown otherwise.
         if (util.isTouchDevice()) {
-            targetElement.addEventListener('touchstart', () => {
+            targetElement.addEventListener('touchstart', (e) => {
+                e.stopPropagation();
                 eventEmitter.trigger('panstart');
             });
 
@@ -136,12 +137,14 @@ Card = (stack, targetElement) => {
                 global.addEventListener('touchmove', (e) => {
                     if (dragging) {
                         e.preventDefault();
+                        e.stopPropagation();
                     }
                 });
             })();
         } else {
-            targetElement.addEventListener('mousedown', () => {
+            targetElement.addEventListener('mousedown', (e) => {
                 eventEmitter.trigger('panstart');
+                e.stopPropagation();
             });
         }
 
