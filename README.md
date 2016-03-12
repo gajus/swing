@@ -12,22 +12,20 @@ Give it a [swing](http://gajus.com/sandbox/swing/examples/card-stack/)! and plea
 
 ## Contents
 
-* [Swing](#swing)
-    * [Contents](#swing-contents)
-    * [Usage Examples](#swing-usage-examples)
-    * [Use Case](#swing-use-case)
-        * [Single-Handed Navigation](#swing-use-case-single-handed-navigation)
-        * [Digestible Unit of Information](#swing-use-case-digestible-unit-of-information)
-        * [Data](#swing-use-case-data)
-    * [Quick Start](#swing-quick-start)
-    * [Configuration](#swing-configuration)
-    * [Methods](#swing-methods)
-        * [Throwing Card Out of the Stack](#swing-methods-throwing-card-out-of-the-stack)
-    * [Events](#swing-events)
-        * [Event Object](#swing-events-event-object)
-    * [Download](#swing-download)
-        * [Browser Bundle](#swing-download-browser-bundle)
-    * [Dependencies](#swing-dependencies)
+* [Usage Examples](#usage-examples)
+    * [Use Case](#use-case)
+        * [Single-Handed Navigation](#single-handed-navigation)
+        * [Digestible Unit of Information](#digestible-unit-of-information)
+        * [Data](#data)
+* [Quick Start](#quick-start)
+* [Configuration](#configuration)
+* [Methods](#methods)
+    * [Throwing Card Out of the Stack](#throwing-card-out-of-the-stack)
+* [Events](#events)
+    * [Event Object](#event-object)
+* [Download](#download)
+    * [Browser Bundle](#browser-bundle)
+* [Dependencies](#dependencies)
 
 ## Usage Examples
 
