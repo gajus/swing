@@ -116,7 +116,17 @@ Stack = (config) => {
      * @return {Card}
      */
     stack.destroyCard = (card) => {
-        return util.remove(index, card);
+        let removedCards;
+
+        removedCards = util.remove(index, {
+            card
+        });
+
+        if (removedCards && removedCards.length) {
+            return removedCards[0].card;
+        }
+
+        return null;
     };
 
     return stack;

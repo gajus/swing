@@ -73,6 +73,24 @@ describe('DOM', () => {
             });
         });
 
+        describe('.destroyCard()', () => {
+            it('removes card from stack', () => {
+                let card,
+                    element,
+                    parentElement;
+
+                parentElement = global.document.createElement('div');
+                element = global.document.createElement('div');
+
+                parentElement.appendChild(element);
+
+                card = stack.createCard(element);
+                card.destroy();
+
+                expect(stack.getCard(element)).to.equal(null);
+            });
+        });
+        
         describe('.getConfig()', () => {
             let setupEnv;
 

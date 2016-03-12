@@ -129,7 +129,17 @@ Stack = function (config) {
      * @return {Card}
      */
     stack.destroyCard = function (card) {
-        return _util2['default'].remove(index, card);
+        var removedCards = undefined;
+
+        removedCards = _util2['default'].remove(index, {
+            card: card
+        });
+
+        if (removedCards && removedCards.length) {
+            return removedCards[0].card;
+        }
+
+        return null;
     };
 
     return stack;
