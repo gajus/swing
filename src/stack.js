@@ -94,16 +94,22 @@ const Stack = (config) => {
      * @return {Card|null}
      */
     stack.getCard = (element) => {
-        return _.find(index, {
+        const group = _.find(index, {
             element
         });
+
+        if (group) {
+            return group.card;
+        }
+
+        return null;
     };
 
     /**
      * Remove an instance of Card from the stack index.
      *
      * @param {Card} card
-     * @return {Card|null}
+     * @return {null}
      */
     stack.destroyCard = (card) => {
         return _.remove(index, {
