@@ -6,7 +6,7 @@
     "cards",
     "swipeable"
   ],
-  "version": "3.0.2",
+  "version": "3.0.3",
   "main": "./dist/index.js",
   "author": {
     "name": "Gajus Kuizinas",
@@ -45,13 +45,13 @@
     "vendor-prefix": "^0.1.0"
   },
   "scripts": {
-     "pragmatist": "pragmatist",
-     "lint": "npm run pragmatist lint",
-     "test": "npm run pragmatist test",
-     "build": "npm run pragmatist build",
-     "watch": "npm run pragmatist watch",
-     "watch-lint": "npm run pragmatist watch-lint",
-     "watch-test": "npm run pragmatist watch-test",
-     "watch-build": "npm run pragmatist watch-build"
+    "pragmatist": "pragmatist",
+    "lint": "npm run pragmatist lint",
+    "test": "npm run pragmatist test",
+    "build": "npm run pragmatist build",
+    "watch": "npm run pragmatist watch",
+    "watch-lint": "npm run pragmatist watch-lint",
+    "watch-test": "npm run pragmatist watch-test",
+    "watch-build": "npm run pragmatist watch-build"
   }
 }
