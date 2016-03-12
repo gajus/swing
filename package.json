@@ -7,10 +7,10 @@
     "swipeable"
   ],
   "version": "3.0.2",
-  "main": "./dist/es5/index.js",
+  "main": "./dist/index.js",
   "author": {
     "name": "Gajus Kuizinas",
-    "email": "gk@anuary.com",
+    "email": "gajus@gajus.com",
     "url": "http://gajus.com"
   },
   "repository": {
@@ -32,19 +32,26 @@
     "jsdom": "^6.3.0",
     "jsonfile": "^2.2.1",
     "mocha": "^2.3.0",
+    "pragmatist": "^3.0.21",
     "sinon": "^1.16.1",
     "webpack": "^1.12.1"
   },
   "dependencies": {
     "hammerjs": "^2.0.4",
-    "lodash": "^3.10.1",
+    "lodash": "^4.6.1",
     "raf": "^3.1.0",
     "rebound": "^0.0.13",
     "sister": "^3.0.0",
     "vendor-prefix": "^0.1.0"
   },
   "scripts": {
-    "test": "babel-node ./node_modules/.bin/gulp test",
-    "watch": "babel-node ./node_modules/.bin/gulp watch"
+     "pragmatist": "pragmatist",
+     "lint": "npm run pragmatist lint",
+     "test": "npm run pragmatist test",
+     "build": "npm run pragmatist build",
+     "watch": "npm run pragmatist watch",
+     "watch-lint": "npm run pragmatist watch-lint",
+     "watch-test": "npm run pragmatist watch-test",
+     "watch-build": "npm run pragmatist watch-build"
   }
 }
