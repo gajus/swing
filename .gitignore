@@ -1,6 +1,9 @@
-/bower_components
-/node_modules
-/sandbox
-.npmrc
-npm-debug.log
-karma.conf.saucelabs.js
+node_modules
+coverage
+dist
+*.log
+.*
+!.gitignore
+!.npmignore
+!.babelrc
+!.travis.yml
