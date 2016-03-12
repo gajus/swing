@@ -8,7 +8,7 @@ import _ from 'lodash';
  * @return {Array}
  */
 const elementChildren = (element) => {
-    return _.where(element.childNodes, {
+    return _.filter(element.childNodes, {
         nodeType: 1
     });
 };
