@@ -113,37 +113,9 @@ Card = (stack, targetElement) => {
             });
         });
 
-        // "mousedown" event fires late on touch enabled devices, thus listening
-        // to the touchstart event for touch enabled devices and mousedown otherwise.
-        if (util.isTouchDevice()) {
-            targetElement.addEventListener('touchstart', () => {
-                eventEmitter.trigger('panstart');
-            });
-
-            // Disable scrolling while dragging the element on the touch enabled devices.
-            // @see http://stackoverflow.com/a/12090055/368691
-            (() => {
-                let dragging;
-
-                targetElement.addEventListener('touchstart', () => {
-                    dragging = true;
-                });
-
-                targetElement.addEventListener('touchend', () => {
-                    dragging = false;
-                });
-
-                global.addEventListener('touchmove', (e) => {
-                    if (dragging) {
-                        e.preventDefault();
-                    }
-                });
-            })();
-        } else {
-            targetElement.addEventListener('mousedown', () => {
-                eventEmitter.trigger('panstart');
-            });
-        }
+        mc.on('panstart', (e) => {
+            eventEmitter.trigger('panstart', e);
+        });
 
         mc.on('panmove', (e) => {
             eventEmitter.trigger('panmove', e);
