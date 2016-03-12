@@ -9,14 +9,12 @@ import {
     isTouchDevice
 } from './util';
 
-let Card;
-
 /**
  * @param {Stack} stack
  * @param {HTMLElement} targetElement
  * @return {Object} An instance of Card.
  */
-Card = (stack, targetElement) => {
+const Card = (stack, targetElement) => {
     let card,
         config,
         currentX,
@@ -97,13 +95,10 @@ Card = (stack, targetElement) => {
         });
 
         eventEmitter.on('panend', (e) => {
-            let x,
-                y;
-
             isDraging = false;
 
-            x = lastTranslate.x + e.deltaX;
-            y = lastTranslate.y + e.deltaY;
+            const x = lastTranslate.x + e.deltaX;
+            const y = lastTranslate.y + e.deltaY;
 
             if (config.isThrowOut(x, targetElement, config.throwOutConfidence(x, targetElement))) {
                 card.throwOut(x, y);
@@ -158,13 +153,9 @@ Card = (stack, targetElement) => {
 
         springThrowIn.addListener({
             onSpringUpdate: (spring) => {
-                let value,
-                    x,
-                    y;
-
-                value = spring.getCurrentValue();
-                x = rebound.MathUtil.mapValueInRange(value, 0, 1, lastThrow.fromX, 0);
-                y = rebound.MathUtil.mapValueInRange(value, 0, 1, lastThrow.fromY, 0);
+                const value = spring.getCurrentValue();
+                const x = rebound.MathUtil.mapValueInRange(value, 0, 1, lastThrow.fromX, 0);
+                const y = rebound.MathUtil.mapValueInRange(value, 0, 1, lastThrow.fromY, 0);
 
                 onSpringUpdate(x, y);
             },
@@ -177,13 +168,9 @@ Card = (stack, targetElement) => {
 
         springThrowOut.addListener({
             onSpringUpdate: (spring) => {
-                let value,
-                    x,
-                    y;
-
-                value = spring.getCurrentValue();
-                x = rebound.MathUtil.mapValueInRange(value, 0, 1, lastThrow.fromX, throwOutDistance * lastThrow.direction);
-                y = lastThrow.fromY;
+                const value = spring.getCurrentValue();
+                const x = rebound.MathUtil.mapValueInRange(value, 0, 1, lastThrow.fromX, throwOutDistance * lastThrow.direction);
+                const y = lastThrow.fromY;
 
                 onSpringUpdate(x, y);
             },
