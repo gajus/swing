@@ -45,7 +45,7 @@
     "vendor-prefix": "^0.1.0"
   },
   "scripts": {
-    "pragmatist": "pragmatist",
+    "pragmatist": "pragmatist --es5",
     "lint": "npm run pragmatist lint",
     "test": "npm run pragmatist test",
     "build": "npm run pragmatist build",
