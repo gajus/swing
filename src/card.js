@@ -1,9 +1,13 @@
+import _ from 'lodash';
 import Sister from 'sister';
 import Hammer from 'hammerjs';
 import rebound from 'rebound';
 import vendorPrefix from 'vendor-prefix';
-import util from './util.js';
 import raf from 'raf';
+import {
+    elementChildren,
+    isTouchDevice
+} from './util';
 
 let Card;
 
@@ -15,7 +19,6 @@ let Card;
 Card = (stack, targetElement) => {
     let card,
         config,
-        construct,
         currentX,
         currentY,
         doMove,
@@ -33,7 +36,7 @@ Card = (stack, targetElement) => {
         throwOutDistance,
         throwWhere;
 
-    construct = () => {
+    const construct = () => {
         card = {};
         config = Card.makeConfig(stack.getConfig());
         eventEmitter = Sister();
@@ -115,7 +118,7 @@ Card = (stack, targetElement) => {
 
         // "mousedown" event fires late on touch enabled devices, thus listening
         // to the touchstart event for touch enabled devices and mousedown otherwise.
-        if (util.isTouchDevice()) {
+        if (isTouchDevice()) {
             targetElement.addEventListener('touchstart', () => {
                 eventEmitter.trigger('panstart');
             });
@@ -337,9 +340,7 @@ Card = (stack, targetElement) => {
  * @return {Object}
  */
 Card.makeConfig = (config = {}) => {
-    let defaultConfig;
-
-    defaultConfig = {
+    const defaultConfig = {
         isThrowOut: Card.isThrowOut,
         throwOutConfidence: Card.throwOutConfidence,
         throwOutDistance: Card.throwOutDistance,
@@ -350,7 +351,7 @@ Card.makeConfig = (config = {}) => {
         transform: Card.transform
     };
 
-    return util.assign({}, defaultConfig, config);
+    return _.assign({}, defaultConfig, config);
 };
 
 /**
@@ -381,13 +382,9 @@ Card.transform = (element, x, y, r) => {
  * @return {undefined}
  */
 Card.appendToParent = (element) => {
-    let parentNode,
-        siblings,
-        targetIndex;
-
-    parentNode = element.parentNode;
-    siblings = util.elementChildren(parentNode);
-    targetIndex = siblings.indexOf(element);
+    const parentNode = element.parentNode;
+    const siblings = elementChildren(parentNode);
+    const targetIndex = siblings.indexOf(element);
 
     if (targetIndex + 1 !== siblings.length) {
         parentNode.removeChild(element);
@@ -430,7 +427,7 @@ Card.isThrowOut = (offset, element, throwOutConfidence) => {
  * @return {Number}
  */
 Card.throwOutDistance = (min, max) => {
-    return util.random(min, max);
+    return _.random(min, max);
 };
 
 /**

@@ -1,18 +1,4 @@
-import utilityRemove from 'lodash/array/remove';
-import utilityAssign from 'lodash/object/assign';
-import utilityRandom from 'lodash/number/random';
-import utilityFind from 'lodash/collection/find';
-import utilityWhere from 'lodash/collection/where';
-
-let util;
-
-util = {};
-
-util.remove = utilityRemove;
-util.assign = utilityAssign;
-util.random = utilityRandom;
-util.find = utilityFind;
-util.where = utilityWhere;
+import _ from 'lodash';
 
 /**
  * Return direct children elements.
@@ -21,8 +7,8 @@ util.where = utilityWhere;
  * @param {HTMLElement} element
  * @return {Array}
  */
-util.elementChildren = (element) => {
-    return util.where(element.childNodes, {
+const elementChildren = (element) => {
+    return _.where(element.childNodes, {
         nodeType: 1
     });
 };
@@ -31,8 +17,11 @@ util.elementChildren = (element) => {
  * @see http://stackoverflow.com/questions/4817029/whats-the-best-way-to-detect-a-touch-screen-device-using-javascript/4819886#4819886
  * @return {Boolean}
  */
-util.isTouchDevice = () => {
+const isTouchDevice = () => {
     return 'ontouchstart' in window || navigator.msMaxTouchPoints;
 };
 
-export default util;
+export {
+    elementChildren,
+    isTouchDevice
+};

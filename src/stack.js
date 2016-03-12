@@ -1,15 +1,13 @@
+import _ from 'lodash';
 import Sister from 'sister';
 import rebound from 'rebound';
 import Card from './card';
-import util from './util';
-
-let Stack;
 
 /**
  * @param {Object} config Stack configuration.
  * @return {Object} An instance of Stack object.
  */
-Stack = (config) => {
+const Stack = (config) => {
     let construct,
         eventEmitter,
         index,
@@ -30,14 +28,18 @@ Stack = (config) => {
      *
      * @return {Object}
      */
-    stack.getConfig = () => config;
+    stack.getConfig = () => {
+        return config;
+    };
 
     /**
      * Get a singleton instance of the SpringSystem physics engine.
      *
      * @return {Sister}
      */
-    stack.getSpringSystem = () => springSystem;
+    stack.getSpringSystem = () => {
+        return springSystem;
+    };
 
     /**
      * Proxy to the instance of the event emitter.
@@ -57,12 +59,8 @@ Stack = (config) => {
      * @return {Card}
      */
     stack.createCard = (element) => {
-        let card,
-            events;
-
-        card = Card(stack, element);
-
-        events = [
+        const card = Card(stack, element);
+        const events = [
             'throwout',
             'throwoutend',
             'throwoutleft',
@@ -96,27 +94,21 @@ Stack = (config) => {
      * @return {Card|null}
      */
     stack.getCard = (element) => {
-        let card;
-
-        card = util.find(index, {
+        return _.find(index, {
             element
         });
-
-        if (card) {
-            return card.card;
-        }
-
-        return null;
     };
 
     /**
      * Remove an instance of Card from the stack index.
      *
      * @param {Card} card
-     * @return {Card}
+     * @return {Card|null}
      */
     stack.destroyCard = (card) => {
-        return util.remove(index, card);
+        return _.remove(index, {
+            card
+        });
     };
 
     return stack;
