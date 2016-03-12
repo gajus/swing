@@ -440,13 +440,9 @@ Card.throwOutDistance = (min, max) => {
  * @return {Number} Rotation angle expressed in degrees.
  */
 Card.rotation = (x, y, element, maxRotation) => {
-    let horizontalOffset,
-        rotation,
-        verticalOffset;
-
-    horizontalOffset = Math.min(Math.max(x / element.offsetWidth, -1), 1);
-    verticalOffset = (y > 0 ? 1 : -1) * Math.min(Math.abs(y) / 100, 1);
-    rotation = horizontalOffset * verticalOffset * maxRotation;
+    const horizontalOffset = Math.min(Math.max(x / element.offsetWidth, -1), 1);
+    const verticalOffset = (y > 0 ? 1 : -1) * Math.min(Math.abs(y) / 100, 1);
+    const rotation = horizontalOffset * verticalOffset * maxRotation;
 
     return rotation;
 };
