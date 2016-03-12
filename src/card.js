@@ -217,7 +217,8 @@ Card = (stack, targetElement) => {
             eventEmitter.trigger('dragmove', {
                 target: targetElement,
                 throwOutConfidence: config.throwOutConfidence(x, targetElement),
-                throwDirection: x < 0 ? Card.DIRECTION_LEFT : Card.DIRECTION_RIGHT
+                throwDirection: x < 0 ? Card.DIRECTION_LEFT : Card.DIRECTION_RIGHT,
+                offset: x
             });
         };
 
