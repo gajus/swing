@@ -1,14 +1,13 @@
 # Swing
 
-[![Travis build status](http://img.shields.io/travis/gajus/swing/master.svg?style=flat)](https://travis-ci.org/gajus/swing)
-[![NPM version](http://img.shields.io/npm/v/swing.svg?style=flat)](https://www.npmjs.org/package/swing)
-[![Bower version](http://img.shields.io/bower/v/swing.svg?style=flat)](http://bower.io/search/?q=swing)
+[![Travis build status](http://img.shields.io/travis/gajus/swing/master.svg?style=flat-square)](https://travis-ci.org/gajus/swing)
+[![NPM version](http://img.shields.io/npm/v/swing.svg?style=flat-square)](https://www.npmjs.org/package/swing)
 
 A swipeable cards interface. The swipe-left/swipe-right for yes/no input. As seen in apps like [Jelly](http://jelly.co/) and [Tinder](http://www.gotinder.com/), and [many others](http://www.saydaily.com/2014/09/tinder-swipe-and-media).
 
 Give it a [swing](http://gajus.com/sandbox/swing/examples/card-stack/)! and please [tweet it](https://twitter.com/intent/retweet?tweet_id=527505589732405248) if you like it. : )
 
-![Card stack example.](./README/card-stack.gif)
+![Card stack example.](./.README/card-stack.gif)
 
 ## Contents
 
@@ -73,31 +72,28 @@ A collection of observations about the extended use case of the swipeable cards 
 ```
 
 ```js
-var stack,
-    cards;
-
 // Prepare the cards in the stack for iteration.
-cards = [].slice.call(document.querySelectorAll('ul li'))
+const cards = [].slice.call(document.querySelectorAll('ul li'));
 
 // An instance of the Stack is used to attach event listeners.
-stack = Swing.Stack();
+const stack = Swing.Stack();
 
-cards.forEach(function (targetElement) {
+cards.forEach((targetElement) => {
     // Add card element to the Stack.
     stack.createCard(targetElement);
 });
 
 // Add event listener for when a card is thrown out of the stack.
-stack.on('throwout', function (e) {
+stack.on('throwout', (event) => {
     // e.target Reference to the element that has been thrown out of the stack.
     // e.throwDirection Direction in which the element has been thrown (Card.DIRECTION_LEFT, Card.DIRECTION_RIGHT).
 
     console.log('Card has been thrown out of the stack.');
-    console.log('Throw direction: ' + (e.throwDirection == Card.DIRECTION_LEFT ? 'left' : 'right'));
+    console.log('Throw direction: ' + (event.throwDirection == Card.DIRECTION_LEFT ? 'left' : 'right'));
 });
 
 // Add event listener for when a card is thrown in the stack, including the spring back into place effect.
-stack.on('throwin', function (e) {
+stack.on('throwin', () => {
     console.log('Card has snapped back to the stack.');
 });
 ```
@@ -105,10 +101,7 @@ stack.on('throwin', function (e) {
 ## Configuration
 
 ```js
-var stack,
-    config;
-
-config = {
+const config = {
     /**
      * Invoked in the event of dragmove.
      * Returns a value between 0 and 1 indicating the completeness of the throw out condition.
@@ -118,12 +111,12 @@ config = {
      * @param {HTMLElement} element Element.
      * @return {Number}
      */
-    throwOutConfidence: function (offset, element) {
+    throwOutConfidence: (offset, element) => {
         return Math.min(Math.abs(offset) / element.offsetWidth, 1);
     }
 };
 
-stack = stack = Swing.Stack(config);
+const stack = stack = Swing.Stack(config);
 ```
 
 | Name | Description | Default |
@@ -142,11 +135,8 @@ All of the configuration parameters are optional. Refer to the source code of th
 ## Methods
 
 ```js
-var stack,
-    card;
-
-stack = stack = Swing.Stack();
-card = stack.createCard(HTMLElement);
+const stack = Swing.Stack();
+const card = stack.createCard(HTMLElement);
 ```
 
 | Name | Description |
@@ -175,12 +165,9 @@ To make the animation more diverse, use random value for the `y` parameter.
 Event listener can be attached to an instance of `Swing.Stack` or `Swing.Card` using the `on` method:
 
 ```js
-var stack,
-    card;
+const stack = Swing.Stack();
 
-stack = stack = Swing.Stack();
-
-card = stack.createCard(HTMLElement);
+const card = stack.createCard(HTMLElement);
 
 card.on('throwout', function () {});
 stack.on('throwout', function () {});
@@ -203,9 +190,7 @@ stack.on('throwout', function () {});
 Event listener is invoked with a single `eventObject` parameter:
 
 ```js
-var stack;
-
-stack = stack = Swing.Stack();
+const stack = Swing.Stack();
 
 stack.on('throwout', function (eventObject) {});
 ```
@@ -218,31 +203,8 @@ stack.on('throwout', function (eventObject) {});
 
 ## Download
 
-Using [Bower](http://bower.io/):
-
-```sh
-bower install swing
-```
-
 Using [NPM](https://www.npmjs.org/):
 
 ```sh
 npm install swing
 ```
-
-### Browser Bundle
-
-When using the `./dist/` version the Swing resides under `gajus` namespace:
-
-```js
-var stack = gajus.Swing.Stack();
-```
-
-## Dependencies
-
-If you are using the `./dist/` version, you do not need to download the dependencies.
-
-The list of the dependencies and description of their role is for your reference only.
-
-* [Rebound](http://facebook.github.io/rebound-js/docs/rebound.html) to drive physical animations. Notice how if you drag too little and let go, the cards spring back into place.
-* [Hammer](http://hammerjs.github.io/) to handle drag interactions.
