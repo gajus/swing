@@ -2,6 +2,7 @@
 
 [![Travis build status](http://img.shields.io/travis/gajus/swing/master.svg?style=flat-square)](https://travis-ci.org/gajus/swing)
 [![NPM version](http://img.shields.io/npm/v/swing.svg?style=flat-square)](https://www.npmjs.org/package/swing)
+[![js-canonical-style](https://img.shields.io/badge/code%20style-canonical-blue.svg?style=flat-square)](https://github.com/gajus/canonical)
 
 A swipeable cards interface. The swipe-left/swipe-right for yes/no input. As seen in apps like [Jelly](http://jelly.co/) and [Tinder](http://www.gotinder.com/), and [many others](http://www.saydaily.com/2014/09/tinder-swipe-and-media).
 
