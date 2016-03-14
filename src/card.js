@@ -304,6 +304,17 @@ const Card = (stack, targetElement) => {
     };
 
     /**
+     * Resets a card properties.
+     */
+    card.reset = function() {
+        lastThrow.fromX = 0;
+        lastThrow.fromY = 0;
+        lastTranslate.x = 0;
+        lastTranslate.y = 0;
+        throwOutDistance = 0;
+    };
+
+    /**
      * Unbinds all Hammer.Manager events.
      * Removes the listeners from the physics simulation.
      *
