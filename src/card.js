@@ -100,9 +100,7 @@ const Card = (stack, targetElement) => {
             const x = lastTranslate.x + e.deltaX;
             const y = lastTranslate.y + e.deltaY;
 
-            console.log([x, y]);
-
-            if (config.isThrowOut(x, targetElement, config.throwOutConfidence(x, y, targetElement))) {
+            if (config.isThrowOut(x, y, targetElement, config.throwOutConfidence(x, y, targetElement))) {
                 card.throwOut(x, y);
             } else {
                 card.throwIn(x, y);
@@ -433,7 +431,7 @@ Card.throwOutConfidence = (xOffset, yOffset, element) => {
  * @param {Number} throwOutConfidence config.throwOutConfidence
  * @return {Boolean}
  */
-Card.isThrowOut = (offset, element, throwOutConfidence) => {
+Card.isThrowOut = (xOffset, yOffset, element, throwOutConfidence) => {
     return throwOutConfidence === 1;
 };
 
