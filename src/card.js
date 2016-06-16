@@ -179,8 +179,6 @@ const Card = (stack, targetElement) => {
                     y = rebound.MathUtil.mapValueInRange(value, 0, 1, lastThrow.fromY, throwOutDistance * lastThrow.direction.value);
                 }
 
-                console.log([x, y]);
-
                 onSpringUpdate(x, y);
             },
             onSpringAtRest: () => {
@@ -278,13 +276,11 @@ const Card = (stack, targetElement) => {
                         throwDirection: lastThrow.direction
                     });
                 } else if (lastThrow.direction === Card.DIRECTION_UP) {
-                    console.log('Thrown up!');
                     eventEmitter.trigger('throwoutup', {
                         target: targetElement,
                         throwDirection: lastThrow.direction
                     });
                 } else if (lastThrow.direction === Card.DIRECTION_DOWN) {
-                    console.log('Thrown down!');
                     eventEmitter.trigger('throwoutdown', {
                         target: targetElement,
                         throwDirection: lastThrow.direction
@@ -411,10 +407,6 @@ Card.appendToParent = (element) => {
  * @param {HTMLElement} element Element.
  * @return {Number}
  */
-// Card.throwOutConfidence = (offset, element) => {
-//     return Math.min(Math.abs(offset) / element.offsetWidth, 1);
-// };
-
 Card.throwOutConfidence = (xOffset, yOffset, element) => {
     var xConfidence = Math.min(Math.abs(xOffset) / element.offsetWidth, 1);
     var yConfidence = Math.min(Math.abs(yOffset) / element.offsetHeight, 1);
@@ -466,8 +458,8 @@ Card.rotation = (x, y, element, maxRotation) => {
 Card.DIRECTION_LEFT = { direction: 'left', value: -1 };
 Card.DIRECTION_RIGHT = { direction: 'right', value: 1 };
 
-Card.DIRECTION_UP = { direction: 'left', value: -1 };
-Card.DIRECTION_DOWN = { direction: 'right', value: 1 };
+Card.DIRECTION_UP = { direction: 'up', value: -1 };
+Card.DIRECTION_DOWN = { direction: 'down', value: 1 };
 
 Card.THROW_IN = 'in';
 Card.THROW_OUT = 'out';
