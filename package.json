@@ -19,6 +19,8 @@
   },
   "license": "BSD-3-Clause",
   "devDependencies": {
+    "babel": "^5.8.23",
+    "babel-loader": "^5.3.2",
     "chai": "^3.2.0",
     "jsdom": "^6.3.0",
     "jsonfile": "^2.2.1",
@@ -36,12 +38,14 @@
   },
   "scripts": {
     "pragmatist": "pragmatist --es5",
+    "webpack": "webpack",
     "lint": "npm run pragmatist lint",
     "test": "npm run pragmatist test",
-    "build": "npm run pragmatist build",
+    "build": "npm run pragmatist build && npm run webpack",
     "watch": "npm run pragmatist watch",
     "watch-lint": "npm run pragmatist watch-lint",
     "watch-test": "npm run pragmatist watch-test",
     "watch-build": "npm run pragmatist watch-build"
+
   }
 }

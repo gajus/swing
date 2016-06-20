@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', function () {
         directionBind,
         throwOutConfidenceElements;
 
-    stack = gajus.Swing.Stack();
+    stack = Swing.Stack();
     cardElement = document.querySelector('.stack li');
     throwOutConfidenceBind = document.querySelector('#throw-out-confidence-bind');
     directionBind = document.querySelector('#direction-bind');
@@ -19,10 +19,10 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     stack.on('dragmove', function (e) {
-        throwOutConfidenceElements[e.throwDirection == gajus.Swing.Card.DIRECTION_RIGHT ? 'yes' : 'no'].opacity = e.throwOutConfidence;
+        throwOutConfidenceElements[e.throwDirection == Swing.Card.DIRECTION_RIGHT ? 'yes' : 'no'].opacity = e.throwOutConfidence;
 
         throwOutConfidenceBind.innerHTML = e.throwOutConfidence.toFixed(3);
-        directionBind.innerHTML = e.throwDirection == gajus.Swing.Card.DIRECTION_RIGHT ? 'right' : 'left';
+        directionBind.innerHTML = e.throwDirection == Swing.Card.DIRECTION_RIGHT ? 'right' : 'left';
     });
 
     stack.on('dragend', function (e) {
