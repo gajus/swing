@@ -19,12 +19,14 @@
   },
   "license": "BSD-3-Clause",
   "devDependencies": {
+    "babel": "^5.8.23",
+    "babel-loader": "^5.3.2",
     "chai": "^3.2.0",
     "jsdom": "^6.3.0",
     "jsonfile": "^2.2.1",
     "pragmatist": "^3.0.21",
     "sinon": "^1.16.1",
-    "webpack": "^1.13.1"
+    "webpack": "^1.12.1"
   },
   "dependencies": {
     "hammerjs": "^2.0.4",
