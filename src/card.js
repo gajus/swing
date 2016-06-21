@@ -32,7 +32,8 @@ const Card = (stack, targetElement) => {
         springThrowIn,
         springThrowOut,
         throwOutDistance,
-        throwWhere;
+        throwWhere,
+        throwDirectionToEventName;
 
     const construct = () => {
         card = {};
@@ -46,6 +47,13 @@ const Card = (stack, targetElement) => {
             x: 0,
             y: 0
         };
+
+        /* Mapping directions to event names */
+        throwDirectionToEventName = {};
+        throwDirectionToEventName[Direction.LEFT] = 'throwoutleft';
+        throwDirectionToEventName[Direction.RIGHT] = 'throwoutright';
+        throwDirectionToEventName[Direction.UP] = 'throwoutup';
+        throwDirectionToEventName[Direction.DOWN] = 'throwoutdown';
 
         springThrowIn.setRestSpeedThreshold(0.05);
         springThrowIn.setRestDisplacementThreshold(0.05);
@@ -171,10 +179,10 @@ const Card = (stack, targetElement) => {
                 const value = spring.getCurrentValue();
                 var x, y;
 
-                if (lastThrow.direction === Card.DIRECTION_RIGHT || lastThrow.direction === Card.DIRECTION_LEFT) {
+                if (lastThrow.direction === Direction.RIGHT || lastThrow.direction === Direction.LEFT) {
                     x = rebound.MathUtil.mapValueInRange(value, 0, 1, lastThrow.fromX, throwOutDistance * lastThrow.direction.value);
                     y = lastThrow.fromY;
-                } else if (lastThrow.direction === Card.DIRECTION_UP || lastThrow.direction === Card.DIRECTION_DOWN) {
+                } else if (lastThrow.direction === Direction.UP || lastThrow.direction === Direction.DOWN) {
                     x = lastThrow.fromX;
                     y = rebound.MathUtil.mapValueInRange(value, 0, 1, lastThrow.fromY, throwOutDistance * lastThrow.direction.value);
                 }
@@ -214,10 +222,11 @@ const Card = (stack, targetElement) => {
             eventEmitter.trigger('dragmove', {
                 target: targetElement,
                 throwOutConfidence: config.throwOutConfidence(x, y, targetElement),
-                throwDirection: x < 0 ? Card.DIRECTION_LEFT : Card.DIRECTION_RIGHT,
+                throwDirection: computeDirection(x, y),
                 offset: x
             });
         };
+
 
         /**
          * Invoked every time the physics solver updates the Spring's value.
@@ -246,9 +255,7 @@ const Card = (stack, targetElement) => {
         throwWhere = (where, fromX, fromY) => {
             lastThrow.fromX = fromX;
             lastThrow.fromY = fromY;
-            lastThrow.direction = Math.abs(lastThrow.fromX) > Math.abs(lastThrow.fromY) ?
-                lastThrow.fromX < 0 ? Card.DIRECTION_LEFT : Card.DIRECTION_RIGHT :
-                lastThrow.fromY < 0 ? Card.DIRECTION_UP : Card.DIRECTION_DOWN;
+            lastThrow.direction = computeDirection(fromX, fromY);
 
             if (where === Card.THROW_IN) {
                 springThrowIn.setCurrentValue(0).setAtRest().setEndValue(1);
@@ -265,31 +272,17 @@ const Card = (stack, targetElement) => {
                     throwDirection: lastThrow.direction
                 });
 
-                if (lastThrow.direction === Card.DIRECTION_LEFT) {
-                    eventEmitter.trigger('throwoutleft', {
-                        target: targetElement,
-                        throwDirection: lastThrow.direction
-                    });
-                } else if (lastThrow.direction === Card.DIRECTION_RIGHT) {
-                    eventEmitter.trigger('throwoutright', {
-                        target: targetElement,
-                        throwDirection: lastThrow.direction
-                    });
-                } else if (lastThrow.direction === Card.DIRECTION_UP) {
-                    eventEmitter.trigger('throwoutup', {
-                        target: targetElement,
-                        throwDirection: lastThrow.direction
-                    });
-                } else if (lastThrow.direction === Card.DIRECTION_DOWN) {
-                    eventEmitter.trigger('throwoutdown', {
-                        target: targetElement,
-                        throwDirection: lastThrow.direction
-                    });
-                }
+                /* Emits more accurate events about specific directions */
+                eventEmitter.trigger(throwDirectionToEventName[lastThrow.direction], {
+                    target: targetElement,
+                    throwDirection: lastThrow.direction
+                });
+
             } else {
                 throw new Error('Invalid throw event.');
             }
         };
+
     };
 
     construct();
@@ -455,11 +448,19 @@ Card.rotation = (x, y, element, maxRotation) => {
     return rotation;
 };
 
-Card.DIRECTION_LEFT = { direction: 'left', value: -1 };
-Card.DIRECTION_RIGHT = { direction: 'right', value: 1 };
+const Direction = {
+    RIGHT: Symbol('RIGHT'),
+    LEFT: Symbol('LEFT'),
+    UP: Symbol('UP'),
+    DOWN: Symbol('DOWN'),
+}
 
-Card.DIRECTION_UP = { direction: 'up', value: -1 };
-Card.DIRECTION_DOWN = { direction: 'down', value: 1 };
+
+const computeDirection = (fromX, fromY) => {
+    return Math.abs(fromX) > Math.abs(fromY) ?
+        fromX < 0 ? Direction.LEFT: Direction.RIGHT :
+        fromY < 0 ? Direction.UP : Direction.DOWN;
+}
 
 Card.THROW_IN = 'in';
 Card.THROW_OUT = 'out';
