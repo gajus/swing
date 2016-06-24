@@ -4,6 +4,8 @@ import Hammer from 'hammerjs';
 import rebound from 'rebound';
 import vendorPrefix from 'vendor-prefix';
 import raf from 'raf';
+
+import Direction from './direction.enum'
 import {
     elementChildren,
     isTouchDevice
@@ -108,10 +110,21 @@ const Card = (stack, targetElement) => {
             const x = lastTranslate.x + e.deltaX;
             const y = lastTranslate.y + e.deltaY;
 
-            if (config.isThrowOut(x, y, targetElement, config.throwOutConfidence(x, y, targetElement))) {
-                card.throwOut(x, y);
+            let isThrowOut = config.isThrowOut(
+                x,
+                y,
+                targetElement,
+                config.throwOutConfidence(x, y, targetElement)
+            );
+
+            /* Not really sure about computing direction here and filtering on directions here */
+            /* It adds more logic. Any suggestion will be apreciated */
+            let direction = computeDirection(x, y, config.allowedDirections);
+
+            if (isThrowOut && direction !== Direction.INVALID) {
+                card.throwOut(x, y, direction);
             } else {
-                card.throwIn(x, y);
+                card.throwIn(x, y, direction);
             }
 
             eventEmitter.trigger('dragend', {
@@ -176,15 +189,20 @@ const Card = (stack, targetElement) => {
 
         springThrowOut.addListener({
             onSpringUpdate: (spring) => {
+
                 const value = spring.getCurrentValue();
-                var x, y;
+
+                var x, y, directionFactor;
+
 
                 if (lastThrow.direction === Direction.RIGHT || lastThrow.direction === Direction.LEFT) {
-                    x = rebound.MathUtil.mapValueInRange(value, 0, 1, lastThrow.fromX, throwOutDistance * lastThrow.direction.value);
+                    directionFactor = lastThrow.direction === Direction.RIGHT ? 1 : -1;
+                    x = rebound.MathUtil.mapValueInRange(value, 0, 1, lastThrow.fromX, throwOutDistance * directionFactor);
                     y = lastThrow.fromY;
                 } else if (lastThrow.direction === Direction.UP || lastThrow.direction === Direction.DOWN) {
+                    directionFactor = lastThrow.direction === Direction.DOWN ? 1 : -1;
                     x = lastThrow.fromX;
-                    y = rebound.MathUtil.mapValueInRange(value, 0, 1, lastThrow.fromY, throwOutDistance * lastThrow.direction.value);
+                    y = rebound.MathUtil.mapValueInRange(value, 0, 1, lastThrow.fromY, throwOutDistance * directionFactor);
                 }
 
                 onSpringUpdate(x, y);
@@ -222,7 +240,7 @@ const Card = (stack, targetElement) => {
             eventEmitter.trigger('dragmove', {
                 target: targetElement,
                 throwOutConfidence: config.throwOutConfidence(x, y, targetElement),
-                throwDirection: computeDirection(x, y),
+                throwDirection: computeDirection(x, y, config.allowedDirections),
                 offset: x
             });
         };
@@ -250,12 +268,14 @@ const Card = (stack, targetElement) => {
          * @param {Card.THROW_IN|Card.THROW_OUT} where
          * @param {Number} fromX
          * @param {Number} fromY
+         * @param {Direction} [direction]
          * @return {undefined}
          */
-        throwWhere = (where, fromX, fromY) => {
+        throwWhere = (where, fromX, fromY, direction) => {
             lastThrow.fromX = fromX;
             lastThrow.fromY = fromY;
-            lastThrow.direction = computeDirection(fromX, fromY);
+            /* If direction argument is not set, compute it from coordinates */
+            lastThrow.direction = direction || computeDirection(fromX, fromY, config.allowedDirections);
 
             if (where === Card.THROW_IN) {
                 springThrowIn.setCurrentValue(0).setAtRest().setEndValue(1);
@@ -298,10 +318,11 @@ const Card = (stack, targetElement) => {
      *
      * @param {Number} fromX
      * @param {Number} fromY
+     * @param {Direction} [direction]
      * @return {undefined}
      */
-    card.throwIn = (fromX, fromY) => {
-        throwWhere(Card.THROW_IN, fromX, fromY);
+    card.throwIn = (x, y, direction) => {
+        throwWhere(Card.THROW_IN, x, y, direction);
     };
 
     /**
@@ -309,10 +330,11 @@ const Card = (stack, targetElement) => {
      *
      * @param {Number} fromX
      * @param {Number} fromY
+     * @param {Direction} [direction]
      * @return {undefined}
      */
-    card.throwOut = (fromX, fromY) => {
-        throwWhere(Card.THROW_OUT, fromX, fromY);
+    card.throwOut = (x, y, direction) => {
+        throwWhere(Card.THROW_OUT, x, y, direction);
     };
 
     /**
@@ -347,7 +369,8 @@ Card.makeConfig = (config = {}) => {
         maxThrowOutDistance: 500,
         rotation: Card.rotation,
         maxRotation: 20,
-        transform: Card.transform
+        transform: Card.transform,
+        allowedDirections: [Direction.RIGHT, Direction.LEFT, Direction.UP]
     };
 
     return _.assign({}, defaultConfig, config);
@@ -448,18 +471,24 @@ Card.rotation = (x, y, element, maxRotation) => {
     return rotation;
 };
 
-const Direction = {
-    RIGHT: Symbol('RIGHT'),
-    LEFT: Symbol('LEFT'),
-    UP: Symbol('UP'),
-    DOWN: Symbol('DOWN'),
-}
-
-
-const computeDirection = (fromX, fromY) => {
-    return Math.abs(fromX) > Math.abs(fromY) ?
+/**
+ * @param {Number} fromX
+ * @param {Number} fromY
+ * @param {Direction[]} allowedDirections
+ * @return {Direction[]} computed direction
+ */
+let computeDirection = (fromX, fromY, allowedDirections) => {
+    let direction = Math.abs(fromX) > Math.abs(fromY) ?
         fromX < 0 ? Direction.LEFT: Direction.RIGHT :
         fromY < 0 ? Direction.UP : Direction.DOWN;
+
+    /* Returning an invalid direction if not allowed */
+    if (allowedDirections.indexOf(direction) === -1) {
+        return Direction.INVALID;
+    }
+
+    return direction;
+
 }
 
 Card.THROW_IN = 'in';
