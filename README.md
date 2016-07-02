@@ -108,13 +108,18 @@ const config = {
      * Returns a value between 0 and 1 indicating the completeness of the throw out condition.
      * Ration of the absolute distance from the original card position and element width.
      *
-     * @param {Number} offset Distance from the dragStart.
+     * @param {Number} x horizontal distance from the dragStart.
+     * @param {Number} y vertical distance from the dragStart.
      * @param {HTMLElement} element Element.
      * @return {Number}
      */
-    throwOutConfidence: (offset, element) => {
-        return Math.min(Math.abs(offset) / element.offsetWidth, 1);
-    }
+    throwOutConfidence = (x, y, element) => {
+            let xConf = Math.min(Math.abs(x) / element.offsetWidth, 1);
+            let yConf = Math.min(Math.abs(y) / element.offsetHeight, 1);
+
+            return Math.max(xConf, yConf);
+        }
+
 };
 
 const stack = stack = Swing.Stack(config);
@@ -180,6 +185,8 @@ stack.on('throwout', function () {});
 | `throwoutend` | When card has been thrown out of the stack and the animation has ended. |
 | `throwoutleft` | Shorthand for `throwout` event in the `Card.DIRECTION_LEFT` direction. |
 | `throwoutright` | Shorthand for `throwout` event in the `Card.DIRECTION_RIGHT` direction. |
+| `throwoutup` | Shorthand for `throwout` event in the `Card.DIRECTION_UP` direction. |
+| `throwoutdown` | Shorthand for `throwout` event in the `Card.DIRECTION_DOWN` direction. |
 | `throwin` | When card has been thrown into the stack. |
 | `throwinend` | When card has been thrown into the stack and the animation has ended. |
 | `dragstart` | Hammer [panstart](http://hammerjs.github.io/recognizer-pan/). |

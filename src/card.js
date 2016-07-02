@@ -100,7 +100,7 @@ const Card = (stack, targetElement) => {
             const x = lastTranslate.x + e.deltaX;
             const y = lastTranslate.y + e.deltaY;
 
-            if (config.isThrowOut(x, targetElement, config.throwOutConfidence(x, targetElement))) {
+            if (config.isThrowOut(x, targetElement, config.throwOutConfidence(x, y, targetElement))) {
                 card.throwOut(x, y);
             } else {
                 card.throwIn(x, y);
@@ -189,7 +189,9 @@ const Card = (stack, targetElement) => {
         doMove = () => {
             let r,
                 x,
-                y;
+                y,
+                direction
+                ;
 
             if (currentX === lastX && currentY === lastY) {
                 return;
@@ -204,10 +206,16 @@ const Card = (stack, targetElement) => {
 
             config.transform(targetElement, x, y, r);
 
+            if (Math.abs(y) > 1.1 * Math.abs(x) ) {
+                direction = y > 0 ? Card.DIRECTION_DOWN : Card.DIRECTION_UP;
+            } else {
+                direction = x < 0 ? Card.DIRECTION_LEFT : Card.DIRECTION_RIGHT;
+            }
+
             eventEmitter.trigger('dragmove', {
                 target: targetElement,
-                throwOutConfidence: config.throwOutConfidence(x, targetElement),
-                throwDirection: x < 0 ? Card.DIRECTION_LEFT : Card.DIRECTION_RIGHT,
+                throwOutConfidence: config.throwOutConfidence(x, y, targetElement),
+                throwDirection: direction,
                 offset: x
             });
         };
@@ -239,7 +247,13 @@ const Card = (stack, targetElement) => {
         throwWhere = (where, fromX, fromY) => {
             lastThrow.fromX = fromX;
             lastThrow.fromY = fromY;
-            lastThrow.direction = lastThrow.fromX < 0 ? Card.DIRECTION_LEFT : Card.DIRECTION_RIGHT;
+
+            if (Math.abs(fromY) > 1.2 * Math.abs(fromX) ) {
+                lastThrow.direction = fromY > 0 ? Card.DIRECTION_DOWN : Card.DIRECTION_UP;
+            }
+            else {
+                lastThrow.direction = fromX < 0 ? Card.DIRECTION_LEFT : Card.DIRECTION_RIGHT;
+            }
 
             if (where === Card.THROW_IN) {
                 springThrowIn.setCurrentValue(0).setAtRest().setEndValue(1);
@@ -253,20 +267,23 @@ const Card = (stack, targetElement) => {
 
                 eventEmitter.trigger('throwout', {
                     target: targetElement,
+                    lastThrow: lastThrow,
                     throwDirection: lastThrow.direction
                 });
 
-                if (lastThrow.direction === Card.DIRECTION_LEFT) {
-                    eventEmitter.trigger('throwoutleft', {
-                        target: targetElement,
-                        throwDirection: lastThrow.direction
-                    });
-                } else {
-                    eventEmitter.trigger('throwoutright', {
-                        target: targetElement,
-                        throwDirection: lastThrow.direction
-                    });
+                let eventName;
+                switch(lastThrow.direction) {
+                    case Card.DIRECTION_LEFT: eventName = 'throwoutleft'; break;
+                    case Card.DIRECTION_RIGHT: eventName = 'throwoutright'; break;
+                    case Card.DIRECTION_UP: eventName = 'throwoutup'; break;
+                    case Card.DIRECTION_DOWN: eventName = 'throwoutdown'; break;
                 }
+
+                eventEmitter.trigger(eventName, {
+                    target: targetElement,
+                    throwDirection: lastThrow.direction
+                });
+
             } else {
                 throw new Error('Invalid throw event.');
             }
@@ -384,12 +401,18 @@ Card.appendToParent = (element) => {
  *
  * Ration of the absolute distance from the original card position and element width.
  *
- * @param {Number} offset Distance from the dragStart.
+ * @param {Number} x horizontal distance from the dragStart.
+ * @param {Number} y vertical distance from the dragStart.
  * @param {HTMLElement} element Element.
  * @return {Number}
  */
-Card.throwOutConfidence = (offset, element) => {
-    return Math.min(Math.abs(offset) / element.offsetWidth, 1);
+Card.throwOutConfidence = (x, y, element) => {
+
+    let xConf = Math.min(Math.abs(x) / element.offsetWidth, 1);
+    let yConf = Math.min(Math.abs(y) / element.offsetHeight, 1);
+
+    return Math.max(xConf, yConf);
+
 };
 
 /**
@@ -436,6 +459,8 @@ Card.rotation = (x, y, element, maxRotation) => {
 
 Card.DIRECTION_LEFT = -1;
 Card.DIRECTION_RIGHT = 1;
+Card.DIRECTION_UP = -2;
+Card.DIRECTION_DOWN = 2;
 
 Card.THROW_IN = 'in';
 Card.THROW_OUT = 'out';
