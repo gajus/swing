@@ -1,5 +1,6 @@
 .yes,
-.no {
+.no,
+.super {
     position: absolute; left: 0; top: 0; right: 0; bottom: 0; background: #f00; opacity: 0;
 }
 
@@ -9,4 +10,8 @@
 
 .yes {
     background: #1E824C;
+}
+
+.super {
+    background: #355082;
 }

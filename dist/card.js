@@ -1,43 +1,70 @@
-import _ from 'lodash';
-import Sister from 'sister';
-import Hammer from 'hammerjs';
-import rebound from 'rebound';
-import vendorPrefix from 'vendor-prefix';
-import raf from 'raf';
-import {
-    elementChildren,
-    isTouchDevice
-} from './util';
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _random2 = require('lodash/random');
+
+var _random3 = _interopRequireDefault(_random2);
+
+var _assign2 = require('lodash/assign');
+
+var _assign3 = _interopRequireDefault(_assign2);
+
+var _sister = require('sister');
+
+var _sister2 = _interopRequireDefault(_sister);
+
+var _hammerjs = require('hammerjs');
+
+var _hammerjs2 = _interopRequireDefault(_hammerjs);
+
+var _rebound = require('rebound');
+
+var _rebound2 = _interopRequireDefault(_rebound);
+
+var _vendorPrefix = require('vendor-prefix');
+
+var _vendorPrefix2 = _interopRequireDefault(_vendorPrefix);
+
+var _raf = require('raf');
+
+var _raf2 = _interopRequireDefault(_raf);
+
+var _util = require('./util');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
  * @param {Stack} stack
  * @param {HTMLElement} targetElement
  * @return {Object} An instance of Card.
  */
-const Card = (stack, targetElement) => {
-    let card,
-        config,
-        currentX,
-        currentY,
-        doMove,
-        eventEmitter,
-        isDraging,
-        lastThrow,
-        lastTranslate,
-        lastX,
-        lastY,
-        mc,
-        onSpringUpdate,
-        springSystem,
-        springThrowIn,
-        springThrowOut,
-        throwOutDistance,
-        throwWhere;
+var Card = function Card(stack, targetElement) {
+    var card = void 0,
+        config = void 0,
+        currentX = void 0,
+        currentY = void 0,
+        doMove = void 0,
+        eventEmitter = void 0,
+        isDraging = void 0,
+        lastThrow = void 0,
+        lastTranslate = void 0,
+        lastX = void 0,
+        lastY = void 0,
+        mc = void 0,
+        _onSpringUpdate = void 0,
+        springSystem = void 0,
+        springThrowIn = void 0,
+        springThrowOut = void 0,
+        throwOutDistance = void 0,
+        throwWhere = void 0;
 
-    const construct = () => {
+    var construct = function construct() {
         card = {};
         config = Card.makeConfig(stack.getConfig());
-        eventEmitter = Sister();
+        eventEmitter = (0, _sister2.default)();
         springSystem = stack.getSpringSystem();
         springThrowIn = springSystem.createSpring(250, 10);
         springThrowOut = springSystem.createSpring(500, 20);
@@ -55,20 +82,15 @@ const Card = (stack, targetElement) => {
 
         throwOutDistance = config.throwOutDistance(config.minThrowOutDistance, config.maxThrowOutDistance);
 
-        mc = new Hammer.Manager(targetElement, {
-            recognizers: [
-                [
-                    Hammer.Pan,
-                    {
-                        threshold: 2
-                    }
-                ]
-            ]
+        mc = new _hammerjs2.default.Manager(targetElement, {
+            recognizers: [[_hammerjs2.default.Pan, {
+                threshold: 2
+            }]]
         });
 
         Card.appendToParent(targetElement);
 
-        eventEmitter.on('panstart', () => {
+        eventEmitter.on('panstart', function () {
             Card.appendToParent(targetElement);
 
             eventEmitter.trigger('dragstart', {
@@ -80,25 +102,25 @@ const Card = (stack, targetElement) => {
 
             isDraging = true;
 
-            (function animation () {
+            (function animation() {
                 if (isDraging) {
                     doMove();
 
-                    raf(animation);
+                    (0, _raf2.default)(animation);
                 }
             })();
         });
 
-        eventEmitter.on('panmove', (e) => {
+        eventEmitter.on('panmove', function (e) {
             currentX = e.deltaX;
             currentY = e.deltaY;
         });
 
-        eventEmitter.on('panend', (e) => {
+        eventEmitter.on('panend', function (e) {
             isDraging = false;
 
-            const x = lastTranslate.x + e.deltaX;
-            const y = lastTranslate.y + e.deltaY;
+            var x = lastTranslate.x + e.deltaX;
+            var y = lastTranslate.y + e.deltaY;
 
             if (config.isThrowOut(x, targetElement, config.throwOutConfidence(x, y, targetElement))) {
                 card.throwOut(x, y);
@@ -113,53 +135,53 @@ const Card = (stack, targetElement) => {
 
         // "mousedown" event fires late on touch enabled devices, thus listening
         // to the touchstart event for touch enabled devices and mousedown otherwise.
-        if (isTouchDevice()) {
-            targetElement.addEventListener('touchstart', () => {
+        if ((0, _util.isTouchDevice)()) {
+            targetElement.addEventListener('touchstart', function () {
                 eventEmitter.trigger('panstart');
             });
 
             // Disable scrolling while dragging the element on the touch enabled devices.
             // @see http://stackoverflow.com/a/12090055/368691
-            (() => {
-                let dragging;
+            (function () {
+                var dragging = void 0;
 
-                targetElement.addEventListener('touchstart', () => {
+                targetElement.addEventListener('touchstart', function () {
                     dragging = true;
                 });
 
-                targetElement.addEventListener('touchend', () => {
+                targetElement.addEventListener('touchend', function () {
                     dragging = false;
                 });
 
-                global.addEventListener('touchmove', (e) => {
+                global.addEventListener('touchmove', function (e) {
                     if (dragging) {
                         e.preventDefault();
                     }
                 });
             })();
         } else {
-            targetElement.addEventListener('mousedown', () => {
+            targetElement.addEventListener('mousedown', function () {
                 eventEmitter.trigger('panstart');
             });
         }
 
-        mc.on('panmove', (e) => {
+        mc.on('panmove', function (e) {
             eventEmitter.trigger('panmove', e);
         });
 
-        mc.on('panend', (e) => {
+        mc.on('panend', function (e) {
             eventEmitter.trigger('panend', e);
         });
 
         springThrowIn.addListener({
-            onSpringUpdate: (spring) => {
-                const value = spring.getCurrentValue();
-                const x = rebound.MathUtil.mapValueInRange(value, 0, 1, lastThrow.fromX, 0);
-                const y = rebound.MathUtil.mapValueInRange(value, 0, 1, lastThrow.fromY, 0);
+            onSpringUpdate: function onSpringUpdate(spring) {
+                var value = spring.getCurrentValue();
+                var x = _rebound2.default.MathUtil.mapValueInRange(value, 0, 1, lastThrow.fromX, 0);
+                var y = _rebound2.default.MathUtil.mapValueInRange(value, 0, 1, lastThrow.fromY, 0);
 
-                onSpringUpdate(x, y);
+                _onSpringUpdate(x, y);
             },
-            onSpringAtRest: () => {
+            onSpringAtRest: function onSpringAtRest() {
                 eventEmitter.trigger('throwinend', {
                     target: targetElement
                 });
@@ -167,14 +189,14 @@ const Card = (stack, targetElement) => {
         });
 
         springThrowOut.addListener({
-            onSpringUpdate: (spring) => {
-                const value = spring.getCurrentValue();
-                const x = rebound.MathUtil.mapValueInRange(value, 0, 1, lastThrow.fromX, throwOutDistance * lastThrow.direction);
-                const y = lastThrow.fromY;
+            onSpringUpdate: function onSpringUpdate(spring) {
+                var value = spring.getCurrentValue();
+                var x = _rebound2.default.MathUtil.mapValueInRange(value, 0, 1, lastThrow.fromX, throwOutDistance * lastThrow.direction);
+                var y = lastThrow.fromY;
 
-                onSpringUpdate(x, y);
+                _onSpringUpdate(x, y);
             },
-            onSpringAtRest: () => {
+            onSpringAtRest: function onSpringAtRest() {
                 eventEmitter.trigger('throwoutend', {
                     target: targetElement
                 });
@@ -186,12 +208,11 @@ const Card = (stack, targetElement) => {
          *
          * @return {undefined}
          */
-        doMove = () => {
-            let r,
-                x,
-                y,
-                direction
-                ;
+        doMove = function doMove() {
+            var r = void 0,
+                x = void 0,
+                y = void 0,
+                direction = void 0;
 
             if (currentX === lastX && currentY === lastY) {
                 return;
@@ -206,7 +227,7 @@ const Card = (stack, targetElement) => {
 
             config.transform(targetElement, x, y, r);
 
-            if (Math.abs(y) > 1.1 * Math.abs(x) ) {
+            if (Math.abs(y) > 1.1 * Math.abs(x)) {
                 direction = y > 0 ? Card.DIRECTION_DOWN : Card.DIRECTION_UP;
             } else {
                 direction = x < 0 ? Card.DIRECTION_LEFT : Card.DIRECTION_RIGHT;
@@ -227,8 +248,8 @@ const Card = (stack, targetElement) => {
          * @param {Number} y
          * @return {undefined}
          */
-        onSpringUpdate = (x, y) => {
-            let r;
+        _onSpringUpdate = function _onSpringUpdate(x, y) {
+            var r = void 0;
 
             r = config.rotation(x, y, targetElement, config.maxRotation);
 
@@ -244,14 +265,13 @@ const Card = (stack, targetElement) => {
          * @param {Number} fromY
          * @return {undefined}
          */
-        throwWhere = (where, fromX, fromY) => {
+        throwWhere = function throwWhere(where, fromX, fromY) {
             lastThrow.fromX = fromX;
             lastThrow.fromY = fromY;
 
-            if (Math.abs(fromY) > 1.2 * Math.abs(fromX) ) {
+            if (Math.abs(fromY) > 1.2 * Math.abs(fromX)) {
                 lastThrow.direction = fromY > 0 ? Card.DIRECTION_DOWN : Card.DIRECTION_UP;
-            }
-            else {
+            } else {
                 lastThrow.direction = fromX < 0 ? Card.DIRECTION_LEFT : Card.DIRECTION_RIGHT;
             }
 
@@ -271,19 +291,22 @@ const Card = (stack, targetElement) => {
                     throwDirection: lastThrow.direction
                 });
 
-                let eventName;
-                switch(lastThrow.direction) {
-                    case Card.DIRECTION_LEFT: eventName = 'throwoutleft'; break;
-                    case Card.DIRECTION_RIGHT: eventName = 'throwoutright'; break;
-                    case Card.DIRECTION_UP: eventName = 'throwoutup'; break;
-                    case Card.DIRECTION_DOWN: eventName = 'throwoutdown'; break;
+                var eventName = void 0;
+                switch (lastThrow.direction) {
+                    case Card.DIRECTION_LEFT:
+                        eventName = 'throwoutleft';break;
+                    case Card.DIRECTION_RIGHT:
+                        eventName = 'throwoutright';break;
+                    case Card.DIRECTION_UP:
+                        eventName = 'throwoutup';break;
+                    case Card.DIRECTION_DOWN:
+                        eventName = 'throwoutdown';break;
                 }
 
                 eventEmitter.trigger(eventName, {
                     target: targetElement,
                     throwDirection: lastThrow.direction
                 });
-
             } else {
                 throw new Error('Invalid throw event.');
             }
@@ -305,7 +328,7 @@ const Card = (stack, targetElement) => {
      * @param {Number} fromY
      * @return {undefined}
      */
-    card.throwIn = (fromX, fromY) => {
+    card.throwIn = function (fromX, fromY) {
         throwWhere(Card.THROW_IN, fromX, fromY);
     };
 
@@ -316,7 +339,7 @@ const Card = (stack, targetElement) => {
      * @param {Number} fromY
      * @return {undefined}
      */
-    card.throwOut = (fromX, fromY) => {
+    card.throwOut = function (fromX, fromY) {
         throwWhere(Card.THROW_OUT, fromX, fromY);
     };
 
@@ -326,7 +349,7 @@ const Card = (stack, targetElement) => {
      *
      * @return {undefined}
      */
-    card.destroy = () => {
+    card.destroy = function () {
         mc.destroy();
         springThrowIn.destroy();
         springThrowOut.destroy();
@@ -343,8 +366,10 @@ const Card = (stack, targetElement) => {
  * @param {Object} config
  * @return {Object}
  */
-Card.makeConfig = (config = {}) => {
-    const defaultConfig = {
+Card.makeConfig = function () {
+    var config = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+
+    var defaultConfig = {
         isThrowOut: Card.isThrowOut,
         throwOutConfidence: Card.throwOutConfidence,
         throwOutDistance: Card.throwOutDistance,
@@ -355,7 +380,7 @@ Card.makeConfig = (config = {}) => {
         transform: Card.transform
     };
 
-    return _.assign({}, defaultConfig, config);
+    return (0, _assign3.default)({}, defaultConfig, config);
 };
 
 /**
@@ -369,8 +394,8 @@ Card.makeConfig = (config = {}) => {
  * @param {Number} r
  * @return {undefined}
  */
-Card.transform = (element, x, y, r) => {
-    element.style[vendorPrefix('transform')] = `translate3d(0, 0, 0) translate(${x}px, ${y}px) rotate(${r}deg)`;
+Card.transform = function (element, x, y, r) {
+    element.style[(0, _vendorPrefix2.default)('transform')] = 'translate3d(0, 0, 0) translate(' + x + 'px, ' + y + 'px) rotate(' + r + 'deg)';
 };
 
 /**
@@ -385,10 +410,10 @@ Card.transform = (element, x, y, r) => {
  * @param {HTMLElement} element The target element.
  * @return {undefined}
  */
-Card.appendToParent = (element) => {
-    const parentNode = element.parentNode;
-    const siblings = elementChildren(parentNode);
-    const targetIndex = siblings.indexOf(element);
+Card.appendToParent = function (element) {
+    var parentNode = element.parentNode;
+    var siblings = (0, _util.elementChildren)(parentNode);
+    var targetIndex = siblings.indexOf(element);
 
     if (targetIndex + 1 !== siblings.length) {
         parentNode.removeChild(element);
@@ -406,13 +431,12 @@ Card.appendToParent = (element) => {
  * @param {HTMLElement} element Element.
  * @return {Number}
  */
-Card.throwOutConfidence = (x, y, element) => {
+Card.throwOutConfidence = function (x, y, element) {
 
-    let xConf = Math.min(Math.abs(x) / element.offsetWidth, 1);
-    let yConf = Math.min(Math.abs(y) / element.offsetHeight, 1);
+    var xConf = Math.min(Math.abs(x) / element.offsetWidth, 1);
+    var yConf = Math.min(Math.abs(y) / element.offsetHeight, 1);
 
     return Math.max(xConf, yConf);
-
 };
 
 /**
@@ -425,7 +449,7 @@ Card.throwOutConfidence = (x, y, element) => {
  * @param {Number} throwOutConfidence config.throwOutConfidence
  * @return {Boolean}
  */
-Card.isThrowOut = (offset, element, throwOutConfidence) => {
+Card.isThrowOut = function (offset, element, throwOutConfidence) {
     return throwOutConfidence === 1;
 };
 
@@ -436,8 +460,8 @@ Card.isThrowOut = (offset, element, throwOutConfidence) => {
  * @param {Number} max
  * @return {Number}
  */
-Card.throwOutDistance = (min, max) => {
-    return _.random(min, max);
+Card.throwOutDistance = function (min, max) {
+    return (0, _random3.default)(min, max);
 };
 
 /**
@@ -449,10 +473,10 @@ Card.throwOutDistance = (min, max) => {
  * @param {Number} maxRotation
  * @return {Number} Rotation angle expressed in degrees.
  */
-Card.rotation = (x, y, element, maxRotation) => {
-    const horizontalOffset = Math.min(Math.max(x / element.offsetWidth, -1), 1);
-    const verticalOffset = (y > 0 ? 1 : -1) * Math.min(Math.abs(y) / 100, 1);
-    const rotation = horizontalOffset * verticalOffset * maxRotation;
+Card.rotation = function (x, y, element, maxRotation) {
+    var horizontalOffset = Math.min(Math.max(x / element.offsetWidth, -1), 1);
+    var verticalOffset = (y > 0 ? 1 : -1) * Math.min(Math.abs(y) / 100, 1);
+    var rotation = horizontalOffset * verticalOffset * maxRotation;
 
     return rotation;
 };
@@ -465,4 +489,6 @@ Card.DIRECTION_DOWN = 2;
 Card.THROW_IN = 'in';
 Card.THROW_OUT = 'out';
 
-export default Card;
+exports.default = Card;
+module.exports = exports['default'];
+//# sourceMappingURL=card.js.map
