@@ -280,6 +280,7 @@ const Card = (stack, targetElement) => {
      */
     card.on = eventEmitter.on;
     card.trigger = eventEmitter.trigger;
+    card.hammer = mc;
 
     /**
      * Throws a card into the stack from an arbitrary position.
