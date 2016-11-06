@@ -25,7 +25,6 @@
     "jsdom": "^6.3.0",
     "jsonfile": "^2.2.1",
     "mocha": "^3.1.2",
-    "pragmatist": "^3.0.21",
     "sinon": "^1.16.1",
     "webpack": "^1.12.1"
   },
@@ -44,9 +43,7 @@
   "scripts": {
     "build": "babel ./src --out-dir ./dist --copy-files",
     "lint": "eslint ./src ./tests",
-    "pragmatist": "pragmatist --es5",
-    "test": "mocha --compilers js:babel-register ./tests",
-    "watch": "npm run pragmatist watch"
+    "test": "mocha --compilers js:babel-register ./tests"
   },
   "version": "3.0.3"
 }
