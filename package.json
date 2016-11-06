@@ -20,6 +20,8 @@
     "babel-preset-es2015": "^6.18.0",
     "babel-register": "^6.18.0",
     "chai": "^3.2.0",
+    "eslint": "^3.9.1",
+    "eslint-config-canonical": "^5.0.0",
     "jsdom": "^6.3.0",
     "jsonfile": "^2.2.1",
     "mocha": "^3.1.2",
@@ -41,11 +43,10 @@
   },
   "scripts": {
     "build": "babel ./src --out-dir ./dist --copy-files",
-    "lint": "npm run pragmatist lint",
+    "lint": "eslint ./src ./tests",
     "pragmatist": "pragmatist --es5",
     "test": "mocha --compilers js:babel-register ./tests",
-    "watch": "npm run pragmatist watch",
-    "watch-lint": "npm run pragmatist watch-lint"
+    "watch": "npm run pragmatist watch"
   },
   "version": "3.0.3"
 }

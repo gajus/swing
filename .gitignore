@@ -5,6 +5,7 @@ node_modules
 .*
 !.babelrc
 !.editorconfig
+!.eslintrc
 !.gitignore
 !.npmignore
 !.travis.yml
