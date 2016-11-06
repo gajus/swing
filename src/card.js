@@ -23,7 +23,7 @@ const Card = (stack, targetElement) => {
         currentY,
         doMove,
         eventEmitter,
-        isDraging,
+        isDragging,
         lastThrow,
         lastTranslate,
         lastX,
@@ -88,10 +88,10 @@ const Card = (stack, targetElement) => {
             currentX = 0;
             currentY = 0;
 
-            isDraging = true;
+            isDragging = true;
 
             (function animation () {
-                if (isDraging) {
+                if (isDragging) {
                     doMove();
 
                     raf(animation);
@@ -105,7 +105,7 @@ const Card = (stack, targetElement) => {
         });
 
         eventEmitter.on('panend', (e) => {
-            isDraging = false;
+            isDragging = false;
 
             const x = lastTranslate.x + e.deltaX;
             const y = lastTranslate.y + e.deltaY;
@@ -312,6 +312,7 @@ const Card = (stack, targetElement) => {
      */
     card.on = eventEmitter.on;
     card.trigger = eventEmitter.trigger;
+    card.hammer = mc;
 
     /**
      * Throws a card into the stack from an arbitrary position.
