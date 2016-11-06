@@ -14,6 +14,10 @@
   },
   "description": "A swipeable cards interface. The swipe-left/swipe-right for yes/no input. As seen in apps like Jelly and Tinder.",
   "devDependencies": {
+    "babel": "^6.5.2",
+    "babel-cli": "^6.18.0",
+    "babel-plugin-add-module-exports": "^0.2.1",
+    "babel-preset-es2015": "^6.18.0",
     "chai": "^3.2.0",
     "jsdom": "^6.3.0",
     "jsonfile": "^2.2.1",
@@ -34,12 +38,11 @@
     "url": "https://github.com/gajus/swing"
   },
   "scripts": {
-    "build": "npm run pragmatist build",
+    "build": "babel ./src --out-dir ./dist --copy-files",
     "lint": "npm run pragmatist lint",
     "pragmatist": "pragmatist --es5",
     "test": "npm run pragmatist test",
     "watch": "npm run pragmatist watch",
-    "watch-build": "npm run pragmatist watch-build",
     "watch-lint": "npm run pragmatist watch-lint",
     "watch-test": "npm run pragmatist watch-test"
   },
