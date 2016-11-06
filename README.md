@@ -13,18 +13,18 @@ Give it a [swing](http://gajus.com/sandbox/swing/examples/card-stack/)! and plea
 ## Contents
 
 * [Usage Examples](#usage-examples)
-    * [Use Case](#use-case)
-        * [Single-Handed Navigation](#single-handed-navigation)
-        * [Digestible Unit of Information](#digestible-unit-of-information)
-        * [Data](#data)
+  * [Use Case](#use-case)
+    * [Single-Handed Navigation](#single-handed-navigation)
+    * [Digestible Unit of Information](#digestible-unit-of-information)
+    * [Data](#data)
 * [Quick Start](#quick-start)
 * [Configuration](#configuration)
 * [Methods](#methods)
-    * [Throwing Card Out of the Stack](#throwing-card-out-of-the-stack)
+  * [Throwing Card Out of the Stack](#throwing-card-out-of-the-stack)
 * [Events](#events)
-    * [Event Object](#event-object)
+  * [Event Object](#event-object)
 * [Download](#download)
-    * [Browser Bundle](#browser-bundle)
+  * [Browser Bundle](#browser-bundle)
 * [Dependencies](#dependencies)
 
 ## Usage Examples
@@ -66,9 +66,9 @@ A collection of observations about the extended use case of the swipeable cards 
 
 ```html
 <ul>
-    <li></li>
-    <li></li>
-    <li></li>
+  <li></li>
+  <li></li>
+  <li></li>
 </ul>
 ```
 
@@ -80,22 +80,22 @@ const cards = [].slice.call(document.querySelectorAll('ul li'));
 const stack = Swing.Stack();
 
 cards.forEach((targetElement) => {
-    // Add card element to the Stack.
-    stack.createCard(targetElement);
+  // Add card element to the Stack.
+  stack.createCard(targetElement);
 });
 
 // Add event listener for when a card is thrown out of the stack.
 stack.on('throwout', (event) => {
-    // e.target Reference to the element that has been thrown out of the stack.
-    // e.throwDirection Direction in which the element has been thrown (Card.DIRECTION_LEFT, Card.DIRECTION_RIGHT).
+  // e.target Reference to the element that has been thrown out of the stack.
+  // e.throwDirection Direction in which the element has been thrown (Card.DIRECTION_LEFT, Card.DIRECTION_RIGHT).
 
-    console.log('Card has been thrown out of the stack.');
-    console.log('Throw direction: ' + (event.throwDirection == Card.DIRECTION_LEFT ? 'left' : 'right'));
+  console.log('Card has been thrown out of the stack.');
+  console.log('Throw direction: ' + (event.throwDirection == Card.DIRECTION_LEFT ? 'left' : 'right'));
 });
 
 // Add event listener for when a card is thrown in the stack, including the spring back into place effect.
 stack.on('throwin', () => {
-    console.log('Card has snapped back to the stack.');
+  console.log('Card has snapped back to the stack.');
 });
 ```
 
@@ -103,18 +103,22 @@ stack.on('throwin', () => {
 
 ```js
 const config = {
-    /**
-     * Invoked in the event of dragmove.
-     * Returns a value between 0 and 1 indicating the completeness of the throw out condition.
-     * Ration of the absolute distance from the original card position and element width.
-     *
-     * @param {Number} offset Distance from the dragStart.
-     * @param {HTMLElement} element Element.
-     * @return {Number}
-     */
-    throwOutConfidence: (offset, element) => {
-        return Math.min(Math.abs(offset) / element.offsetWidth, 1);
-    }
+  /**
+   * Invoked in the event of dragmove.
+   * Returns a value between 0 and 1 indicating the completeness of the throw out condition.
+   * Ration of the absolute distance from the original card position and element width.
+   *
+   * @param {number} xOffset Distance from the dragStart.
+   * @param {number} yOffset Distance from the dragStart.
+   * @param {HTMLElement} element Element.
+   * @returns {number}
+   */
+  throwOutConfidence: (xOffset, yOffset, element) => {
+    const xConfidence = Math.min(Math.abs(xOffset) / element.offsetWidth, 1);
+    const yConfidence = Math.min(Math.abs(yOffset) / element.offsetHeight, 1);
+
+    return Math.max(xConfidence, yConfidence);
+  }
 };
 
 const stack = stack = Swing.Stack(config);
@@ -123,7 +127,7 @@ const stack = stack = Swing.Stack(config);
 | Name | Description | Default |
 | --- | --- | --- |
 | `isThrowOut` | Invoked in the event of `dragend`. Determines if element is being thrown out of the stack. | Element is considered to be thrown out when `throwOutConfidence` is equal to 1. |
-| `allowedDirections` | Array of directions in which cards can be thrown out. | [Direction.LEFT, Direction.RIGHT]. |
+| `allowedDirections` | Array of directions in which cards can be thrown out. | [Direction.DOWN, Direction.LEFT, Direction.RIGHT, Direction.UP]. |
 | `throwOutConfidence` | Invoked in the event of `dragmove`. Returns a value between 0 and 1 indicating the completeness of the throw out condition. | Ration of the absolute distance from the original card position and element width. |
 | `throwOutDistance` | Invoked when card is added to the stack. The card is thrown to this offset from the stack. | The value is a random number between `minThrowOutDistance` and `maxThrowOutDistance`. |
 | `minThrowOutDistance` | In effect when `throwOutDistance` is not overwritten. | 450. |
@@ -147,20 +151,20 @@ const card = stack.createCard(HTMLElement);
 | `stack.getCard(element)` | Returns card associated with an element. |
 | `stack.on(event, listener)` | Attaches an [event listener](#events). |
 | `card.on(event, listener)` | Attaches an [event listener](#events). |
-| `card.throwIn(x, y)` | Throws a card into the stack from an arbitrary position. `x, y` is the position at the start of the throw. |
-| `card.throwOut(x, y)` | Throws a card out of the stack in the direction away from the original offset. `x, y` is the position at the start of the throw. |
+| `card.throwIn(coordinateX, coordinateY)` | Throws a card into the stack from an arbitrary position. `coordinateX, coordinateY` is the position at the start of the throw. |
+| `card.throwOut(coordinateX, coordinateY)` | Throws a card out of the stack in the direction away from the original offset. `coordinateX, coordinateY` is the position at the start of the throw. |
 | `card.destroy()` | Unbinds all Hammer.Manager events. Removes the listeners from the physics simulation. |
 
 ### Throwing Card Out of the Stack
 
-Use the `card.throwOut(x, y)` method to throw the card out of the stack. Offset the position to whatever direction you want to throw the card, e.g.
+Use the `card.throwOut(coordinateX, coordinateY)` method to throw the card out of the stack. Offset the position to whatever direction you want to throw the card, e.g.
 
 ```js
 card.throwOut(Card.DIRECTION_LEFT, 0);
 card.throwOut(Card.DIRECTION_RIGHT, 0);
 ```
 
-To make the animation more diverse, use random value for the `y` parameter.
+To make the animation more diverse, use random value for the `coordinateY` parameter.
 
 ## Events
 
@@ -171,16 +175,18 @@ const stack = Swing.Stack();
 
 const card = stack.createCard(HTMLElement);
 
-card.on('throwout', function () {});
-stack.on('throwout', function () {});
+card.on('throwout', () => {});
+stack.on('throwout', () => {});
 ```
 
 | Name | Description |
 | --- | --- |
 | `throwout` | When card has been thrown out of the stack. |
 | `throwoutend` | When card has been thrown out of the stack and the animation has ended. |
+| `throwoutdown` | Shorthand for `throwout` event in the `Card.DIRECTION_DOWN` direction. |
 | `throwoutleft` | Shorthand for `throwout` event in the `Card.DIRECTION_LEFT` direction. |
 | `throwoutright` | Shorthand for `throwout` event in the `Card.DIRECTION_RIGHT` direction. |
+| `throwoutup` | Shorthand for `throwout` event in the `Card.DIRECTION_UP` direction. |
 | `throwin` | When card has been thrown into the stack. |
 | `throwinend` | When card has been thrown into the stack and the animation has ended. |
 | `dragstart` | Hammer [panstart](http://hammerjs.github.io/recognizer-pan/). |
@@ -194,19 +200,11 @@ Event listener is invoked with a single `eventObject` parameter:
 ```js
 const stack = Swing.Stack();
 
-stack.on('throwout', function (eventObject) {});
+stack.on('throwout', (eventObject) => {});
 ```
 
 | Name | Value |
 | --- | --- |
 | `target` | The element being dragged. |
-| `direction` | The direction in which the element is being dragged: `Card.DIRECTION_LEFT` or `Card.DIRECTION_RIGHT`. |
+| `direction` | The direction in which the element is being dragged: `Card.DIRECTION_DOWN`, `Card.DIRECTION_LEFT`, `Card.DIRECTION_RIGHT` or `Card.DIRECTION_UP`. |
 | `throwOutConfidence` | A value between 0 and 1 indicating the completeness of the throw out condition. |
-
-## Download
-
-Using [NPM](https://www.npmjs.org/):
-
-```sh
-npm install swing
-```
