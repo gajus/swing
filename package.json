@@ -42,8 +42,8 @@
   },
   "scripts": {
     "build": "babel ./src --out-dir ./dist --copy-files",
-    "lint": "eslint ./src ./tests",
-    "test": "mocha --compilers js:babel-register ./tests"
+    "lint": "eslint ./src ./test",
+    "test": "mocha --compilers js:babel-register"
   },
   "version": "3.0.3"
 }
