@@ -1,17 +1,17 @@
-import Stack from './stack';
 import Card from './card';
 import Direction from './direction.enum';
+import Stack from './stack';
 
 global.gajus = global.gajus || {};
 
 global.gajus.Swing = {
-    Stack,
-    Card,
-    Direction
+  Card,
+  Direction,
+  Stack
 };
 
 export {
-    Stack,
-    Card,
-    Direction
+  Card,
+  Direction,
+  Stack
 };
