@@ -29,6 +29,7 @@
     "jsdom": "^6.3.0",
     "jsonfile": "^2.2.1",
     "mocha": "^3.1.2",
+    "semantic-release": "^4.3.5",
     "sinon": "^1.16.1",
     "webpack": "^1.12.1"
   },
@@ -49,6 +50,7 @@
     "commitmsg": "conventional-changelog-lint -e",
     "lint": "eslint ./src ./test",
     "precommit": "npm run lint && npm run test",
+    "semantic-release": "semantic-release pre && npm publish && semantic-release post",
     "test": "mocha --compilers js:babel-register"
   },
   "version": "3.0.3"

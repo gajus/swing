@@ -8,5 +8,7 @@ scripts:
   - npm run test
   - npm run lint
   - npm run build
+after_success:
+  - npm run semantic-release
 notifications:
   email: false
