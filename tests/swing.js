@@ -121,9 +121,17 @@ describe('DOM', () => {
                 });
                 [true, false].forEach((throwOut) => {
                     it('determines throwOut event', () => {
-                        const env = setupEnv({isThrowOut: () => {
-                            return throwOut;
-                        }});
+                        const env = setupEnv({
+                            isThrowOut: () => {
+                                return throwOut;
+                            },
+                            allowedDirections: [
+                                Swing.Direction.UP,
+                                Swing.Direction.DOWN,
+                                Swing.Direction.LEFT,
+                                Swing.Direction.RIGHT
+                            ]
+                        });
                         const spy1 = sinon.spy();
                         const spy2 = sinon.spy();
 

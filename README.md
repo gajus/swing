@@ -123,6 +123,7 @@ const stack = stack = Swing.Stack(config);
 | Name | Description | Default |
 | --- | --- | --- |
 | `isThrowOut` | Invoked in the event of `dragend`. Determines if element is being thrown out of the stack. | Element is considered to be thrown out when `throwOutConfidence` is equal to 1. |
+| `allowedDirections` | Array of directions in which cards can be thrown out. | [Direction.LEFT, Direction.RIGHT]. |
 | `throwOutConfidence` | Invoked in the event of `dragmove`. Returns a value between 0 and 1 indicating the completeness of the throw out condition. | Ration of the absolute distance from the original card position and element width. |
 | `throwOutDistance` | Invoked when card is added to the stack. The card is thrown to this offset from the stack. | The value is a random number between `minThrowOutDistance` and `maxThrowOutDistance`. |
 | `minThrowOutDistance` | In effect when `throwOutDistance` is not overwritten. | 450. |

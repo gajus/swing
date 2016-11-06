@@ -65,6 +65,8 @@ const Stack = (config) => {
             'throwoutend',
             'throwoutleft',
             'throwoutright',
+            'throwoutup',
+            'throwoutdown',
             'throwin',
             'throwinend',
             'dragstart',

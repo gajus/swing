@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function () {
         throwOutConfidenceElements[e.throwDirection == gajus.Swing.Card.DIRECTION_RIGHT ? 'yes' : 'no'].opacity = e.throwOutConfidence;
 
         throwOutConfidenceBind.innerHTML = e.throwOutConfidence.toFixed(3);
-        directionBind.innerHTML = e.throwDirection == gajus.Swing.Card.DIRECTION_RIGHT ? 'right' : 'left';
+        directionBind.innerHTML = e.throwDirection.toString();
     });
 
     stack.on('dragend', function (e) {
