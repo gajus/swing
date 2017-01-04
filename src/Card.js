@@ -161,7 +161,7 @@ const Card = (stack, targetElement) => {
       });
 
       targetElement.addEventListener('touchend', () => {
-        if (!isPanning) {
+        if (isDraging && !isPanning) {
           eventEmitter.trigger('dragend', {
             target: targetElement
           });
@@ -193,7 +193,7 @@ const Card = (stack, targetElement) => {
       });
 
       targetElement.addEventListener('mouseup', () => {
-        if (!isPanning) {
+        if (isDraging && !isPanning) {
           eventEmitter.trigger('dragend', {
             target: targetElement
           });
