@@ -46,7 +46,6 @@
     "build": "babel ./src --out-dir ./dist --copy-files",
     "lint": "eslint ./src ./test",
     "precommit": "npm run lint && npm run test",
-    "semantic-release": "semantic-release pre && npm publish && semantic-release post",
     "test": "mocha --compilers js:babel-register"
   },
   "version": "3.0.3"

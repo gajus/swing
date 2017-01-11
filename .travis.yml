@@ -9,6 +9,6 @@ scripts:
   - npm run lint
   - npm run build
 after_success:
-  - npm run semantic-release
+  - rm -fr ./dist && NODE_ENV=production npm run build && semantic-release pre && npm publish && semantic-release post
 notifications:
   email: false
