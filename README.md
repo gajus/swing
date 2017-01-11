@@ -31,6 +31,7 @@ Give it a [swing](http://gajus.com/sandbox/swing/examples/card-stack/)! and plea
 
 * [Card stack](http://gajus.com/sandbox/swing/examples/card-stack/).
 * [Card stack](http://gajus.com/sandbox/angular-swing/examples/card-stack/) using [angular-swing](https://github.com/gajus/angular-swing/) module.
+* [Card-stack](https://github.com/ksachdeva/angular2-swing-example) using [angular2-swing](https://github.com/ksachdeva/angular2-swing) module.
 * [Programmatically control](http://gajus.com/sandbox/swing/examples/card-state/) the state of the card.
 * [Indicate the state of the drop](http://gajus.com/sandbox/swing/examples/throw-confidence/) using `throwConfidence` and `direction` [event object](#event-object) properties.
 
