@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function () {
     var stack;
 
-    stack = gajus.Swing.Stack();
+    stack = window.swing.Stack();
 
     [].forEach.call(document.querySelectorAll('.stack li'), function (targetElement) {
         stack.createCard(targetElement);

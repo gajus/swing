@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
-    var stack = gajus.Swing.Stack(),
+    var stack = window.swing.Stack(),
         cardElement = document.querySelector('.stack li');
 
     window.card = stack.createCard(cardElement);

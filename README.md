@@ -35,7 +35,7 @@ Give it a [swing](http://gajus.com/sandbox/swing/examples/card-stack/)! and plea
 * [Programmatically control](http://gajus.com/sandbox/swing/examples/card-state/) the state of the card.
 * [Indicate the state of the drop](http://gajus.com/sandbox/swing/examples/throw-confidence/) using `throwConfidence` and `direction` [event object](#event-object) properties.
 
-The code for all of the examples is in the [./examples/](https://github.com/gajus/swing/tree/master/examples/) folder.
+The code for all of the examples is in the [./examples/](./examples/) folder.
 
 [Raise an issue](https://github.com/gajus/swing/issues) if you are missing an example.
 

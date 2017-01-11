@@ -1,0 +1,13 @@
+{
+  "dependencies": {
+    "swing": "^4.0.1"
+  },
+  "devDependencies": {
+    "webpack": "^1.14.0",
+    "webpack-dev-server": "^1.16.2"
+  },
+  "private": true,
+  "scripts": {
+    "start": "webpack-dev-server --entry ./index.js"
+  }
+}

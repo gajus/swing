@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', function () {
         directionBind,
         throwOutConfidenceElements;
 
-    stack = gajus.Swing.Stack();
+    stack = window.swing.Stack();
     cardElement = document.querySelector('.stack li');
     throwOutConfidenceBind = document.querySelector('#throw-out-confidence-bind');
     directionBind = document.querySelector('#direction-bind');
