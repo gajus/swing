@@ -3,6 +3,7 @@ dist
 node_modules
 *.log
 .*
+!.README
 !.babelrc
 !.conventional-changelog-lintrc
 !.editorconfig
