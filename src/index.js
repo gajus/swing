@@ -1,6 +1,6 @@
-import Card from './card';
-import Direction from './direction.enum';
-import Stack from './stack';
+import Card from './Card';
+import Direction from './Direction';
+import Stack from './Stack';
 
 global.gajus = global.gajus || {};
 

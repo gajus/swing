@@ -1,17 +1,17 @@
 import _ from 'lodash';
 import Sister from 'sister';
 import rebound from 'rebound';
-import Card from './card';
+import Card from './Card';
 
 /**
  * @param {Object} config Stack configuration.
  * @returns {Object} An instance of Stack object.
  */
 const Stack = (config) => {
-  let eventEmitter,
-    index,
-    springSystem,
-    stack;
+  let eventEmitter;
+  let index;
+  let springSystem;
+  let stack;
 
   const construct = () => {
     stack = {};

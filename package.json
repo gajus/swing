@@ -24,7 +24,7 @@
     "conventional-changelog-lint": "^1.1.0",
     "conventional-changelog-lint-config-canonical": "^1.0.0",
     "eslint": "^3.9.1",
-    "eslint-config-canonical": "^5.0.0",
+    "eslint-config-canonical": "^6.1.0",
     "husky": "^0.11.9",
     "jsdom": "^6.3.0",
     "jsonfile": "^2.2.1",

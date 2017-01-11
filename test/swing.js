@@ -15,8 +15,8 @@ describe('DOM', () => {
   });
 
   describe('Stack', () => {
-    let Swing,
-      stack;
+    let Swing;
+    let stack;
 
     beforeEach(() => {
       // eslint-disable-next-line global-require

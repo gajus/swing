@@ -4,11 +4,11 @@ import Hammer from 'hammerjs';
 import rebound from 'rebound';
 import vendorPrefix from 'vendor-prefix';
 import raf from 'raf';
-import Direction from './direction.enum';
+import Direction from './Direction';
 import {
-    elementChildren,
-    isTouchDevice
-} from './util';
+  elementChildren,
+  isTouchDevice
+} from './utilities';
 
 /**
  * @param {number} fromX
@@ -37,25 +37,25 @@ const computeDirection = (fromX, fromY, allowedDirections) => {
  * @returns {Object} An instance of Card.
  */
 const Card = (stack, targetElement) => {
-  let card,
-    config,
-    currentX,
-    currentY,
-    doMove,
-    eventEmitter,
-    isDraging,
-    lastThrow,
-    lastTranslate,
-    lastX,
-    lastY,
-    mc,
-    onSpringUpdate,
-    springSystem,
-    springThrowIn,
-    springThrowOut,
-    throwDirectionToEventName,
-    throwOutDistance,
-    throwWhere;
+  let card;
+  let config;
+  let currentX;
+  let currentY;
+  let doMove;
+  let eventEmitter;
+  let isDraging;
+  let lastThrow;
+  let lastTranslate;
+  let lastX;
+  let lastY;
+  let mc;
+  let onSpringUpdate;
+  let springSystem;
+  let springThrowIn;
+  let springThrowOut;
+  let throwDirectionToEventName;
+  let throwOutDistance;
+  let throwWhere;
 
   const construct = () => {
     card = {};
@@ -216,7 +216,9 @@ const Card = (stack, targetElement) => {
       onSpringUpdate: (spring) => {
         const value = spring.getCurrentValue();
 
-        let coordianteX, coordianteY, directionFactor;
+        let coordianteX;
+        let coordianteY;
+        let directionFactor;
 
         if (lastThrow.direction === Direction.RIGHT || lastThrow.direction === Direction.LEFT) {
           directionFactor = lastThrow.direction === Direction.RIGHT ? 1 : -1;

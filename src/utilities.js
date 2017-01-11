@@ -22,6 +22,6 @@ const isTouchDevice = () => {
 };
 
 export {
-    elementChildren,
-    isTouchDevice
+  elementChildren,
+  isTouchDevice
 };
