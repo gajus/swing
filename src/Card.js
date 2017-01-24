@@ -296,7 +296,7 @@ const Card = (stack, targetElement) => {
       lastTranslate.coordinateX = coordinateX || 0;
       lastTranslate.coordinateY = coordinateY || 0;
 
-      Card.transform(targetElement, coordinateX, coordinateY, rotation);
+      config.transform(targetElement, coordinateX, coordinateY, rotation);
     };
 
     /**
