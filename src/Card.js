@@ -36,7 +36,7 @@ const computeDirection = (fromX, fromY, allowedDirections) => {
  * @param {HTMLElement} targetElement
  * @returns {Object} An instance of Card.
  */
-const Card = (stack, targetElement) => {
+const Card = (stack, targetElement, prepend) => {
   let card;
   let config;
   let currentX;
@@ -97,7 +97,11 @@ const Card = (stack, targetElement) => {
       ]
     });
 
-    Card.appendToParent(targetElement);
+    if (prepend) {
+      Card.prependToParent(targetElement);
+    } else {
+      Card.appendToParent(targetElement);
+    }
 
     eventEmitter.on('panstart', () => {
       Card.appendToParent(targetElement);
@@ -450,6 +454,24 @@ Card.appendToParent = (element) => {
     parentNode.removeChild(element);
     parentNode.appendChild(element);
   }
+};
+
+/**
+ * Prepend element to the parentNode.
+ *
+ * This makes the element last among the siblings.
+ *
+ * Invoked in the event of mousedown.
+ * Invoked when card is added to the stack.
+ *
+ * @param {HTMLElement} element The target element.
+ * @return {undefined}
+ */
+Card.prependToParent = function (element) {
+  const parentNode = element.parentNode;
+
+  parentNode.removeChild(element);
+  parentNode.insertBefore(element, parentNode.firstChild);
 };
 
 /**

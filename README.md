@@ -148,7 +148,7 @@ const card = stack.createCard(HTMLElement);
 
 | Name | Description |
 | --- | --- |
-| `stack.createCard(element)` | Creates an instance of Card and associates it with the element. |
+| `stack.createCard(element, prepend)` | Creates an instance of Card and associates it with the element. If prepend is true, the card is prepended to the stack, instead of appended [default: false]. |
 | `stack.getCard(element)` | Returns card associated with an element. |
 | `stack.on(event, listener)` | Attaches an [event listener](#events). |
 | `card.on(event, listener)` | Attaches an [event listener](#events). |
