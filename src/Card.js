@@ -44,6 +44,7 @@ const Card = (stack, targetElement) => {
   let doMove;
   let eventEmitter;
   let isDraging;
+  let isPanning;
   let lastThrow;
   let lastTranslate;
   let lastX;
@@ -159,6 +160,14 @@ const Card = (stack, targetElement) => {
         eventEmitter.trigger('panstart');
       });
 
+      targetElement.addEventListener('touchend', () => {
+        if (isDraging && !isPanning) {
+          eventEmitter.trigger('dragend', {
+            target: targetElement
+          });
+        }
+      });
+
       // Disable scrolling while dragging the element on the touch enabled devices.
       // @see http://stackoverflow.com/a/12090055/368691
       (() => {
@@ -182,13 +191,26 @@ const Card = (stack, targetElement) => {
       targetElement.addEventListener('mousedown', () => {
         eventEmitter.trigger('panstart');
       });
+
+      targetElement.addEventListener('mouseup', () => {
+        if (isDraging && !isPanning) {
+          eventEmitter.trigger('dragend', {
+            target: targetElement
+          });
+        }
+      });
     }
+
+    mc.on('panstart', (event) => {
+      isPanning = true;
+    });
 
     mc.on('panmove', (event) => {
       eventEmitter.trigger('panmove', event);
     });
 
     mc.on('panend', (event) => {
+      isPanning = false;
       eventEmitter.trigger('panend', event);
     });
 
