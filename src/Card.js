@@ -461,13 +461,12 @@ Card.appendToParent = (element) => {
  *
  * This makes the element last among the siblings.
  *
- * Invoked in the event of mousedown.
- * Invoked when card is added to the stack.
+ * Invoked when card is added to the stack (when prepend is true).
  *
  * @param {HTMLElement} element The target element.
  * @return {undefined}
  */
-Card.prependToParent = function (element) {
+Card.prependToParent = (element) => {
   const parentNode = element.parentNode;
 
   parentNode.removeChild(element);
