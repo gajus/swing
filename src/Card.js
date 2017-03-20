@@ -201,7 +201,7 @@ const Card = (stack, targetElement) => {
       });
     }
 
-    mc.on('panstart', (event) => {
+    mc.on('panstart', () => {
       isPanning = true;
     });
 
