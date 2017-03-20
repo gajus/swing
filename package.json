@@ -43,10 +43,10 @@
     "url": "https://github.com/gajus/swing"
   },
   "scripts": {
-    "build": "babel ./src --out-dir ./dist --copy-files",
-    "lint": "eslint ./src ./test",
+    "build": "node_modules/babel-cli/bin/babel ./src --out-dir ./dist --copy-files",
+    "lint": "node_modules/eslint/bin/eslint.js ./src ./test",
     "precommit": "npm run lint && npm run test",
-    "test": "mocha --compilers js:babel-register"
+    "test": "node_modules/mocha/bin/mocha --compilers js:babel-register"
   },
   "version": "3.0.3"
 }
