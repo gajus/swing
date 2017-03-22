@@ -34,6 +34,7 @@ const computeDirection = (fromX, fromY, allowedDirections) => {
 /**
  * @param {Stack} stack
  * @param {HTMLElement} targetElement
+ * @param {boolean} prepend
  * @returns {Object} An instance of Card.
  */
 const Card = (stack, targetElement, prepend) => {
