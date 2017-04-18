@@ -34,9 +34,10 @@ const computeDirection = (fromX, fromY, allowedDirections) => {
 /**
  * @param {Stack} stack
  * @param {HTMLElement} targetElement
+ * @param {boolean} prepend
  * @returns {Object} An instance of Card.
  */
-const Card = (stack, targetElement) => {
+const Card = (stack, targetElement, prepend) => {
   let card;
   let config;
   let currentX;
@@ -97,7 +98,11 @@ const Card = (stack, targetElement) => {
       ]
     });
 
-    Card.appendToParent(targetElement);
+    if (prepend) {
+      Card.prependToParent(targetElement);
+    } else {
+      Card.appendToParent(targetElement);
+    }
 
     eventEmitter.on('panstart', () => {
       Card.appendToParent(targetElement);
@@ -296,7 +301,7 @@ const Card = (stack, targetElement) => {
       lastTranslate.coordinateX = coordinateX || 0;
       lastTranslate.coordinateY = coordinateY || 0;
 
-      Card.transform(targetElement, coordinateX, coordinateY, rotation);
+      config.transform(targetElement, coordinateX, coordinateY, rotation);
     };
 
     /**
@@ -450,6 +455,23 @@ Card.appendToParent = (element) => {
     parentNode.removeChild(element);
     parentNode.appendChild(element);
   }
+};
+
+/**
+ * Prepend element to the parentNode.
+ *
+ * This makes the element last among the siblings.
+ *
+ * Invoked when card is added to the stack (when prepend is true).
+ *
+ * @param {HTMLElement} element The target element.
+ * @return {undefined}
+ */
+Card.prependToParent = (element) => {
+  const parentNode = element.parentNode;
+
+  parentNode.removeChild(element);
+  parentNode.insertBefore(element, parentNode.firstChild);
 };
 
 /**
