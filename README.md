@@ -193,6 +193,7 @@ stack.on('throwout', () => {});
 | `dragstart` | Hammer [panstart](http://hammerjs.github.io/recognizer-pan/). |
 | `dragmove` | Hammer [panmove](http://hammerjs.github.io/recognizer-pan/). |
 | `dragend` | Hammer [panend](http://hammerjs.github.io/recognizer-pan/). |
+| `destroyCard` | When card.destroy calls stack.destroyCard. |
 
 ### Event Object
 
