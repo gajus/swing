@@ -88,10 +88,10 @@ cards.forEach((targetElement) => {
 // Add event listener for when a card is thrown out of the stack.
 stack.on('throwout', (event) => {
   // e.target Reference to the element that has been thrown out of the stack.
-  // e.throwDirection Direction in which the element has been thrown (Card.DIRECTION_LEFT, Card.DIRECTION_RIGHT).
+  // e.throwDirection Direction in which the element has been thrown (Direction.LEFT, Direction.RIGHT).
 
   console.log('Card has been thrown out of the stack.');
-  console.log('Throw direction: ' + (event.throwDirection == Card.DIRECTION_LEFT ? 'left' : 'right'));
+  console.log('Throw direction: ' + (event.throwDirection == Direction.LEFT ? 'left' : 'right'));
 });
 
 // Add event listener for when a card is thrown in the stack, including the spring back into place effect.
@@ -161,8 +161,8 @@ const card = stack.createCard(HTMLElement);
 Use the `card.throwOut(coordinateX, coordinateY)` method to throw the card out of the stack. Offset the position to whatever direction you want to throw the card, e.g.
 
 ```js
-card.throwOut(Card.DIRECTION_LEFT, 0);
-card.throwOut(Card.DIRECTION_RIGHT, 0);
+card.throwOut(Direction.LEFT, 0);
+card.throwOut(Direction.RIGHT, 0);
 ```
 
 To make the animation more diverse, use random value for the `coordinateY` parameter.
@@ -184,10 +184,10 @@ stack.on('throwout', () => {});
 | --- | --- |
 | `throwout` | When card has been thrown out of the stack. |
 | `throwoutend` | When card has been thrown out of the stack and the animation has ended. |
-| `throwoutdown` | Shorthand for `throwout` event in the `Card.DIRECTION_DOWN` direction. |
-| `throwoutleft` | Shorthand for `throwout` event in the `Card.DIRECTION_LEFT` direction. |
-| `throwoutright` | Shorthand for `throwout` event in the `Card.DIRECTION_RIGHT` direction. |
-| `throwoutup` | Shorthand for `throwout` event in the `Card.DIRECTION_UP` direction. |
+| `throwoutdown` | Shorthand for `throwout` event in the `Direction.DOWN` direction. |
+| `throwoutleft` | Shorthand for `throwout` event in the `Direction.LEFT` direction. |
+| `throwoutright` | Shorthand for `throwout` event in the `Direction.RIGHT` direction. |
+| `throwoutup` | Shorthand for `throwout` event in the `Direction.UP` direction. |
 | `throwin` | When card has been thrown into the stack. |
 | `throwinend` | When card has been thrown into the stack and the animation has ended. |
 | `dragstart` | Hammer [panstart](http://hammerjs.github.io/recognizer-pan/). |
@@ -208,5 +208,5 @@ stack.on('throwout', (eventObject) => {});
 | Name | Value |
 | --- | --- |
 | `target` | The element being dragged. |
-| `direction` | The direction in which the element is being dragged: `Card.DIRECTION_DOWN`, `Card.DIRECTION_LEFT`, `Card.DIRECTION_RIGHT` or `Card.DIRECTION_UP`. |
+| `direction` | The direction in which the element is being dragged: `Direction.DOWN`, `Direction.LEFT`, `Direction.RIGHT` or `Direction.UP`. |
 | `throwOutConfidence` | A value between 0 and 1 indicating the completeness of the throw out condition. |
