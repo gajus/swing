@@ -12,3 +12,4 @@ after_success:
   - rm -fr ./dist && NODE_ENV=production npm run build && semantic-release pre && npm publish && semantic-release post
 notifications:
   email: false
+sudo: false
