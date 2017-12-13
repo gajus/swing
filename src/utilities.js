@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import _filter from 'lodash/filter';
 
 /**
  * Return direct children elements.
@@ -8,7 +8,7 @@ import _ from 'lodash';
  * @returns {Array}
  */
 const elementChildren = (element) => {
-  return _.filter(element.childNodes, {
+  return _filter(element.childNodes, {
     nodeType: 1
   });
 };
