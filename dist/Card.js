@@ -126,7 +126,7 @@ var Card = function Card(stack, targetElement, prepend) {
     }
 
     eventEmitter.on('panstart', function () {
-      // allow a css class to disable the card events
+      // Allow a css class to disable the card events
       if (targetElement.className.indexOf('disable-swing') !== -1) {
         return;
       }
@@ -156,6 +156,10 @@ var Card = function Card(stack, targetElement, prepend) {
     });
 
     eventEmitter.on('panend', function (event) {
+      // Allow a css class to disable the card events
+      if (targetElement.className.indexOf('disable-swing') !== -1) {
+        return;
+      }
       isDraging = false;
 
       var coordinateX = lastTranslate.coordinateX + event.deltaX;

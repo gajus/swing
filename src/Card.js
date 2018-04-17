@@ -105,7 +105,7 @@ const Card = (stack, targetElement, prepend) => {
     }
 
     eventEmitter.on('panstart', () => {
-      // allow a css class to disable the card events
+      // Allow a css class to disable the card events
       if (targetElement.className.indexOf('disable-swing') !== -1) {
         return;
       }
@@ -135,6 +135,10 @@ const Card = (stack, targetElement, prepend) => {
     });
 
     eventEmitter.on('panend', (event) => {
+      // Allow a css class to disable the card events
+      if (targetElement.className.indexOf('disable-swing') !== -1) {
+        return;
+      }
       isDraging = false;
 
       const coordinateX = lastTranslate.coordinateX + event.deltaX;
