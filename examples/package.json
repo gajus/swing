@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "swing": "^4.0.1"
+    "swing": "DoryZi/swing"
   },
   "devDependencies": {
     "webpack": "^1.14.0",
