@@ -105,6 +105,10 @@ const Card = (stack, targetElement, prepend) => {
     }
 
     eventEmitter.on('panstart', () => {
+      // allow a css class to disable the card events
+      if (targetElement.className.indexOf('disable-swing') !== -1) {
+        return;
+      }
       Card.appendToParent(targetElement);
 
       eventEmitter.trigger('dragstart', {
