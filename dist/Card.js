@@ -151,6 +151,9 @@ var Card = function Card(stack, targetElement, prepend) {
     });
 
     eventEmitter.on('panmove', function (event) {
+      if (targetElement.className.indexOf('disable-swing') !== -1) {
+        return;
+      }
       currentX = event.deltaX;
       currentY = event.deltaY;
     });
@@ -186,10 +189,16 @@ var Card = function Card(stack, targetElement, prepend) {
     // to the touchstart event for touch enabled devices and mousedown otherwise.
     if ((0, _utilities.isTouchDevice)()) {
       targetElement.addEventListener('touchstart', function () {
+        if (targetElement.className.indexOf('disable-swing') !== -1) {
+          return;
+        }
         eventEmitter.trigger('panstart');
       });
 
       targetElement.addEventListener('touchend', function () {
+        if (targetElement.className.indexOf('disable-swing') !== -1) {
+          return;
+        }
         if (isDraging && !isPanning) {
           eventEmitter.trigger('dragend', {
             target: targetElement
@@ -203,14 +212,23 @@ var Card = function Card(stack, targetElement, prepend) {
         var dragging = void 0;
 
         targetElement.addEventListener('touchstart', function () {
+          if (targetElement.className.indexOf('disable-swing') !== -1) {
+            return;
+          }
           dragging = true;
         });
 
         targetElement.addEventListener('touchend', function () {
+          if (targetElement.className.indexOf('disable-swing') !== -1) {
+            return;
+          }
           dragging = false;
         });
 
         global.addEventListener('touchmove', function (event) {
+          if (targetElement.className.indexOf('disable-swing') !== -1) {
+            return;
+          }
           if (dragging) {
             event.preventDefault();
           }
@@ -218,10 +236,16 @@ var Card = function Card(stack, targetElement, prepend) {
       })();
     } else {
       targetElement.addEventListener('mousedown', function () {
+        if (targetElement.className.indexOf('disable-swing') !== -1) {
+          return;
+        }
         eventEmitter.trigger('panstart');
       });
 
       targetElement.addEventListener('mouseup', function () {
+        if (targetElement.className.indexOf('disable-swing') !== -1) {
+          return;
+        }
         if (isDraging && !isPanning) {
           eventEmitter.trigger('dragend', {
             target: targetElement
@@ -231,15 +255,24 @@ var Card = function Card(stack, targetElement, prepend) {
     }
 
     mc.on('panstart', function (event) {
+      if (event.targetElement.className.indexOf('disable-swing') !== -1) {
+        return;
+      }
       isPanning = true;
       eventEmitter.trigger('panstart', event);
     });
 
     mc.on('panmove', function (event) {
+      if (event.targetElement.className.indexOf('disable-swing') !== -1) {
+        return;
+      }
       eventEmitter.trigger('panmove', event);
     });
 
     mc.on('panend', function (event) {
+      if (event.targetElement.className.indexOf('disable-swing') !== -1) {
+        return;
+      }
       isPanning = false;
       eventEmitter.trigger('panend', event);
     });
