@@ -33,7 +33,7 @@ const computeDirection = (fromX, fromY, allowedDirections) => {
 
 // returns true if the element or one of its parents has the class classname
 const hasSomeParentTheClass = (element, classname) => {
-  if (element.className.split(' ').indexOf(classname) >= 0) {
+  if (element.className && element.className.split(' ').indexOf(classname) >= 0) {
     return true;
   }
 
