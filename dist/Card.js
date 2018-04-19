@@ -57,6 +57,12 @@ var computeDirection = function computeDirection(fromX, fromY, allowedDirections
   return direction;
 };
 
+// returns true if the element or one of its parents has the class classname
+function hasSomeParentTheClass(element, classname) {
+  if (element.className.split(' ').indexOf(classname) >= 0) return true;
+  return element.parentNode && hasSomeParentTheClass(element.parentNode, classname);
+}
+
 /**
  * @param {Stack} stack
  * @param {HTMLElement} targetElement
@@ -255,7 +261,7 @@ var Card = function Card(stack, targetElement, prepend) {
     }
 
     mc.on('panstart', function (event) {
-      if (event.targetElement.className.indexOf('disable-swing') !== -1) {
+      if (hasSomeParentTheClass(event.target, 'disable-swing')) {
         return;
       }
       isPanning = true;
@@ -263,14 +269,14 @@ var Card = function Card(stack, targetElement, prepend) {
     });
 
     mc.on('panmove', function (event) {
-      if (event.targetElement.className.indexOf('disable-swing') !== -1) {
+      if (hasSomeParentTheClass(event.target, 'disable-swing')) {
         return;
       }
       eventEmitter.trigger('panmove', event);
     });
 
     mc.on('panend', function (event) {
-      if (event.targetElement.className.indexOf('disable-swing') !== -1) {
+      if (hasSomeParentTheClass(event.target, 'disable-swing')) {
         return;
       }
       isPanning = false;
