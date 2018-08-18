@@ -320,6 +320,7 @@ const Card = (stack, targetElement, prepend) => {
       lastThrow.direction = direction || computeDirection(fromX, fromY, config.allowedDirections);
 
       if (where === Card.THROW_IN) {
+        Card.appendToParent(targetElement);
         springThrowIn.setCurrentValue(0).setAtRest().setEndValue(1);
 
         eventEmitter.trigger('throwin', {
@@ -327,6 +328,7 @@ const Card = (stack, targetElement, prepend) => {
           throwDirection: lastThrow.direction
         });
       } else if (where === Card.THROW_OUT) {
+        Card.appendToParent(targetElement);
         springThrowOut.setCurrentValue(0).setAtRest().setVelocity(100).setEndValue(1);
 
         eventEmitter.trigger('throwout', {
