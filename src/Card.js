@@ -58,7 +58,8 @@ const Card = (stack, targetElement, prepend) => {
   let throwDirectionToEventName;
   let throwOutDistance;
   let throwWhere;
-  let appendedDuringMouseDown;
+  let nativelyClickedAfterMouseUp;
+  let fakeClickEvent;
 
   const construct = () => {
     card = {};
@@ -194,16 +195,36 @@ const Card = (stack, targetElement, prepend) => {
         });
       })();
     } else {
+      targetElement.addEventListener('click', (event) => {
+        if (fakeClickEvent === event) {
+          return;
+        }
+
+        nativelyClickedAfterMouseUp = true;
+      });
+
       targetElement.addEventListener('mousedown', () => {
-        appendedDuringMouseDown = Card.appendToParent(targetElement) || appendedDuringMouseDown;
+        Card.appendToParent(targetElement);
+
+        // Reset here
+        nativelyClickedAfterMouseUp = false;
         eventEmitter.trigger('panstart');
       });
 
       targetElement.addEventListener('mouseup', () => {
-        if (appendedDuringMouseDown) {
-          targetElement.click();
-          appendedDuringMouseDown = false;
-        }
+        // `setTimeout` to determine whether native click event was triggered. If so then not faking one.
+        setTimeout(() => {
+          if (nativelyClickedAfterMouseUp) {
+            return;
+          }
+
+          fakeClickEvent = new MouseEvent('click', {
+            bubbles: true,
+            cancelable: true,
+            view: window
+          });
+          targetElement.dispatchEvent(fakeClickEvent);
+        }, 0);
 
         if (isDraging && !isPanning) {
           eventEmitter.trigger('dragend', {
