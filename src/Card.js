@@ -58,7 +58,6 @@ const Card = (stack, targetElement, prepend) => {
   let throwDirectionToEventName;
   let throwOutDistance;
   let throwWhere;
-  let appendedDuringMouseDown;
 
   const construct = () => {
     card = {};
@@ -195,16 +194,10 @@ const Card = (stack, targetElement, prepend) => {
       })();
     } else {
       targetElement.addEventListener('mousedown', () => {
-        appendedDuringMouseDown = Card.appendToParent(targetElement) || appendedDuringMouseDown;
         eventEmitter.trigger('panstart');
       });
 
       targetElement.addEventListener('mouseup', () => {
-        if (appendedDuringMouseDown) {
-          targetElement.click();
-          appendedDuringMouseDown = false;
-        }
-
         if (isDraging && !isPanning) {
           eventEmitter.trigger('dragend', {
             target: targetElement
@@ -460,14 +453,11 @@ Card.appendToParent = (element) => {
   const parentNode = element.parentNode;
   const siblings = elementChildren(parentNode);
   const targetIndex = siblings.indexOf(element);
-  const appended = targetIndex + 1 !== siblings.length;
 
-  if (appended) {
+  if (targetIndex + 1 !== siblings.length) {
     parentNode.removeChild(element);
     parentNode.appendChild(element);
   }
-
-  return appended;
 };
 
 /**
