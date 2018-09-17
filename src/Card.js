@@ -160,14 +160,41 @@ const Card = (stack, targetElement, prepend) => {
       });
     });
 
+    targetElement.addEventListener('click', (event) => {
+      if (fakeClickEvent === event) {
+        return;
+      }
+
+      nativelyClickedAfterMouseUp = true;
+    });
+
+    // `setTimeout` to determine whether native click event was triggered. If so then not faking one.
+    const conditionalDispatchClick = () => {
+      return setTimeout(() => {
+        if (nativelyClickedAfterMouseUp) {
+          return;
+        }
+
+        fakeClickEvent = new MouseEvent('click', {
+          bubbles: true,
+          cancelable: true,
+          view: window
+        });
+        targetElement.dispatchEvent(fakeClickEvent);
+      }, 0);
+    };
+
     // "mousedown" event fires late on touch enabled devices, thus listening
     // to the touchstart event for touch enabled devices and mousedown otherwise.
     if (isTouchDevice()) {
       targetElement.addEventListener('touchstart', () => {
+        nativelyClickedAfterMouseUp = false;
         eventEmitter.trigger('panstart');
       });
 
       targetElement.addEventListener('touchend', () => {
+        conditionalDispatchClick();
+
         if (isDraging && !isPanning) {
           eventEmitter.trigger('dragend', {
             target: targetElement
@@ -195,36 +222,15 @@ const Card = (stack, targetElement, prepend) => {
         });
       })();
     } else {
-      targetElement.addEventListener('click', (event) => {
-        if (fakeClickEvent === event) {
-          return;
-        }
-
-        nativelyClickedAfterMouseUp = true;
-      });
-
       targetElement.addEventListener('mousedown', () => {
         Card.appendToParent(targetElement);
 
-        // Reset here
         nativelyClickedAfterMouseUp = false;
         eventEmitter.trigger('panstart');
       });
 
       targetElement.addEventListener('mouseup', () => {
-        // `setTimeout` to determine whether native click event was triggered. If so then not faking one.
-        setTimeout(() => {
-          if (nativelyClickedAfterMouseUp) {
-            return;
-          }
-
-          fakeClickEvent = new MouseEvent('click', {
-            bubbles: true,
-            cancelable: true,
-            view: window
-          });
-          targetElement.dispatchEvent(fakeClickEvent);
-        }, 0);
+        conditionalDispatchClick();
 
         if (isDraging && !isPanning) {
           eventEmitter.trigger('dragend', {
