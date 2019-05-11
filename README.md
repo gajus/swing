@@ -1,6 +1,6 @@
 # Swing
 
-[![GitSpo Mentions](https://gitspo.com/badges/gajus/swing?style=flat-square)](https://gitspo.com/mentions/gajus/swing)
+[![GitSpo Mentions](https://gitspo.com/badges/mentions/gajus/swing?style=flat-square)](https://gitspo.com/mentions/gajus/swing)
 [![Travis build status](http://img.shields.io/travis/gajus/swing/master.svg?style=flat-square)](https://travis-ci.org/gajus/swing)
 [![NPM version](http://img.shields.io/npm/v/swing.svg?style=flat-square)](https://www.npmjs.org/package/swing)
 [![js-canonical-style](https://img.shields.io/badge/code%20style-canonical-blue.svg?style=flat-square)](https://github.com/gajus/canonical)
