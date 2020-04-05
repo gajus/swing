@@ -488,6 +488,23 @@ Card.prependToParent = (element) => {
 };
 
 /**
+ * Prepend element to the parentNode.
+ *
+ * This makes the element last among the siblings.
+ *
+ * Invoked when card is added to the stack (when prepend is true).
+ *
+ * @param {HTMLElement} element The target element.
+ * @return {undefined}
+ */
+Card.prependToParent = (element) => {
+  const parentNode = element.parentNode;
+
+  parentNode.removeChild(element);
+  parentNode.insertBefore(element, parentNode.firstChild);
+};
+
+/**
  * Returns a value between 0 and 1 indicating the completeness of the throw out condition.
  *
  * Ration of the absolute distance from the original card position and element width.
