@@ -9,7 +9,7 @@ import _ from 'lodash';
  */
 const elementChildren = (element) => {
   return _.filter(element.childNodes, {
-    nodeType: 1
+    nodeType: 1,
   });
 };
 
@@ -23,5 +23,5 @@ const isTouchDevice = () => {
 
 export {
   elementChildren,
-  isTouchDevice
+  isTouchDevice,
 };

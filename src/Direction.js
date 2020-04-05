@@ -3,7 +3,7 @@ const Direction = {
   INVALID: Symbol('INVALID'),
   LEFT: Symbol('LEFT'),
   RIGHT: Symbol('RIGHT'),
-  UP: Symbol('UP')
+  UP: Symbol('UP'),
 };
 
 export default Direction;

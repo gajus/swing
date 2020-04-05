@@ -5,5 +5,5 @@ import Stack from './Stack';
 export {
   Card,
   Direction,
-  Stack
+  Stack,
 };

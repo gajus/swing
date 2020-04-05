@@ -4,8 +4,8 @@ import rebound from 'rebound';
 import Card from './Card';
 
 /**
- * @param {Object} config Stack configuration.
- * @returns {Object} An instance of Stack object.
+ * @param {object} config Stack configuration.
+ * @returns {object} An instance of Stack object.
  */
 const Stack = (config) => {
   let eventEmitter;
@@ -25,7 +25,7 @@ const Stack = (config) => {
   /**
    * Get the configuration object.
    *
-   * @returns {Object}
+   * @returns {object}
    */
   stack.getConfig = () => {
     return config;
@@ -71,7 +71,7 @@ const Stack = (config) => {
       'throwinend',
       'dragstart',
       'dragmove',
-      'dragend'
+      'dragend',
     ];
 
     // Proxy Card events to the Stack.
@@ -83,7 +83,7 @@ const Stack = (config) => {
 
     index.push({
       card,
-      element
+      element,
     });
 
     return card;
@@ -97,7 +97,7 @@ const Stack = (config) => {
    */
   stack.getCard = (element) => {
     const group = _.find(index, {
-      element
+      element,
     });
 
     if (group) {
@@ -116,8 +116,8 @@ const Stack = (config) => {
   stack.destroyCard = (card) => {
     eventEmitter.trigger('destroyCard', card);
 
-    return _.remove(index, {
-      card
+    return _.filter(index, (indexCard) => {
+      return indexCard !== card;
     });
   };
 

@@ -1,9 +1,13 @@
 {
   "plugins": [
-    "add-module-exports",
     "lodash"
   ],
   "presets": [
-    "es2015"
+    [
+      "@babel/preset-env",
+      {
+        "targets": "> 0.25%, not dead"
+      }
+    ]
   ]
 }

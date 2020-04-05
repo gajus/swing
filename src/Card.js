@@ -7,7 +7,7 @@ import raf from 'raf';
 import Direction from './Direction';
 import {
   elementChildren,
-  isTouchDevice
+  isTouchDevice,
 } from './utilities';
 
 /**
@@ -24,7 +24,7 @@ const computeDirection = (fromX, fromY, allowedDirections) => {
 
   const direction = isHorizontal ? isLeftDirection : isUpDirection;
 
-  if (allowedDirections.indexOf(direction) === -1) {
+  if (!allowedDirections.includes(direction)) {
     return Direction.INVALID;
   }
 
@@ -35,7 +35,7 @@ const computeDirection = (fromX, fromY, allowedDirections) => {
  * @param {Stack} stack
  * @param {HTMLElement} targetElement
  * @param {boolean} prepend
- * @returns {Object} An instance of Card.
+ * @returns {object} An instance of Card.
  */
 const Card = (stack, targetElement, prepend) => {
   let card;
@@ -70,10 +70,10 @@ const Card = (stack, targetElement, prepend) => {
     lastThrow = {};
     lastTranslate = {
       coordinateX: 0,
-      coordinateY: 0
+      coordinateY: 0,
     };
 
-        /* Mapping directions to event names */
+    /* Mapping directions to event names */
     throwDirectionToEventName = {};
     throwDirectionToEventName[Direction.LEFT] = 'throwoutleft';
     throwDirectionToEventName[Direction.RIGHT] = 'throwoutright';
@@ -93,10 +93,10 @@ const Card = (stack, targetElement, prepend) => {
         [
           Hammer.Pan,
           {
-            threshold: 2
-          }
-        ]
-      ]
+            threshold: 2,
+          },
+        ],
+      ],
     });
 
     if (prepend) {
@@ -109,7 +109,7 @@ const Card = (stack, targetElement, prepend) => {
       Card.appendToParent(targetElement);
 
       eventEmitter.trigger('dragstart', {
-        target: targetElement
+        target: targetElement,
       });
 
       currentX = 0;
@@ -141,7 +141,7 @@ const Card = (stack, targetElement, prepend) => {
         coordinateX,
         coordinateY,
         targetElement,
-        config.throwOutConfidence(coordinateX, coordinateY, targetElement)
+        config.throwOutConfidence(coordinateX, coordinateY, targetElement),
       );
 
       // Not really sure about computing direction here and filtering on directions here.
@@ -155,7 +155,7 @@ const Card = (stack, targetElement, prepend) => {
       }
 
       eventEmitter.trigger('dragend', {
-        target: targetElement
+        target: targetElement,
       });
     });
 
@@ -171,7 +171,7 @@ const Card = (stack, targetElement, prepend) => {
       targetElement.addEventListener('touchend', () => {
         if (isDraging && !isPanning) {
           eventEmitter.trigger('dragend', {
-            target: targetElement
+            target: targetElement,
           });
         }
       });
@@ -209,7 +209,7 @@ const Card = (stack, targetElement, prepend) => {
 
         if (isDraging && !isPanning) {
           eventEmitter.trigger('dragend', {
-            target: targetElement
+            target: targetElement,
           });
         }
       });
@@ -236,7 +236,7 @@ const Card = (stack, targetElement, prepend) => {
     springThrowIn.addListener({
       onSpringAtRest: () => {
         eventEmitter.trigger('throwinend', {
-          target: targetElement
+          target: targetElement,
         });
       },
       onSpringUpdate: (spring) => {
@@ -245,13 +245,13 @@ const Card = (stack, targetElement, prepend) => {
         const coordianteY = rebound.MathUtil.mapValueInRange(value, 0, 1, lastThrow.fromY, 0);
 
         onSpringUpdate(coordianteX, coordianteY);
-      }
+      },
     });
 
     springThrowOut.addListener({
       onSpringAtRest: () => {
         eventEmitter.trigger('throwoutend', {
-          target: targetElement
+          target: targetElement,
         });
       },
       onSpringUpdate: (spring) => {
@@ -272,7 +272,7 @@ const Card = (stack, targetElement, prepend) => {
         }
 
         onSpringUpdate(coordianteX, coordianteY);
-      }
+      },
     });
 
     /**
@@ -298,7 +298,7 @@ const Card = (stack, targetElement, prepend) => {
         offset: coordinateX,
         target: targetElement,
         throwDirection: computeDirection(coordinateX, coordianteY, config.allowedDirections),
-        throwOutConfidence: config.throwOutConfidence(coordinateX, coordianteY, targetElement)
+        throwOutConfidence: config.throwOutConfidence(coordinateX, coordianteY, targetElement),
       });
     };
 
@@ -338,7 +338,7 @@ const Card = (stack, targetElement, prepend) => {
 
         eventEmitter.trigger('throwin', {
           target: targetElement,
-          throwDirection: lastThrow.direction
+          throwDirection: lastThrow.direction,
         });
       } else if (where === Card.THROW_OUT) {
         Card.appendToParent(targetElement);
@@ -346,13 +346,13 @@ const Card = (stack, targetElement, prepend) => {
 
         eventEmitter.trigger('throwout', {
           target: targetElement,
-          throwDirection: lastThrow.direction
+          throwDirection: lastThrow.direction,
         });
 
-                /* Emits more accurate events about specific directions */
+        /* Emits more accurate events about specific directions */
         eventEmitter.trigger(throwDirectionToEventName[lastThrow.direction], {
           target: targetElement,
-          throwDirection: lastThrow.direction
+          throwDirection: lastThrow.direction,
         });
       } else {
         throw new Error('Invalid throw event.');
@@ -412,15 +412,15 @@ const Card = (stack, targetElement, prepend) => {
 /**
  * Creates a configuration object.
  *
- * @param {Object} config
- * @returns {Object}
+ * @param {object} config
+ * @returns {object}
  */
 Card.makeConfig = (config = {}) => {
   const defaultConfig = {
     allowedDirections: [
       Direction.RIGHT,
       Direction.LEFT,
-      Direction.UP
+      Direction.UP,
     ],
     allowMovement: () => {
       return true;
@@ -432,7 +432,7 @@ Card.makeConfig = (config = {}) => {
     rotation: Card.rotation,
     throwOutConfidence: Card.throwOutConfidence,
     throwOutDistance: Card.throwOutDistance,
-    transform: Card.transform
+    transform: Card.transform,
   };
 
   return _.assign({}, defaultConfig, config);
@@ -472,8 +472,8 @@ Card.appendToParent = (element) => {
   const appended = targetIndex + 1 !== siblings.length;
 
   if (appended) {
-    parentNode.removeChild(element);
-    parentNode.appendChild(element);
+    element.remove();
+    parentNode.append(element);
   }
 
   return appended;
@@ -487,12 +487,12 @@ Card.appendToParent = (element) => {
  * Invoked when card is added to the stack (when prepend is true).
  *
  * @param {HTMLElement} element The target element.
- * @return {undefined}
+ * @returns {undefined}
  */
 Card.prependToParent = (element) => {
   const parentNode = element.parentNode;
 
-  parentNode.removeChild(element);
+  element.remove();
   parentNode.insertBefore(element, parentNode.firstChild);
 };
 
@@ -504,12 +504,12 @@ Card.prependToParent = (element) => {
  * Invoked when card is added to the stack (when prepend is true).
  *
  * @param {HTMLElement} element The target element.
- * @return {undefined}
+ * @returns {undefined}
  */
 Card.prependToParent = (element) => {
   const parentNode = element.parentNode;
 
-  parentNode.removeChild(element);
+  element.remove();
   parentNode.insertBefore(element, parentNode.firstChild);
 };
 
