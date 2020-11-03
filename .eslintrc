@@ -1,7 +1,6 @@
 {
   "extends": [
-    "canonical",
-    "canonical/lodash"
+    "canonical"
   ],
   "root": true
 }
