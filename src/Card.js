@@ -192,7 +192,7 @@ const Card = (stack, targetElement, prepend) => {
           if (dragging && config.allowMovement(event, isTouchDevice())) {
             event.preventDefault();
           }
-        });
+        }, { passive: false });
       })();
     } else {
       targetElement.addEventListener('mousedown', () => {
