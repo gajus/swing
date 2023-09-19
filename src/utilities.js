@@ -18,7 +18,7 @@ const elementChildren = (element) => {
  * @returns {boolean}
  */
 const isTouchDevice = () => {
-  return 'ontouchstart' in window || navigator.msMaxTouchPoints;
+  return 'ontouchstart' in window || navigator.maxTouchPoints;
 };
 
 export {
