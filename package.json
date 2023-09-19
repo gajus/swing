@@ -60,7 +60,7 @@
     }
   },
   "scripts": {
-    "build": "babel ./src --out-dir ./dist --copy-files",
+    "build": "npx tsc",
     "lint": "eslint ./src ./test",
     "test": "ava --verbose --serial"
   },

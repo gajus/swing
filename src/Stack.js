@@ -11,7 +11,7 @@ const Stack = (config) => {
   let eventEmitter;
   let index;
   let springSystem;
-  let stack;
+  let stack; 
 
   const construct = () => {
     stack = {};
