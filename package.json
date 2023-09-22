@@ -40,7 +40,7 @@
     "eslint": "^6.8.0",
     "eslint-config-canonical": "^19.0.4",
     "husky": "^4.2.3",
-    "semantic-release": "^17.0.4",
+    "semantic-release": "^22.0.1",
     "sinon": "^9.0.1"
   },
   "keywords": [
