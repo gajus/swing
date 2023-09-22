@@ -2,10 +2,8 @@
 
 import test from 'ava';
 import sinon from 'sinon';
-import {
-  Direction,
-  Stack,
-} from '../../src';
+import Stack from "../../src/Stack.js";
+import Direction from '../../src/Direction.js';
 
 test('getCard() returns card associated with an element', (t) => {
   const stack = Stack();

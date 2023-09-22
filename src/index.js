@@ -1,6 +1,6 @@
-import Card from './Card';
-import Direction from './Direction';
-import Stack from './Stack';
+import Card from './Card.js';
+import Direction from './Direction.js';
+import Stack from './Stack.js';
 
 export {
   Card,

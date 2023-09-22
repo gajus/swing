@@ -4,11 +4,11 @@ import Hammer from 'hammerjs';
 import rebound from 'rebound';
 import vendorPrefix from 'vendor-prefix';
 import raf from 'raf';
-import Direction from './Direction';
+import Direction from './Direction.js';
 import {
   elementChildren,
   isTouchDevice,
-} from './utilities';
+} from './utilities.js';
 
 /**
  * @param {number} fromX
