@@ -3,7 +3,6 @@ dist
 node_modules
 package-lock.json
 *.log
-.*
 !.README
 !.babelrc
 !.conventional-changelog-lintrc
